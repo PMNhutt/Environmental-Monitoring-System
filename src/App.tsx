@@ -1,0 +1,70 @@
+import React, { Suspense, Fragment } from 'react';
+import DefaultLayout from './share/layouts/DefaultLayout';
+
+import { publicRoutes, privateRoutes } from './router';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Loading from './share/loading/Loading';
+import ScrollToTop from './utils/scrollToTop';
+import { RouteProps } from './utils/interface';
+
+function App() {
+  return (
+    <Router>
+      <ScrollToTop>
+        <Suspense fallback={<Loading />}>
+          <div>
+            <Routes>
+              {publicRoutes.map((route: RouteProps, index) => {
+                let Layout = DefaultLayout;
+                if (route.layout) {
+                  Layout = route.layout;
+                } else if (route.layout === null) {
+                  Layout = DefaultLayout;
+                }
+
+                const Page = route.component;
+                return (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    element={
+                      <Layout>
+                        <Page title={route.title} />
+                      </Layout>
+                    }
+                  />
+                );
+              })}
+
+              {privateRoutes.map((route: RouteProps, index) => {
+                let Layout = DefaultLayout;
+                if (route.layout) {
+                  Layout = route.layout;
+                } else if (route.layout === null) {
+                  // Layout = Fragment;
+                  Layout = DefaultLayout;
+                }
+
+                const Page = route.component;
+                return (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    element={
+                      <Layout>
+                        <Page title={route.title} />
+                      </Layout>
+                    }
+                  />
+                );
+              })}
+            </Routes>
+          </div>
+        </Suspense>
+      </ScrollToTop>
+    </Router>
+  );
+}
+
+export default App;
