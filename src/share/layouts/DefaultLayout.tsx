@@ -5,7 +5,7 @@ const DefaultLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Nav />
-      <div className="pt-[100px]">{children}</div>
+      <div className="pt-[100px] font-poppins">{children}</div>
     </div>
   );
 };

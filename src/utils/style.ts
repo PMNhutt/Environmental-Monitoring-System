@@ -1,4 +1,12 @@
-const styles = {
+const styles: {
+  container: string;
+  flexBetween: string;
+  flexCenter: string;
+  flexStart: string;
+  paddingX: string;
+  paddingY: string;
+  marginY: string;
+} = {
   container: 'xl:max-w-[1440px] w-full',
 
   flexBetween: 'flex justify-between items-center',
