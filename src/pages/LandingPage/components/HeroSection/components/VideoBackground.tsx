@@ -12,7 +12,7 @@ const VideoBackground = () => {
       muted
       loop
     >
-      <source src="src/assets/videos/home.mp4" type="video/mp4" />
+      <source src={import.meta.env.VITE_HOME_VIDEO} type="video/mp4" />
     </motion.video>
   );
 };
