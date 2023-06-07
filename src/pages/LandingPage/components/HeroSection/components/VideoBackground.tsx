@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { animationStart, reveal } from 'src/utils/animation';
+
 const VideoBackground = () => {
   return (
     <motion.video
