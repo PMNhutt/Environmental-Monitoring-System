@@ -26,7 +26,7 @@ export const layout: {
   sectionImg: string;
   sectionInfo: string;
 } = {
-  section: `flex md:flex-row flex-col ${styles.paddingY}`,
+  section: `flex md:flex-row flex-col-reverse ${styles.paddingY}`,
   sectionReverse: `flex md:flex-row-reverse flex-col-reverse ${styles.paddingY}`,
 
   sectionImgReverse: `flex-1 flex ${styles.flexCenter} md:mr-10 mr-0 md:mt-0 mt-10 relative`,

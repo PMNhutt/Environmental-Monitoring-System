@@ -41,7 +41,7 @@ const Feature: React.FC<FeatureProps> = (props) => {
           animate={aniControls}
           transition={{ delay: 1.2, duration: 0.5 }}
           className={`${
-            isEven ? 'text-end' : ''
+            isEven ? 'md:text-end' : ''
           } font-extrabold text-t9  bg-gradient-to-r from-slate-500 to-slate-800 bg-clip-text text-transparent`}
         >
           {title}
@@ -51,7 +51,7 @@ const Feature: React.FC<FeatureProps> = (props) => {
           initial="hiddenVariant"
           animate={aniControls}
           transition={{ delay: 1.4, duration: 0.5 }}
-          className={`${isEven ? 'text-end' : ''} mt-5 text-t5 text-gray-500`}
+          className={`${isEven ? 'md:text-end' : ''} mt-5 text-t5 text-gray-500`}
         >
           {description}
         </motion.p>

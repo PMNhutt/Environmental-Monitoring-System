@@ -7,7 +7,7 @@ const VideoBackground = () => {
       initial="hiddenVariant"
       animate="revealedVariant"
       transition={{ duration: 1, delay: 1 }}
-      className="h-[600px] md:w-1/2 object-cover blob float"
+      className="lg:h-[600px] h-[400px] md:w-1/2 object-cover blob float"
       autoPlay
       muted
       loop
