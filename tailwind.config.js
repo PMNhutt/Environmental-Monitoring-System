@@ -6,7 +6,6 @@ export default {
   ],
   mode: 'jit',
   theme: {
-
     extend: {
       colors: {
         white: '#FFFFFF',
@@ -237,7 +236,26 @@ export default {
         m: '0px 4px 9px rgba(23, 26, 31, 0.19), 0px 0px 2px rgba(23, 26, 31, 0.2)',
         l: '0px 8px 17px rgba(23, 26, 31, 0.23), 0px 0px 2px rgba(23, 26, 31, 0.2)',
         xl: '0px 17px 35px rgba(23, 26, 31, 0.32), 0px 0px 2px rgba(23, 26, 31, 0.2)'
-      }
+      },
+      animation: {
+        blob: 'blob 10s infinite',
+      },
+      keyframes: {
+        blob: {
+          '0%, 100%': {
+            transform: 'translate(0, 0) scale(1)',
+          },
+          '25%': {
+            transform: 'translate(20px, -50px) scale(1.1)',
+          },
+          '50%': {
+            transform: 'translate(0, 20px) scale(1)',
+          },
+          '75%': {
+            transform: 'translate(-20px, -15px) scale(0.9)',
+          },
+        },
+      },
     },
   },
   // eslint-disable-next-line no-undef

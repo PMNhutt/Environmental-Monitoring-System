@@ -1,6 +1,6 @@
 // ** components
-import HeroSection from './components/HeroSection';
-import ProductFeatures from './components/ProductFeatures';
+import HeroSection from './components/HeroSection/HeroSection';
+import ProductFeatures from './components/ProductFeatures/ProductFeatures';
 
 const LandingPage = () => {
   return (

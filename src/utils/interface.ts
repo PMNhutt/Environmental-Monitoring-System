@@ -4,3 +4,11 @@ export interface RouteProps {
   title: string;
   layout?: any;
 }
+
+export interface FeatureProps {
+  position: string;
+  lottieSrc: any;
+  title: string;
+  description: string;
+  isEven?: boolean;
+}

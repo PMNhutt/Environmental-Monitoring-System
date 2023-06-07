@@ -15,9 +15,120 @@ html {
   font-family: inherit;
 }
 
+.main {
+  width: 100vw;
+  min-height: 100vh;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  padding: 120px 24px 160px 24px;
+  pointer-events: none;
+}
+
+.main:after {
+  content: '';
+  background-image: url('src/assets/images/grid.svg');
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  opacity: 0.4;
+  filter: invert(1);
+}
+
+.main:before {
+  /* background: radial-gradient(circle, rgba(2, 0, 36, 0) 0, #fafafa 100%); */
+  position: absolute;
+  content: '';
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.gradient {
+  height: fit-content;
+  z-index: 3;
+  width: 100%;
+  max-width: 640px;
+  background-image: radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 1) 0px, transparent 0%),
+    radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 1) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 1) 0px, transparent 50%),
+    radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 1) 0px, transparent 50%),
+    radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 1) 0px, transparent 50%),
+    radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 1) 0px, transparent 50%),
+    radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 1) 0px, transparent 50%);
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  filter: blur(100px) saturate(150%);
+  top: 80px;
+  opacity: 0.15;
+}
+
 @layer utilities {
   .clip-video {
     clip-path: ellipse(140% 160% at 50% 160%);
+  }
+}
+
+/*  animation video background */
+.hero_text_animation {
+  animation: hehe 1s ease-in-out 2s forwards;
+}
+
+.blob {
+  border-radius: 41% 67% 42% 66% / 66% 46% 61% 46%;
+}
+
+.float {
+  animation-name: ani-float;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes ani-float {
+  0% {
+    transform: translate(0, 0px);
+  }
+  50% {
+    transform: translate(0, 15px);
+  }
+  100% {
+    transform: translate(0, -0px);
+  }
+}
+
+@keyframes hehe {
+  from {
+    height: 0px;
+  }
+  to {
+    height: unset;
+  }
+}
+
+.clip_from_top_animation {
+  animation: clip 1s ease 2.5s forwards;
+}
+
+@keyframes clip {
+  0% {
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 0;
+    z-index: 10;
+  }
+  100% {
+    /* clip-path: ellipse(100% 160% at 50% 160%); */
+    /* border-radius: 41% 67% 42% 63% / 66% 48% 61% 33%; */
+    height: 600px;
   }
 }
 

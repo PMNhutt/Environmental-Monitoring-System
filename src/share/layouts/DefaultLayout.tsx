@@ -4,8 +4,11 @@ import Nav from 'src/components/Nav/Nav';
 const DefaultLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
+      <div className="main">
+        <div className="gradient" />
+      </div>
       <Nav />
-      <div className="pt-[100px] font-poppins">{children}</div>
+      <div className="font-poppins">{children}</div>
     </div>
   );
 };
