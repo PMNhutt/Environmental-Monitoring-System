@@ -1,4 +1,4 @@
-import React, { Suspense, Fragment } from 'react';
+import { Suspense } from 'react';
 import DefaultLayout from './share/layouts/DefaultLayout';
 
 import { publicRoutes, privateRoutes } from './router';
