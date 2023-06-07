@@ -39,7 +39,7 @@ const ProductFeatures = () => {
             initial="hiddenVariant"
             animate={aniControls}
             transition={{ delay: 1, duration: 0.5 }}
-            className="md:w-[75%] font-medium text-gray-500 text-t4"
+            className="md:w-[75%] font-medium text-gray-500 text-t6"
           >
             The system offers cost-effective and scalable environmental mornitoring,{' '}
             <span className="text-primary">real-time data</span> display on a mobile platform,{' '}

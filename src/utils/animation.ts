@@ -1,6 +1,6 @@
 import { Variants } from 'framer-motion';
 
-export const animationStart = 2;
+export const animationStart = 0.5;
 
 export const reveal: Variants = {
   hiddenVariant: { y: 50, opacity: 0 },

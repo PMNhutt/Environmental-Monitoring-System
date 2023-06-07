@@ -24,7 +24,7 @@ const Nav = () => {
   }, []);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: animationStart, duration: 0.5 }}>
       <motion.nav
         variants={reveal}
         initial="hiddenVariant"
@@ -34,7 +34,7 @@ const Nav = () => {
           type: 'tween',
           staggerChildren: 0.1,
           duration: 0.5,
-          delayChildren: 0.5,
+          delayChildren: animationStart + 0.5,
         }}
         className={`px-5 ${
           styles.flexCenter
