@@ -6,7 +6,10 @@ import MobileNav from './components/MobileNav';
 import { motion } from 'framer-motion';
 import { animationStart, reveal } from 'src/utils/animation';
 
+import { useNavigate } from 'react-router-dom';
+
 const Nav = () => {
+  const navigate = useNavigate();
   const [scroll, setScroll] = useState(false);
   // ** Scroll nav
   useEffect(() => {
@@ -52,6 +55,7 @@ const Nav = () => {
             <motion.button
               variants={reveal}
               whileHover={{ scale: 1.1 }}
+              onClick={() => navigate('/login')}
               className="bg-primary px-5 py-1.5 rounded-full text-white font-medium"
             >
               Login

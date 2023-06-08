@@ -4,11 +4,13 @@ import decor from 'src/assets/images/Saly-16.png';
 import { useRef, useEffect } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
 import { reveal } from 'src/utils/animation';
+import { useNavigate } from 'react-router-dom';
 
 const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const aniControls = useAnimation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isInView) {
@@ -53,6 +55,7 @@ const ContactSection = () => {
             initial="hiddenVariant"
             animate={aniControls}
             transition={{ delay: 1.2, duration: 0.5 }}
+            onClick={() => navigate('/login')}
             className="mt-8 bg-gradient-to-tr from-gray-300 to-white px-5 py-3 rounded-[10px] font-semibold text-gray-600"
           >
             Contact Us

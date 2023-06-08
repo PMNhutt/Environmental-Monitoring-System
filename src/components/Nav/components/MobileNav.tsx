@@ -1,5 +1,5 @@
-import menu from 'src/assets/images/Menu Hamburger.png';
-import closeMenu from 'src/assets/images/Close.png';
+import menu from 'src/assets/images/menu.svg';
+import closeMenu from 'src/assets/images/Close.svg';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
