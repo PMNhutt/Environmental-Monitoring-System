@@ -15,10 +15,10 @@ const HeroText = () => {
           transition={{ delay: animationStart + 1, duration: 0.5 }}
           className="font-extrabold font-exo sm:text-start text-center text-[50px] sm:text-[65px] md:text-[70px]"
         >
-          <span className="bg-gradient-to-r from-primary-400 to-primary bg-clip-text text-transparent">
+          <span className="animate-text bg-gradient-to-r from-primary-500 via-primary-300 to-primary bg-clip-text text-transparent">
             Environmental
           </span>{' '}
-          <span className="bg-gradient-to-r from-slate-500 to-slate-800 bg-clip-text text-transparent">
+          <span className="animate-text bg-gradient-to-r from-slate-500 to-slate-800 bg-clip-text text-transparent">
             Monitoring System
           </span>
         </motion.h1>

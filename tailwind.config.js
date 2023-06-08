@@ -239,6 +239,7 @@ export default {
       },
       animation: {
         blob: 'blob 10s infinite',
+        text: 'text 5s ease infinite',
       },
       keyframes: {
         blob: {
@@ -253,6 +254,16 @@ export default {
           },
           '75%': {
             transform: 'translate(-20px, -15px) scale(0.9)',
+          },
+        },
+        text: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
           },
         },
       },
