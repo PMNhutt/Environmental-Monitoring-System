@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { Regex_Email, Regex_Password } from 'src/utils/regex';
 
@@ -14,16 +15,16 @@ const AuthForm = () => {
   const navigate = useNavigate();
   const [passwordShown, setPasswordShown] = useState(false);
 
-  const notifyError = (err: string) =>
-    toast.error(err, {
-      pauseOnHover: false,
-    });
+  // const notifyError = (err: string) =>
+  //   toast.error(err, {
+  //     pauseOnHover: false,
+  //   });
 
   // ** toggle show password
   // ** Funct
-  const togglePasswordVisiblity = () => {
-    setPasswordShown((prev) => !prev);
-  };
+  // const togglePasswordVisiblity = () => {
+  //   setPasswordShown((prev) => !prev);
+  // };
 
   // ** handle submit form
   const onSubmit = (data: any) => {
