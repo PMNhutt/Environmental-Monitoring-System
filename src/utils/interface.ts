@@ -12,3 +12,7 @@ export interface FeatureProps {
   description: string;
   isEven?: boolean;
 }
+
+export interface AuthFormProps {
+  isLogin: boolean;
+}

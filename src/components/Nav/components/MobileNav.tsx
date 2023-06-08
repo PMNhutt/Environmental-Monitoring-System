@@ -3,9 +3,11 @@ import closeMenu from 'src/assets/images/Close.svg';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const MobileNav = () => {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="relative">
@@ -21,8 +23,12 @@ const MobileNav = () => {
             exit={{ x: '100%', opacity: 0 }}
             className="absolute top-15 right-0 bg-gradient-to-tr from-primary-400 to-primary p-4 rounded-[10px] drop-shadow-sm text-white font-semibold text-center"
           >
-            <button className="py-3 px-5">Login</button>
-            <button className="py-3 px-5">Register</button>
+            <button onClick={() => navigate('/login')} className="py-3 px-5">
+              Login
+            </button>
+            <button onClick={() => navigate('/register')} className="py-3 px-5">
+              Register
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

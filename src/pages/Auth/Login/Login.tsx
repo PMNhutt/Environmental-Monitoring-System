@@ -1,10 +1,15 @@
+import { useEffect } from 'react';
 import Logo from 'src/share/Logo/Logo';
 import styles from 'src/utils/style';
 import AuthForm from '../AuthForm';
 
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login: React.FC<{ title: string }> = ({ title }) => {
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
   const navigate = useNavigate();
   return (
     <div className={`${styles.paddingX} flex justify-center auth-bg`}>
@@ -14,7 +19,7 @@ const Login = () => {
         </div>
 
         <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center">
-          <AuthForm />
+          <AuthForm isLogin={true} />
         </div>
       </div>
     </div>

@@ -63,6 +63,7 @@ const Nav = () => {
             <motion.button
               variants={reveal}
               whileHover={{ scale: 1.1 }}
+              onClick={() => navigate('/register')}
               className="border-primary border px-5 py-1.5 rounded-full bg-white text-primary font-medium"
             >
               Register
