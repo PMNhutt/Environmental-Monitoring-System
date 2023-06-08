@@ -10,7 +10,7 @@ const HeroText = () => {
           initial="hiddenVariant"
           animate="revealedVariant"
           transition={{ delay: animationStart + 1, duration: 0.5 }}
-          className="font-extrabold font-exo text-[50px] md:text-[65px]"
+          className="font-extrabold font-exo text-[65px]"
         >
           <span className="bg-gradient-to-r from-primary-400 to-primary bg-clip-text text-transparent">
             Environmental

@@ -6,7 +6,9 @@ const Footer = () => {
     <footer className={`${styles.flexCenter} ${styles.paddingX} flex-col font-poppins`}>
       <div className={`${styles.container} ${styles.paddingY}`}>
         <div className="mb-8">
-          <Logo />
+          <div className="w-[90px]">
+            <Logo />
+          </div>
           <p className="mt-5 text-t5 md:w-[40%] font-medium">
             Experience cost-effective and efficient environmental mornitoring with our advanced system
           </p>

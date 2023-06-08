@@ -13,7 +13,6 @@ const ContactSection = () => {
   useEffect(() => {
     if (isInView) {
       aniControls.start('revealedVariant');
-      console.log(isInView);
     }
   }, [isInView]);
 

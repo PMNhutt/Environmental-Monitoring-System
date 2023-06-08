@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Logo from 'src/share/Logo/Logo';
 import styles from 'src/utils/style';
+import MobileNav from './components/MobileNav';
 
 import { motion } from 'framer-motion';
 import { animationStart, reveal } from 'src/utils/animation';
@@ -43,10 +44,11 @@ const Nav = () => {
         }`}
       >
         <div className={`${styles.container} ${styles.flexBetween}`}>
-          <motion.div variants={reveal}>
+          <motion.div variants={reveal} className="w-[90px]">
             <Logo />
           </motion.div>
-          <div className={`flex items-center gap-5`}>
+          {/* hide desktop */}
+          <div className={`md:flex hidden items-center gap-5`}>
             <motion.button
               variants={reveal}
               whileHover={{ scale: 1.1 }}
@@ -61,6 +63,10 @@ const Nav = () => {
             >
               Register
             </motion.button>
+          </div>
+          {/* mobile nav */}
+          <div className="md:hidden block">
+            <MobileNav />
           </div>
         </div>
       </motion.nav>

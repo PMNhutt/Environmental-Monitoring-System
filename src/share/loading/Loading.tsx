@@ -10,7 +10,9 @@ const Loading = () => {
         exit={{ opacity: 0 }}
         className="w-full h-[100vh] flex items-center justify-center"
       >
-        <Logo />
+        <div className="w-[100px]">
+          <Logo />
+        </div>
       </motion.div>
     </AnimatePresence>
   );
