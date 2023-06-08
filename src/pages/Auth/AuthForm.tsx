@@ -5,6 +5,10 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Regex_Email, Regex_Password } from 'src/utils/regex';
 
+// ** assets
+import eye_gray from 'src/assets/images/ic_eye_gray.svg';
+import eye_closed from 'src/assets/images/ic_eye_closed.svg';
+
 const AuthForm = () => {
   //** Const */
   const {
@@ -22,9 +26,9 @@ const AuthForm = () => {
 
   // ** toggle show password
   // ** Funct
-  // const togglePasswordVisiblity = () => {
-  //   setPasswordShown((prev) => !prev);
-  // };
+  const togglePasswordVisiblity = () => {
+    setPasswordShown((prev) => !prev);
+  };
 
   // ** handle submit form
   const onSubmit = (data: any) => {
@@ -63,11 +67,11 @@ const AuthForm = () => {
               pattern: Regex_Password,
             })}
           />
-          {/* <div
-                    onClick={() => togglePasswordVisiblity()}
-                    className="w-[26px] h-[26px] bg-cover cursor-pointer absolute right-[10px] bottom-[10px]"
-                    style={{ backgroundImage: `url(${passwordShown ? ic_eye_gray : ic_eye_closed})` }}
-                  /> */}
+          <div
+            onClick={() => togglePasswordVisiblity()}
+            className="w-[26px] h-[26px] bg-cover cursor-pointer absolute right-[10px] bottom-[10px]"
+            style={{ backgroundImage: `url(${passwordShown ? eye_gray : eye_closed})` }}
+          />
         </div>
         {errors?.password?.type === 'required' && (
           <p className="mb-[5px] text-danger text-[14px]">Password is required</p>
