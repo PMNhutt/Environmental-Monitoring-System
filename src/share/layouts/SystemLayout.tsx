@@ -1,11 +1,11 @@
 import React from 'react';
-// import Nav from 'src/components/Nav/Nav';
+import SystemNav from 'src/components/SystemNav/SystemNav';
 
 const SystemLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-      {/* <Nav /> */}
-      <div className="font-poppins">{children}</div>
+      <SystemNav />
+      <div className="font-poppins mt-[72px]">{children}</div>
     </div>
   );
 };

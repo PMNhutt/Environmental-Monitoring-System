@@ -1,11 +1,13 @@
 import { lazy } from 'react';
 import { RouteProps } from 'src/utils/interface';
 import EmptyLayout from 'src/share/layouts/EmptyLayout';
+import SystemLayout from 'src/share/layouts/SystemLayout';
 
 const LandingPage = lazy(() => import('src/pages/LandingPage/LandingPage'));
 const LoginPage = lazy(() => import('src/pages/Auth/Login/Login'));
 const RegisterPage = lazy(() => import('src/pages/Auth/Register/Register'));
 const PageNotFound = lazy(() => import('src/pages/PageNotFound/PageNotFound'));
+const UserManagementPage = lazy(() => import('src/pages/Admin/UserManagement'));
 
 // ** public routes (no need authen)
 const publicRoutes: RouteProps[] = [
@@ -16,6 +18,8 @@ const publicRoutes: RouteProps[] = [
 ];
 
 // ** private routes (need authen + authorization)
-const privateRoutes: [] = [];
+const privateRoutes: RouteProps[] = [
+  { path: '/admin', component: UserManagementPage, title: 'Envi - Admin', layout: SystemLayout },
+];
 
 export { publicRoutes, privateRoutes };
