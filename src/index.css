@@ -142,7 +142,7 @@ html {
 
 /* scroll-bar */
 ::-webkit-scrollbar {
-  background: #151918;
+  background: transparent;
   width: 10px;
 }
 

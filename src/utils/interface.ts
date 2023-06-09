@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface RouteProps {
   path: string;
   component: React.ElementType;
