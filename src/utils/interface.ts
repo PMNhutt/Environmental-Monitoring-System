@@ -17,3 +17,9 @@ export interface FeatureProps {
 export interface AuthFormProps {
   isLogin: boolean;
 }
+
+export interface DetailModalProps {
+  openModal: boolean;
+  setOpenModal: any;
+  title: string;
+}

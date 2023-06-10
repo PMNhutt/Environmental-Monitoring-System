@@ -10,6 +10,11 @@ interface ButtonProps {
   id: number;
 }
 
+interface HeaderProps {
+  setOpenModal: any;
+  setModalTitle: any;
+}
+
 const Button: React.FC<ButtonProps> = (props) => {
   const { active, text, id } = props;
 
@@ -24,7 +29,8 @@ const Button: React.FC<ButtonProps> = (props) => {
   );
 };
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = (props) => {
+  const { setOpenModal, setModalTitle } = props;
   const [activeBtn, setActiveBtn] = useState(1);
   const [searchValue, setSearchValue] = useState('');
 
@@ -45,7 +51,13 @@ const Header = () => {
       {/* search */}
       <div className="flex gap-5 flex-wrap">
         {/* new user */}
-        <button className="rounded-[6px] text-t3 bg-primary text-white font-medium py-2 px-3 flex items-center gap-2">
+        <button
+          onClick={() => {
+            setOpenModal(true);
+            setModalTitle('Create new account');
+          }}
+          className="rounded-[6px] text-t3 bg-primary text-white font-medium py-2 px-3 flex items-center gap-2"
+        >
           <img src={plus} className="object-cover w-[15px] h-[15px]" />
           New
         </button>

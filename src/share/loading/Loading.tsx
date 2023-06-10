@@ -10,7 +10,7 @@ const Loading = () => {
         exit={{ opacity: 0 }}
         className="w-full h-[100vh] flex items-center justify-center"
       >
-        <div className="w-[100px]">
+        <div className="w-[100px] animate-bounce">
           <Logo />
         </div>
       </motion.div>
