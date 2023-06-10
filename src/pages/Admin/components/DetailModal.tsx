@@ -149,7 +149,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
                         <DatePicker
                           {...restField}
                           value={dob}
-                          onChange={(event, value) => {
+                          onChange={(event) => {
                             onChange(event);
                             setDob(event);
                           }}
