@@ -8,6 +8,7 @@ const LoginPage = lazy(() => import('src/pages/Auth/Login/Login'));
 const RegisterPage = lazy(() => import('src/pages/Auth/Register/Register'));
 const PageNotFound = lazy(() => import('src/pages/PageNotFound/PageNotFound'));
 const UserManagementPage = lazy(() => import('src/pages/Admin/UserManagement'));
+const Staff = lazy(() => import('src/pages/Staff/Container'));
 
 // ** public routes (no need authen)
 const publicRoutes: RouteProps[] = [
@@ -20,6 +21,7 @@ const publicRoutes: RouteProps[] = [
 // ** private routes (need authen + authorization)
 const privateRoutes: RouteProps[] = [
   { path: '/admin', component: UserManagementPage, title: 'Envi - Admin', layout: SystemLayout },
+  { path: '/staff/*', component: Staff, title: 'Envi - LoRa', layout: SystemLayout },
 ];
 
 export { publicRoutes, privateRoutes };
