@@ -23,3 +23,10 @@ export interface DetailModalProps {
   setOpenModal: any;
   title: string;
 }
+
+export interface LoRaTypeProps {
+  unit: string;
+  level: string;
+  value: number;
+  setLoRaUnit: any;
+}

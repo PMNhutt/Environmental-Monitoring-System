@@ -47,6 +47,25 @@ const LineChart: React.FC<ChartProps> = (props) => {
     ],
   });
 
+  useEffect(() => {
+    setChartData({
+      labels: date,
+      datasets: [
+        {
+          label: dataLabel,
+          data: loRaData,
+          fill: true,
+          backgroundColor: 'rgba(83,92,232,0.2)',
+          borderColor: '#535CE8',
+        },
+        // {
+        //   label: 'label2',
+        //   data: data2,
+        // },
+      ],
+    });
+  }, [loRaData]);
+
   return (
     <div>
       <Line data={chartData} options={options} />
