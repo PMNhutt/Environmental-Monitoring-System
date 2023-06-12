@@ -20,13 +20,13 @@ interface Props {
 // ** check user role
 const getUserRole = (role: string) => {
   switch (role) {
-    case 'admin':
+    case 'ADMIN':
       return <p className="min-w-[70px] text-center text-primary px-3 py-1 rounded-full text-t3 bg-[#F3F4F6]">Admin</p>;
-    case 'staff':
+    case 'STAFF':
       return (
         <p className="min-w-[70px] text-center text-secondary px-3 py-1 rounded-full text-t3 bg-[#F3F4F6]">Staff</p>
       );
-    case 'user':
+    case 'USER':
       return <p className="min-w-[70px] text-center text-black px-3 py-1 rounded-full text-t3 bg-[#F3F4F6]">User</p>;
     default:
       break;
@@ -66,13 +66,13 @@ const columns = [
     renderCell: (params: any) => getUserRole(params.row.role),
   },
   {
-    field: 'status',
+    field: 'isDeleted',
     headerName: 'Status',
     width: 150,
     // flex: 1,
     renderCell: (params: any) => (
-      <div className={`cellWithStatus ${params.row.status}`}>
-        {params.row.status === true ? (
+      <div className={`cellWithStatus ${params.row.isDeleted}`}>
+        {params.row.isDeleted === false ? (
           <p className="text-white px-3 rounded-full min-w-[90px] text-center text-[14px] bg-success-600">ACTIVE</p>
         ) : (
           <p className="text-white px-3 rounded-full min-w-[90px] text-center text-[14px] bg-danger-600">INACTIVE</p>
@@ -103,9 +103,9 @@ const DataTable: React.FC<Props> = (props) => {
       width: 80,
       renderCell: (params: any) => (
         <div className="cellAction">
-          <Tooltip title={params.row.status == true ? 'Disable' : 'Enable'} placement="right">
+          <Tooltip title={params.row.isDeleted == false ? 'Disable' : 'Enable'} placement="right">
             <IconButton onClick={() => props.handleOpenDelete(params.row)} aria-label="remove">
-              {params.row.status == true ? (
+              {params.row.isDeleted == false ? (
                 <img src={disable} className="object-contain w-[24px] h-[24px]" />
               ) : (
                 <img src={enable} className="object-contain w-[24px] h-[24px]" />
@@ -124,7 +124,7 @@ const DataTable: React.FC<Props> = (props) => {
         pageSize={defaultValue.pageSize}
         rowsPerPageOptions={[defaultValue.pageSize]}
         className="datagrid"
-        getRowId={(row: any) => row.userId}
+        getRowId={(row: any) => row.id}
         // loading={props?.loading}
         loading={false}
         components={{

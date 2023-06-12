@@ -16,7 +16,7 @@ const Container = () => {
           <Routes>
             <Route path="/">
               <Route index element={<LoRa />} />
-              <Route path="lora-data">
+              <Route path="/:id">
                 <Route index element={<LoRaData />} />
               </Route>
               {/* <Route path="blog">

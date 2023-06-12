@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from 'src/utils/style';
+import jwt_decode from 'jwt-decode';
+import { useAppDispatch } from 'src/redux/store/hooks';
+import { getUsers, getUserDetail } from 'src/redux/slices/usersSlice';
+import { Navigate } from 'react-router-dom';
 
 // ** components
 import Header from './components/Header/Header';
 import DataTable from './components/DataTable';
 import DetailModal from './components/DetailModal';
+import { UserDetailProps } from 'src/utils/interface';
 
 const data = [
   {
@@ -115,38 +120,72 @@ const data = [
 
 const UserManagement = () => {
   // **
+  const accessToken = localStorage.getItem('accessToken');
+  let decoded_jwt: any = {};
+  if (accessToken) {
+    decoded_jwt = jwt_decode(accessToken);
+  }
+  const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
+  const [isModalDetail, setIsModalDetail] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [userDetail, setUserDetail] = useState();
 
-  const handleOpenEdit = (data: any) => {
-    console.log(data);
+  // ** get user data list
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getUsers()).then((res) => {
+      setUsers(res.payload);
+    });
+    setLoading(false);
+  }, []);
+
+  const handleOpenEdit = async (data: any) => {
     setOpenModal(true);
+    const res = await dispatch(getUserDetail(data.id));
+    setUserDetail(res.payload);
     setModalTitle('Account detail');
+    setIsModalDetail(true);
   };
 
   const handleOpenDelete = (data: any) => {
     console.log(data);
   };
-  return (
-    <>
-      {openModal && <DetailModal openModal={openModal} setOpenModal={setOpenModal} title={modalTitle} />}
-      <div className={`${styles.flexCenter} ${styles.paddingX} lg:px-40`}>
-        <div className={`${styles.container}`}>
-          {/* header */}
-          <div className="mt-10 mb-5">
-            <Header setOpenModal={setOpenModal} setModalTitle={setModalTitle} />
-          </div>
-          {/* data table */}
-          <DataTable
-            handleOpenEdit={handleOpenEdit}
-            handleOpenDelete={handleOpenDelete}
-            rowData={data}
-            loading={false}
+
+  if (decoded_jwt.role !== 'ADMIN') {
+    return <Navigate replace to="/" />;
+  } else {
+    return (
+      <>
+        {openModal && (
+          <DetailModal
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            title={modalTitle}
+            isModalDetail={isModalDetail}
+            userDetail={userDetail}
           />
+        )}
+        <div className={`${styles.flexCenter} ${styles.paddingX} lg:px-40`}>
+          <div className={`${styles.container}`}>
+            {/* header */}
+            <div className="mt-10 mb-5">
+              <Header setOpenModal={setOpenModal} setModalTitle={setModalTitle} setIsModalDetail={setIsModalDetail} />
+            </div>
+            {/* data table */}
+            <DataTable
+              handleOpenEdit={handleOpenEdit}
+              handleOpenDelete={handleOpenDelete}
+              rowData={users}
+              loading={loading}
+            />
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 };
 
 export default UserManagement;

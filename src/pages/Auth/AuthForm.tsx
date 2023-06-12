@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Regex_Email, Regex_Password } from 'src/utils/regex';
+import jwt_decode from 'jwt-decode';
+import { useAppDispatch } from 'src/redux/store/hooks';
 
+import instances from 'src/utils/plugins/axios';
+import { Regex_Email, Regex_Password } from 'src/utils/regex';
 import { AuthFormProps } from 'src/utils/interface';
+import { fetchLogin } from 'src/redux/slices/authSlice';
 
 // ** assets
 import eye_gray from 'src/assets/images/ic_eye_gray.svg';
@@ -22,6 +26,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [passwordShown, setPasswordShown] = useState(false);
   const [passwordRepShown, setPasswordRepShown] = useState(false);
   const [checkMatchPass, setCheckMatchPass] = useState(true);
@@ -42,12 +47,73 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
   };
 
   // ** handle submit form
-  const onSubmit = (data: any) => {
-    if (data.password == data.rePassword) {
-      console.log(data);
-      setCheckMatchPass(true);
+  const onSubmit = async (data: any) => {
+    // isLogin
+    if (isLogin) {
+      dispatch(fetchLogin(data)).then((res) => {
+        // console.log(res);
+        if (res.payload.role == 'ADMIN') {
+          navigate('/admin');
+        }
+        if (res.payload.role == 'STAFF') {
+          navigate('/nodes');
+        }
+        if (res.payload.role == 'USER') {
+          navigate('/');
+        }
+      });
+
+      // toast.promise(
+      //   // instances.post('/user/login', data).then((res) => {
+      //   //   const decoded: any = jwt_decode(res?.data?.token);
+      //   //   localStorage.setItem('accessToken', res.data.token);
+      //   //   if (decoded?.role == 'ADMIN') {
+      //   //     navigate('/admin');
+      //   //   }
+      //   //   if (decoded?.role === 'STAFF') {
+      //   //     navigate('/nodes');
+      //   //   }
+      //   //   if (decoded?.role === 'USER') {
+      //   //     navigate('/');
+      //   //   }
+      //   // })
+      //   dispatch(fetchLogin(data)),
+      //   {
+      //     pending: 'Checking information...',
+      //     success: 'Login succussfully! 👌',
+      //     error: {
+      //       render({ data }: any) {
+      //         return data.response?.data.detail;
+      //       },
+      //     },
+      //   },
+      // );
     } else {
-      setCheckMatchPass(false);
+      if (data.password == data.rePassword) {
+        const registerReq = {
+          email: data.email,
+          firstName: data.firstname,
+          lastName: data.lastname,
+          password: data.password,
+        };
+        toast.promise(
+          instances.post('/user/register', registerReq).then((res) => {
+            navigate('/login');
+          }),
+          {
+            pending: 'Creating account...',
+            success: 'Register succussfully! 👌',
+            error: {
+              render(data: any) {
+                return data.response.detail;
+              },
+            },
+          },
+        );
+        setCheckMatchPass(true);
+      } else {
+        setCheckMatchPass(false);
+      }
     }
   };
 

@@ -15,6 +15,12 @@ const SystemNav = () => {
   const [openDropDown, setOpenDropDown] = useState(false);
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    navigate('/login');
+    // dispatch(setAccountInfo({}));
+  };
+
   return (
     <nav
       className={`${styles.flexCenter} px-5 w-full h-[72px] fixed top-0 bg-white z-[100] border-b-gray-200 border-b font-poppins`}
@@ -56,7 +62,10 @@ const SystemNav = () => {
                   <img src={avatar} className="w-[24px] h-[24px] object-contain" />
                   <p className="text-t3">Personal Information</p>
                 </li>
-                <li className="flex items-center gap-3 cursor-pointer px-5 py-3 transition hover:bg-gray-100 rounded-br-[10px] rounded-bl-[10px]">
+                <li
+                  onClick={() => handleLogout()}
+                  className="flex items-center gap-3 cursor-pointer px-5 py-3 transition hover:bg-gray-100 rounded-br-[10px] rounded-bl-[10px]"
+                >
                   <img src={logout} className="w-[25px] h-[25px] object-contain" />
                   <p className="text-t3">Log out</p>
                 </li>

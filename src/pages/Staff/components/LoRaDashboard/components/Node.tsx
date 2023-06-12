@@ -12,7 +12,7 @@ const Node = () => {
     <div className="rounded-[6px] flex flex-col justify-center items-center w-full xl:w-[362px] h-[275px] border-2 border-gray-300 text-t4 font-medium text-black">
       {/* images */}
       <div
-        onClick={() => navigate('/staff/lora-data')}
+        onClick={() => navigate(`/nodes/${crypto.randomUUID()}`)}
         className="cursor-pointer h-3/4 w-full flex justify-center items-center rounded-tr-[6px] rounded-tl-[6px] bg-[#F3F4F6]"
       >
         <img src={nodes} className="object-cover h-[70px] w-[135px]" />

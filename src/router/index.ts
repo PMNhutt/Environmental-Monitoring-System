@@ -21,7 +21,7 @@ const publicRoutes: RouteProps[] = [
 // ** private routes (need authen + authorization)
 const privateRoutes: RouteProps[] = [
   { path: '/admin', component: UserManagementPage, title: 'Envi - Admin', layout: SystemLayout },
-  { path: '/staff/*', component: Staff, title: 'Envi - LoRa', layout: SystemLayout },
+  { path: '/nodes/*', component: Staff, title: 'Envi - LoRa', layout: SystemLayout },
 ];
 
 export { publicRoutes, privateRoutes };

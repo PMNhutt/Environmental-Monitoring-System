@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+import { setUserDetail } from 'src/redux/slices/usersSlice';
+import { useAppDispatch } from 'src/redux/store/hooks';
+
 // ** assets
 import plus from 'src/assets/images/plus_white.svg';
 import fitler from 'src/assets/images/filter.svg';
@@ -13,6 +16,7 @@ interface ButtonProps {
 interface HeaderProps {
   setOpenModal: any;
   setModalTitle: any;
+  setIsModalDetail: any;
 }
 
 const Button: React.FC<ButtonProps> = (props) => {
@@ -30,9 +34,10 @@ const Button: React.FC<ButtonProps> = (props) => {
 };
 
 const Header: React.FC<HeaderProps> = (props) => {
-  const { setOpenModal, setModalTitle } = props;
+  const { setOpenModal, setModalTitle, setIsModalDetail } = props;
   const [activeBtn, setActiveBtn] = useState(1);
   const [searchValue, setSearchValue] = useState('');
+  const dispatch = useAppDispatch();
 
   return (
     <section className="w-full flex lg:flex-row lg:gap-0 gap-8 flex-col lg:items-center justify-between">
@@ -55,6 +60,8 @@ const Header: React.FC<HeaderProps> = (props) => {
           onClick={() => {
             setOpenModal(true);
             setModalTitle('Create new account');
+            setIsModalDetail(false);
+            dispatch(setUserDetail(undefined));
           }}
           className="rounded-[6px] text-t3 bg-primary text-white font-medium py-2 px-3 flex items-center gap-2"
         >
