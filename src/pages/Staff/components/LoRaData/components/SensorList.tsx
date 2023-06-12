@@ -6,7 +6,7 @@ const ListItem: React.FC<{ title: string }> = (props) => {
   const { title } = props;
   return (
     <div className="w-full flex justify-between items-center pb-2 mb-2 border-b border-b-[#D9D9D9]">
-      <div className="flex items-center gap-3">
+      <div className="flex sm:flex-row flex-col sm:items-center gap-3">
         <div className="w-[133px] h-[68px] bg-[#F3F4F6] border border-[#BDC1CA] flex justify-center items-center">
           <img src={sensor} className="object-contain" />
         </div>

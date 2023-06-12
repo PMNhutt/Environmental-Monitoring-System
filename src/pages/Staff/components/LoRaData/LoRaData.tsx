@@ -82,11 +82,11 @@ const LoRaData = () => {
       {/* body */}
       <div className="w-full flex flex-col items-center justify-center my-7">
         {/* chart */}
-        <div className="w-[85%]">
+        <div className="sm:w-[85%] w-[100%]">
           {chartData?.length > 0 && <LineChart dataLabel={loRaUnit} loRaData={chartData} />}
         </div>
         {/* data type component */}
-        <div className="my-20 flex flex-wrap gap-10 justify-between w-full px-32">
+        <div className="my-20 flex flex-wrap gap-10 sm:justify-between justify-center w-full px-32">
           <LoRaType level="High" value={9.1} unit="dp" setLoRaUnit={setLoRaUnit} />
           <LoRaType level="Pretty High" value={20} unit="mg" setLoRaUnit={setLoRaUnit} />
           <LoRaType level="Normal" value={29} unit="Celsius" setLoRaUnit={setLoRaUnit} />
