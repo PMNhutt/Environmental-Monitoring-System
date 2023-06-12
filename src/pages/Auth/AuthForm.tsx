@@ -97,7 +97,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
           password: data.password,
         };
         toast.promise(
-          instances.post('/user/register', registerReq).then((res) => {
+          instances.post('/user/register', registerReq).then(() => {
             navigate('/login');
           }),
           {
