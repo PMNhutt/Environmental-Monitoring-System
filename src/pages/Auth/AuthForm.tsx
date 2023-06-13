@@ -4,22 +4,25 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
-import { useAppDispatch } from 'src/redux/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 
 import instances from 'src/utils/plugins/axios';
 import { Regex_Email, Regex_Password } from 'src/utils/regex';
 import { AuthFormProps } from 'src/utils/interface';
-import { fetchLogin } from 'src/redux/slices/authSlice';
+import { fetchLogin, fetchRegister } from 'src/redux/slices/authSlice';
 
 // ** assets
 import eye_gray from 'src/assets/images/ic_eye_gray.svg';
 import eye_closed from 'src/assets/images/ic_eye_closed.svg';
 import ic_email from 'src/assets/images/email_form.svg';
 import ic_password from 'src/assets/images/password_form.svg';
+import spinner from 'src/assets/images/spinner.svg';
 
 const AuthForm: React.FC<AuthFormProps> = (props) => {
   //** Const */
   const { isLogin } = props;
+  const accessToken = localStorage.getItem('accessToken');
+
   const {
     register,
     handleSubmit,
@@ -27,6 +30,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
   } = useForm();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const authStore = useAppSelector((state) => state.auth);
   const [passwordShown, setPasswordShown] = useState(false);
   const [passwordRepShown, setPasswordRepShown] = useState(false);
   const [checkMatchPass, setCheckMatchPass] = useState(true);
@@ -47,11 +51,10 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
   };
 
   // ** handle submit form
-  const onSubmit = async (data: any) => {
+  const onSubmit = (data: any) => {
     // isLogin
     if (isLogin) {
       dispatch(fetchLogin(data)).then((res) => {
-        // console.log(res);
         if (res.payload.role == 'ADMIN') {
           navigate('/admin');
         }
@@ -90,26 +93,24 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
       // );
     } else {
       if (data.password == data.rePassword) {
-        const registerReq = {
+        const registerReq: any = {
           email: data.email,
           firstName: data.firstname,
           lastName: data.lastname,
           password: data.password,
         };
-        toast.promise(
-          instances.post('/user/register', registerReq).then(() => {
-            navigate('/login');
-          }),
-          {
-            pending: 'Creating account...',
-            success: 'Register succussfully! 👌',
-            error: {
-              render(data: any) {
-                return data.response.detail;
-              },
-            },
-          },
-        );
+        dispatch(fetchRegister(registerReq)).then((res) => {
+          // console.log(res);
+          if (res.payload.role == 'ADMIN') {
+            navigate('/admin');
+          }
+          if (res.payload.role == 'STAFF') {
+            navigate('/nodes');
+          }
+          if (res.payload.role == 'USER') {
+            navigate('/');
+          }
+        });
         setCheckMatchPass(true);
       } else {
         setCheckMatchPass(false);
@@ -255,10 +256,14 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
         )}
         {/* buttons */}
         <button
+          disabled={authStore.loading}
           type="submit"
-          className="w-full mt-10 mb-20 bg-primary text-white font-medium py-2 rounded-[8px] transition hover:scale-[1.01] duration-150"
+          className={`${
+            authStore.loading ? 'cursor-not-allowed bg-primary-400' : 'bg-primary'
+          } flex items-center justify-center gap-3 w-full mt-10 mb-20 text-white font-medium py-2 rounded-[8px] transition hover:scale-[1.01] duration-150`}
         >
-          {isLogin ? 'Log in' : 'Sign up'}
+          {authStore.loading && <img src={spinner} className="animate-spin h-5 w-5" />}
+          {isLogin ? (authStore.loading ? 'Processing...' : 'Log in') : authStore.loading ? 'Processing...' : 'Sign up'}
         </button>
       </form>
 

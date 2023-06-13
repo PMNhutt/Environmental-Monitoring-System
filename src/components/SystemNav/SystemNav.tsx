@@ -1,10 +1,13 @@
 import Logo from 'src/share/Logo/Logo';
 import styles from 'src/utils/style';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAppDispatch } from 'src/redux/store/hooks';
+import { setCurrentUser } from 'src/redux/slices/authSlice';
 
 // ** lib
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 // ** assets
 import avatar from 'src/assets/images/avatar.svg';
@@ -12,8 +15,22 @@ import dropDown from 'src/assets/images/drop_down.svg';
 import logout from 'src/assets/images/Logout.svg';
 
 const SystemNav = () => {
+  const accessToken = localStorage.getItem('accessToken');
+  let decoded_jwt: any = {};
+  if (accessToken) {
+    decoded_jwt = jwt_decode(accessToken);
+  }
+
   const [openDropDown, setOpenDropDown] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  //**  Get shopping cart, set account info
+  useEffect(() => {
+    if (decoded_jwt) {
+      dispatch(setCurrentUser(decoded_jwt));
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -40,7 +57,7 @@ const SystemNav = () => {
             </div>
 
             <div className="flex items-center gap-2 ">
-              <p className="font-medium text-t3 text-[#565D6D]">Thinh Dinh</p>
+              <p className="font-medium text-t3 text-[#565D6D]">{decoded_jwt.firstName + ' ' + decoded_jwt.lastName}</p>
               <img
                 src={dropDown}
                 className={`w-[10px] h-[5px] object-contain transform ${openDropDown ? 'rotate-180' : ''} `}

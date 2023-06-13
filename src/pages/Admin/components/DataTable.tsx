@@ -125,8 +125,7 @@ const DataTable: React.FC<Props> = (props) => {
         rowsPerPageOptions={[defaultValue.pageSize]}
         className="datagrid"
         getRowId={(row: any) => row.id}
-        // loading={props?.loading}
-        loading={false}
+        loading={props.loading}
         components={{
           LoadingOverlay: TableLoading,
           NoRowsOverlay: NoRowData,

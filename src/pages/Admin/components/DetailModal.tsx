@@ -4,8 +4,11 @@ import { useForm, Controller } from 'react-hook-form';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 import { useAppSelector } from 'src/redux/store/hooks';
+import { useAppDispatch } from 'src/redux/store/hooks';
+import { createUser, editUser } from 'src/redux/slices/usersSlice';
 
 import { DetailModalProps } from 'src/utils/interface';
 import { Regex_Email, Regex_PhoneNumber } from 'src/utils/regex';
@@ -14,44 +17,57 @@ interface FormProps {
   userDetail: any;
   isModalDetail: boolean;
   setOpenModal: any;
+  setUpdateData: any;
 }
 
 const Form: React.FC<FormProps> = (props) => {
-  const { userDetail, isModalDetail, setOpenModal } = props;
-  const [dob, setDob] = useState<any>(null);
+  const { userDetail, isModalDetail, setOpenModal, setUpdateData } = props;
+  const [dob, setDob] = useState<any>(userDetail.userDetail && dayjs(userDetail.userDetail?.dateOfBirth));
+  const dispatch = useAppDispatch();
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({ defaultValues: userDetail.userDetail });
+  } = useForm({
+    defaultValues: userDetail.userDetail,
+  });
 
   // ** handle submit form
   const onSubmit = (data: any) => {
-    const dobFormatted = new Date(data?.dob).toISOString();
+    const dobFormatted = dayjs(data?.dateOfBirth).format();
     const requestCreateUser = {
       address: data.address,
       dateOfBirth: dobFormatted,
       email: data.email,
-      firstName: data.firstname,
-      lastName: data.lastname,
+      firstName: data.firstName,
+      lastName: data.lastName,
       password: data.password,
       phone: data.phone,
     };
     const requestEditUser = {
+      id: userDetail.userDetail.id,
       address: data.address,
       dateOfBirth: dobFormatted,
       email: data.email,
-      firstName: data.firstname,
-      lastName: data.lastname,
+      firstName: data.firstName,
+      lastName: data.lastName,
       phone: data.phone,
     };
 
     if (isModalDetail) {
-      console.log(requestEditUser);
+      // console.log(userDetail.userDetail.id);
+      dispatch(editUser(requestEditUser)).then(() => {
+        setOpenModal(false);
+        setUpdateData((prev: boolean) => !prev);
+      });
     } else {
-      console.log(requestCreateUser);
+      // console.log(requestCreateUser);
+      dispatch(createUser(requestCreateUser)).then(() => {
+        setOpenModal(false);
+        setUpdateData((prev: boolean) => !prev);
+      });
     }
   };
 
@@ -131,25 +147,16 @@ const Form: React.FC<FormProps> = (props) => {
           {errors?.phone?.type === 'required' && (
             <p className="mb-[5px] text-danger text-[14px]">Phone number is required</p>
           )}
+          {errors?.phone?.type === 'pattern' && (
+            <p className="mb-[5px] text-danger text-[14px]">Phone number not valid</p>
+          )}
         </div>
 
         {/* date of birth */}
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Date of birth</label>
-          {/* <input
-      type="text"
-      className={`block w-full h-[36px] ${
-        errors?.dob ? 'mb-[5px]' : 'mb-[10px]'
-      } p-[12px] text-t3 bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-      {...register('dob', {
-        required: true,
-      })}
-    />
-    {errors?.dob?.type === 'required' && (
-      <p className="mb-[5px] text-danger text-[14px]">Date of birth is required</p>
-    )} */}
           <Controller
-            name="dob"
+            name="dateOfBirth"
             rules={{ required: true }}
             defaultValue={dob}
             control={control}
@@ -178,7 +185,7 @@ const Form: React.FC<FormProps> = (props) => {
                     className="block w-full h-[36px] p-[12px] text-t3 bg-[#F3F4F6] rounded-[5px] focus:outline-primary outline-none border-none"
                   />
                 </LocalizationProvider>
-                {errors?.dob?.type === 'required' && (
+                {errors?.dateOfBirth?.type === 'required' && (
                   //if you want to show an error message
                   <p className="mb-[5px] text-danger text-[14px]">Date of birth is required</p>
                 )}
@@ -191,8 +198,9 @@ const Form: React.FC<FormProps> = (props) => {
       <>
         <label className="text-t3 font-semibold text-[#424856]">Email</label>
         <input
+          disabled={isModalDetail}
           type="text"
-          className={`block w-full h-[36px] ${
+          className={`${isModalDetail ? 'cursor-not-allowed' : ''} block w-full h-[36px] ${
             errors?.email ? 'mb-[5px]' : 'mb-[10px]'
           } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('email', {
@@ -239,7 +247,7 @@ const Form: React.FC<FormProps> = (props) => {
 };
 
 const DetailModal: React.FC<DetailModalProps> = (props) => {
-  const { openModal, setOpenModal, title, isModalDetail } = props;
+  const { openModal, setOpenModal, title, isModalDetail, setUpdateData } = props;
   const userDetail = useAppSelector((state) => state.users);
 
   return (
@@ -249,11 +257,18 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
       top-[50%] translate-y-[-50%] translate-x-[-50%] sm:w-fit w-full bg-white rounded-[4px] py-4 font-poppins"
       >
         {/* header */}
-        <div className="px-[25px] pb-4 border-b border-b-[#F3F4F6] text-t7 font-medium">{title}</div>
+        <div className="px-[25px] pb-4 border-b border-b-[#F3F4F6] text-t7 font-medium">
+          {!userDetail.loading && title}
+        </div>
         {/* body */}
         <div className="px-[25px] my-3">
           {!userDetail.loading ? (
-            <Form isModalDetail={isModalDetail} userDetail={userDetail} setOpenModal={setOpenModal} />
+            <Form
+              isModalDetail={isModalDetail}
+              userDetail={userDetail}
+              setOpenModal={setOpenModal}
+              setUpdateData={setUpdateData}
+            />
           ) : (
             <p>Loading...</p>
           )}

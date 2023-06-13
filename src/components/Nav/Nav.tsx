@@ -1,16 +1,36 @@
 import { useEffect, useState } from 'react';
-import Logo from 'src/share/Logo/Logo';
 import styles from 'src/utils/style';
+import { useAppDispatch } from 'src/redux/store/hooks';
+import { setCurrentUser } from 'src/redux/slices/authSlice';
+
+// ** components
+import Logo from 'src/share/Logo/Logo';
 import MobileNav from './components/MobileNav';
+import AuthenNav from './components/AuthenNav';
 
 import { motion } from 'framer-motion';
 import { animationStart, reveal } from 'src/utils/animation';
 
 import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 const Nav = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const accessToken = localStorage.getItem('accessToken');
+  let decoded_jwt: any = {};
+  if (accessToken) {
+    decoded_jwt = jwt_decode(accessToken);
+  }
   const [scroll, setScroll] = useState(false);
+
+  //**  Get shopping cart, set account info
+  useEffect(() => {
+    if (decoded_jwt) {
+      dispatch(setCurrentUser(decoded_jwt));
+    }
+  }, []);
+
   // ** Scroll nav
   useEffect(() => {
     const onScroll: EventListener = () => {
@@ -40,9 +60,7 @@ const Nav = () => {
           duration: 0.5,
           delayChildren: animationStart + 0.5,
         }}
-        className={`px-5 ${
-          styles.flexCenter
-        } drop-shadow-md font-poppins w-full flex h-[72px] fixed top-0 bg-transition z-[100] ${
+        className={`px-5 ${styles.flexCenter} font-poppins w-full flex h-[72px] fixed top-0 bg-transition z-[100] ${
           scroll ? 'drop-shadow-md bg-white' : ''
         }`}
       >
@@ -51,24 +69,28 @@ const Nav = () => {
             <Logo />
           </motion.div>
           {/* hide desktop */}
-          <div className={`md:flex hidden items-center gap-5`}>
-            <motion.button
-              variants={reveal}
-              whileHover={{ scale: 1.1 }}
-              onClick={() => navigate('/login')}
-              className="bg-primary px-5 py-1.5 rounded-full text-white font-medium"
-            >
-              Login
-            </motion.button>
-            <motion.button
-              variants={reveal}
-              whileHover={{ scale: 1.1 }}
-              onClick={() => navigate('/register')}
-              className="border-primary border px-5 py-1.5 rounded-full bg-white text-primary font-medium"
-            >
-              Register
-            </motion.button>
-          </div>
+          {accessToken ? (
+            <AuthenNav data={decoded_jwt} />
+          ) : (
+            <div className={`md:flex hidden items-center gap-5`}>
+              <motion.button
+                variants={reveal}
+                whileHover={{ scale: 1.1 }}
+                onClick={() => navigate('/login')}
+                className="bg-primary px-5 py-1.5 rounded-full text-white font-medium"
+              >
+                Login
+              </motion.button>
+              <motion.button
+                variants={reveal}
+                whileHover={{ scale: 1.1 }}
+                onClick={() => navigate('/register')}
+                className="border-primary border px-5 py-1.5 rounded-full bg-white text-primary font-medium"
+              >
+                Register
+              </motion.button>
+            </div>
+          )}
           {/* mobile nav */}
           <div className="md:hidden block">
             <MobileNav />

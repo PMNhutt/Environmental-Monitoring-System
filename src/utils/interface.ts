@@ -24,6 +24,7 @@ export interface DetailModalProps {
   title: string;
   isModalDetail: boolean;
   userDetail: any;
+  setUpdateData: any;
 }
 
 export interface LoRaTypeProps {

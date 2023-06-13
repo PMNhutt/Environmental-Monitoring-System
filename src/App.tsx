@@ -2,11 +2,16 @@ import { Suspense } from 'react';
 import DefaultLayout from './share/layouts/DefaultLayout';
 
 import { publicRoutes, privateRoutes } from './router';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 
 import Loading from './share/loading/Loading';
 import ScrollToTop from './utils/scrollToTop';
 import { RouteProps } from './utils/interface';
+
+const PrivateRoute = () => {
+  const accessToken = localStorage.getItem('accessToken');
+  return accessToken ? <Outlet /> : <Navigate replace to="/login" />;
+};
 
 function App() {
   const accessToken = localStorage.getItem('accessToken');
@@ -49,7 +54,21 @@ function App() {
                 }
 
                 const Page = route.component;
-                // return (
+                return (
+                  <Route element={<PrivateRoute />}>
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <Page title={route.title} />
+                        </Layout>
+                      }
+                    />
+                  </Route>
+                );
+
+                // return accessToken ? (
                 //   <Route
                 //     key={index}
                 //     path={route.path}
@@ -59,21 +78,9 @@ function App() {
                 //       </Layout>
                 //     }
                 //   />
+                // ) : (
+                //   <Route key={crypto.randomUUID()} path={route.path} element={<Navigate to="/login" replace />} />
                 // );
-
-                return accessToken ? (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    element={
-                      <Layout>
-                        <Page title={route.title} />
-                      </Layout>
-                    }
-                  />
-                ) : (
-                  <Route key={crypto.randomUUID()} path={route.path} element={<Navigate to="/login" replace />} />
-                );
               })}
             </Routes>
           </div>

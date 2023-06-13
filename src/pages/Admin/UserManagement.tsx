@@ -130,6 +130,7 @@ const UserManagement = () => {
   const [modalTitle, setModalTitle] = useState('');
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [updateData, setUpdateData] = useState(false);
   const [users, setUsers] = useState([]);
   const [userDetail, setUserDetail] = useState();
 
@@ -139,8 +140,9 @@ const UserManagement = () => {
     dispatch(getUsers()).then((res) => {
       setUsers(res.payload);
     });
+    console.log('updae');
     setLoading(false);
-  }, []);
+  }, [updateData]);
 
   const handleOpenEdit = async (data: any) => {
     setOpenModal(true);
@@ -166,6 +168,7 @@ const UserManagement = () => {
             title={modalTitle}
             isModalDetail={isModalDetail}
             userDetail={userDetail}
+            setUpdateData={setUpdateData}
           />
         )}
         <div className={`${styles.flexCenter} ${styles.paddingX} lg:px-40`}>
