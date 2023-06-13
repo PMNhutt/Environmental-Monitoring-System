@@ -12,8 +12,8 @@ const initialState = {
   error: '',
 };
 
-export const getUsers = createAsyncThunk('users/getUsers', async () => {
-  const res = await instances.get('/users');
+export const getUsers = createAsyncThunk('users/getUsers', async (req?: any) => {
+  const res = await instances.get('/users', { params: { search: req } });
   const list = res.data.data.map((u: UsersProps) => {
     return {
       name: u.firstName + ' ' + u.lastName,
@@ -61,6 +61,17 @@ export const editUser = createAsyncThunk('users/editUser', async (req: any, { re
       phone: req.phone,
       address: req.address,
       dateOfBirth: req.dateOfBirth,
+    });
+    return res.data;
+  } catch (e) {
+    rejectWithValue(e);
+  }
+});
+
+export const activateUser = createAsyncThunk('users/activateUser', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.put(`/user/${req.id}/activation`, {
+      isDeleted: req.isDeleted,
     });
     return res.data;
   } catch (e) {
@@ -123,6 +134,12 @@ export const usersSlice = createSlice({
       .addCase(editUser.rejected, (state, action: any) => {
         state.updating = false;
         state.error = action.payload.response.data.detail;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(activateUser.fulfilled, () => {
+        toast.success('Update succussfully! 👌');
+      })
+      .addCase(activateUser.rejected, (action: any) => {
         toast.error(action.payload.response.data.detail);
       });
   },

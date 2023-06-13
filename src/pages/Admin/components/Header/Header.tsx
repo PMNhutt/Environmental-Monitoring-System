@@ -17,6 +17,10 @@ interface HeaderProps {
   setOpenModal: any;
   setModalTitle: any;
   setIsModalDetail: any;
+  setSearchValue: any;
+  searchValue: any;
+  activeBtn: any;
+  setActiveBtn: any;
 }
 
 const Button: React.FC<ButtonProps> = (props) => {
@@ -34,9 +38,8 @@ const Button: React.FC<ButtonProps> = (props) => {
 };
 
 const Header: React.FC<HeaderProps> = (props) => {
-  const { setOpenModal, setModalTitle, setIsModalDetail } = props;
-  const [activeBtn, setActiveBtn] = useState(1);
-  const [searchValue, setSearchValue] = useState('');
+  const { setOpenModal, setModalTitle, setIsModalDetail, searchValue, setSearchValue, activeBtn, setActiveBtn } = props;
+  // const [activeBtn, setActiveBtn] = useState(1);
   const dispatch = useAppDispatch();
 
   return (

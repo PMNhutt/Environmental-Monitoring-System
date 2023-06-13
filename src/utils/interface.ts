@@ -52,7 +52,7 @@ export interface UserDetailProps extends UsersProps {
 export interface ConfirmModalProps {
   openModal: boolean;
   setOpenModal: any;
-  title: string;
-  setUpdateData: any;
   description: string;
+  handleConfirm: any;
+  rowData: any;
 }

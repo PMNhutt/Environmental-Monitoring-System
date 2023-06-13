@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import styles from 'src/utils/style';
 import jwt_decode from 'jwt-decode';
 import { useAppDispatch } from 'src/redux/store/hooks';
-import { getUsers, getUserDetail } from 'src/redux/slices/usersSlice';
+import { getUsers, getUserDetail, activateUser } from 'src/redux/slices/usersSlice';
 import { Navigate } from 'react-router-dom';
+import useDebounce from 'src/share/hooks/useDebounce';
 
 // ** components
 import Header from './components/Header/Header';
 import DataTable from './components/DataTable';
 import DetailModal from './components/DetailModal';
 import ConfirmModal from './components/ConfirmModal';
+import { UsersProps } from 'src/utils/interface';
 
 const data = [
   {
@@ -119,7 +121,7 @@ const data = [
 ];
 
 const UserManagement = () => {
-  // **
+  // ** const
   const accessToken = localStorage.getItem('accessToken');
   let decoded_jwt: any = {};
   if (accessToken) {
@@ -127,23 +129,44 @@ const UserManagement = () => {
   }
   const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [isModalDetail, setIsModalDetail] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [updateData, setUpdateData] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any>([]);
   const [userDetail, setUserDetail] = useState();
+
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [confirmDes, setConfirmDes] = useState('');
+  const [rowData, setRowData] = useState('');
+
+  const [searchInput, setSearchInput] = useState(null);
+  const debounced = useDebounce(searchInput, 600);
+  // filer list
+  const [activeBtn, setActiveBtn] = useState(1);
 
   // ** get user data list
   useEffect(() => {
     setLoading(true);
-    dispatch(getUsers()).then((res) => {
-      setUsers(res.payload);
+    dispatch(getUsers(debounced?.trim())).then((res) => {
+      let filteredUsers = [...res.payload];
+      switch (activeBtn) {
+        case 1:
+          filteredUsers = res.payload;
+          break;
+        case 2:
+          filteredUsers = res.payload.filter((u: UsersProps) => u.isDeleted == false);
+          break;
+        case 3:
+          filteredUsers = res.payload.filter((u: UsersProps) => u.isDeleted == true);
+          break;
+        default:
+          break;
+      }
+      setUsers(filteredUsers);
     });
-    console.log('updae');
     setLoading(false);
-  }, [updateData]);
+  }, [updateData, debounced, activeBtn]);
 
   const handleOpenEdit = async (data: any) => {
     setOpenModal(true);
@@ -154,7 +177,17 @@ const UserManagement = () => {
   };
 
   const handleOpenDelete = (data: any) => {
-    console.log(data);
+    setRowData(data);
+    setOpenConfirmModal(true);
+    setConfirmDes(!data.isDeleted ? 'Do you want to disable this account?' : 'Do you want to enable this account?');
+  };
+
+  // ** handle delete account
+  const handleConfirm = (data: any) => {
+    dispatch(activateUser(data)).then(() => {
+      setUpdateData((prev: any) => !prev);
+      setOpenConfirmModal(false);
+    });
   };
 
   if (decoded_jwt.role !== 'ADMIN') {
@@ -176,16 +209,24 @@ const UserManagement = () => {
           <ConfirmModal
             openModal={openConfirmModal}
             setOpenModal={setOpenConfirmModal}
-            setUpdateData={setUpdateData}
-            title="Confirm disable account"
-            description="Do you want to disable this account?"
+            description={confirmDes}
+            rowData={rowData}
+            handleConfirm={handleConfirm}
           />
         )}
         <div className={`${styles.flexCenter} ${styles.paddingX} lg:px-40`}>
           <div className={`${styles.container}`}>
             {/* header */}
             <div className="mt-10 mb-5">
-              <Header setOpenModal={setOpenModal} setModalTitle={setModalTitle} setIsModalDetail={setIsModalDetail} />
+              <Header
+                setOpenModal={setOpenModal}
+                setModalTitle={setModalTitle}
+                setIsModalDetail={setIsModalDetail}
+                searchValue={searchInput}
+                setSearchValue={setSearchInput}
+                activeBtn={activeBtn}
+                setActiveBtn={setActiveBtn}
+              />
             </div>
             {/* data table */}
             <DataTable

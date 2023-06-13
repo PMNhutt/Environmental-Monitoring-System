@@ -47,7 +47,7 @@ const Form: React.FC<FormProps> = (props) => {
       phone: data.phone,
     };
     const requestEditUser = {
-      id: userDetail.userDetail.id,
+      id: userDetail.userDetail?.id,
       address: data.address,
       dateOfBirth: dobFormatted,
       email: data.email,
