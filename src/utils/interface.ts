@@ -48,3 +48,11 @@ export interface UserDetailProps extends UsersProps {
   dateOfBirth: string;
   address: string;
 }
+
+export interface ConfirmModalProps {
+  openModal: boolean;
+  setOpenModal: any;
+  title: string;
+  setUpdateData: any;
+  description: string;
+}

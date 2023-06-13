@@ -9,7 +9,7 @@ import { Navigate } from 'react-router-dom';
 import Header from './components/Header/Header';
 import DataTable from './components/DataTable';
 import DetailModal from './components/DetailModal';
-import { UserDetailProps } from 'src/utils/interface';
+import ConfirmModal from './components/ConfirmModal';
 
 const data = [
   {
@@ -127,6 +127,7 @@ const UserManagement = () => {
   }
   const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -169,6 +170,15 @@ const UserManagement = () => {
             isModalDetail={isModalDetail}
             userDetail={userDetail}
             setUpdateData={setUpdateData}
+          />
+        )}
+        {openConfirmModal && (
+          <ConfirmModal
+            openModal={openConfirmModal}
+            setOpenModal={setOpenConfirmModal}
+            setUpdateData={setUpdateData}
+            title="Confirm disable account"
+            description="Do you want to disable this account?"
           />
         )}
         <div className={`${styles.flexCenter} ${styles.paddingX} lg:px-40`}>

@@ -130,7 +130,7 @@ const DataTable: React.FC<Props> = (props) => {
           LoadingOverlay: TableLoading,
           NoRowsOverlay: NoRowData,
         }}
-        onRowClick={(params) => props.handleOpenEdit(params.row)}
+        onRowDoubleClick={(params) => props.handleOpenEdit(params.row)}
         sx={{
           '& .MuiDataGrid-columnHeaderTitle': {
             fontWeight: 700,
