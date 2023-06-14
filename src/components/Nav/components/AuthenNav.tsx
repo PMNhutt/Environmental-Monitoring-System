@@ -40,13 +40,18 @@ const AuthenNav: React.FC<AuthenNavProps> = (props) => {
     }
   };
 
+  const handleNavigatePersonal = () => {
+    console.log(data);
+    navigate(`/personal/${data.sub}`);
+  };
+
   return (
     <div className="relative">
       <div
         onClick={() => setOpenDropDown((prev) => !prev)}
         className="md:flex hidden items-center gap-3 hover:bg-gray-100 transition px-4 py-2 rounded-[5px] cursor-pointer"
       >
-        <img src={avatar} className="object-contain w-[30px]" />
+        <img src={data.avatar ? data.avatar : avatar} className="object-contain w-[30px]" />
         <p className="font-medium">{data.firstName + ' ' + data.lastName}</p>
       </div>
 
@@ -60,7 +65,10 @@ const AuthenNav: React.FC<AuthenNavProps> = (props) => {
             exit={{ y: '50%', opacity: 0 }}
             className="absolute top-15 right-0 bg-white rounded-[10px] w-max drop-shadow-lg"
           >
-            <li className="flex items-center gap-3 px-5 py-3 cursor-pointer transition hover:bg-gray-100 rounded-tr-[10px] rounded-tl-[10px]">
+            <li
+              onClick={() => handleNavigatePersonal()}
+              className="flex items-center gap-3 px-5 py-3 cursor-pointer transition hover:bg-gray-100 rounded-tr-[10px] rounded-tl-[10px]"
+            >
               <img src={avatar} className="w-[24px] h-[24px] object-contain" />
               <p className="text-t3">Personal Information</p>
             </li>

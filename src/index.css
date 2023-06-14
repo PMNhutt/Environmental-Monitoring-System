@@ -166,6 +166,12 @@ html {
   }
 }
 
+@layer base {
+  input[type='checkbox'] {
+    background-color: #535ce8;
+  }
+}
+
 /* body {
   margin: 0;
   display: flex;

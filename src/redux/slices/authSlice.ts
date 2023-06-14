@@ -20,6 +20,7 @@ const initialState: initialStateType = {
     phone: '',
     role: '',
     isDeleted: false,
+    avatar: '',
   },
   loading: false,
   error: '',

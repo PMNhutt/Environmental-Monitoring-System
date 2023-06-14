@@ -9,6 +9,7 @@ const RegisterPage = lazy(() => import('src/pages/Auth/Register/Register'));
 const PageNotFound = lazy(() => import('src/pages/PageNotFound/PageNotFound'));
 const UserManagementPage = lazy(() => import('src/pages/Admin/UserManagement'));
 const Staff = lazy(() => import('src/pages/Staff/Container'));
+const PersonalInfo = lazy(() => import('src/pages/PersonalInfo/PersonalInfo'));
 
 // ** public routes (no need authen)
 const publicRoutes: RouteProps[] = [
@@ -22,6 +23,7 @@ const publicRoutes: RouteProps[] = [
 const privateRoutes: RouteProps[] = [
   { path: '/admin', component: UserManagementPage, title: 'Envi - Admin', layout: SystemLayout },
   { path: '/nodes/*', component: Staff, title: 'Envi - LoRa', layout: SystemLayout },
+  { path: '/personal/:id', component: PersonalInfo, title: 'Envi - Personal Information', layout: SystemLayout },
 ];
 
 export { publicRoutes, privateRoutes };

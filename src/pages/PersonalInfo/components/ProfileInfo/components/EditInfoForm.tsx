@@ -1,28 +1,29 @@
 import { useState } from 'react';
-import { Modal } from '@mui/material';
+
+// ** assets
+import spinner from 'src/assets/images/spinner.svg';
+
+// ** redux
+import { useAppSelector } from 'src/redux/store/hooks';
+import { useAppDispatch } from 'src/redux/store/hooks';
+
+// ** libs
+import { toast } from 'react-toastify';
+import Checkbox from '@mui/material/Checkbox';
 import { useForm, Controller } from 'react-hook-form';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import { editUser, getUserById } from 'src/redux/slices/usersSlice';
+import { Regex_PhoneNumber } from 'src/utils/regex';
 
-import { useAppSelector } from 'src/redux/store/hooks';
-import { useAppDispatch } from 'src/redux/store/hooks';
-import { createUser, editUser } from 'src/redux/slices/usersSlice';
+const EditInfoForm = () => {
+  const userData = useAppSelector((state) => state.users.userDetailById);
+  const loading = useAppSelector((state) => state.users.updating);
 
-import { DetailModalProps } from 'src/utils/interface';
-import { Regex_Email, Regex_PhoneNumber } from 'src/utils/regex';
-
-interface FormProps {
-  userDetail: any;
-  isModalDetail: boolean;
-  setOpenModal: any;
-  setUpdateData: any;
-}
-
-const Form: React.FC<FormProps> = (props) => {
-  const { userDetail, isModalDetail, setOpenModal, setUpdateData } = props;
-  const [dob, setDob] = useState<any>(userDetail.userDetail && dayjs(userDetail.userDetail?.dateOfBirth));
+  const [dob, setDob] = useState<any>(userData && dayjs(userData.dateOfBirth));
+  const [checked, setChecked] = useState(true);
   const dispatch = useAppDispatch();
 
   const {
@@ -31,23 +32,19 @@ const Form: React.FC<FormProps> = (props) => {
     control,
     formState: { errors },
   } = useForm({
-    defaultValues: userDetail.userDetail,
+    defaultValues: userData,
   });
+
+  // ** handle check checkbox
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
 
   // ** handle submit form
   const onSubmit = (data: any) => {
     const dobFormatted = dayjs(data?.dateOfBirth).format();
-    const requestCreateUser = {
-      address: data.address,
-      dateOfBirth: dobFormatted,
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      password: data.password,
-      phone: data.phone,
-    };
     const requestEditUser = {
-      id: userDetail.userDetail?.id,
+      id: userData?.id,
       address: data.address,
       dateOfBirth: dobFormatted,
       email: data.email,
@@ -55,26 +52,17 @@ const Form: React.FC<FormProps> = (props) => {
       lastName: data.lastName,
       phone: data.phone,
     };
-
-    if (isModalDetail) {
-      // console.log(userDetail.userDetail.id);
-      dispatch(editUser(requestEditUser)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
-      });
-    } else {
-      // console.log(requestCreateUser);
-      dispatch(createUser(requestCreateUser)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
-      });
-    }
+    dispatch(editUser(requestEditUser)).then(() => {
+      dispatch(getUserById(userData?.id));
+    });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <p className="text-black text-t8 font-medium mb-4">Profile</p>
+
       {/* first name last name */}
-      <div className="flex sm:gap-5 sm:w-[490px] sm:flex-row flex-col w-full">
+      <div className="flex sm:gap-5  sm:flex-row flex-col w-full">
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">First name</label>
           <input
@@ -115,11 +103,12 @@ const Form: React.FC<FormProps> = (props) => {
         <label className="text-t3 font-semibold text-[#424856]">Address</label>
         <input
           type="text"
+          placeholder="Your Address"
           className={`block w-full h-[36px] ${
             errors?.address ? 'mb-[5px]' : 'mb-[10px]'
           } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('address', {
-            required: true,
+            required: false,
             // pattern: {
             //   value: Regex_Password,
             // },
@@ -130,17 +119,18 @@ const Form: React.FC<FormProps> = (props) => {
         )}
       </>
       {/* phone, DoB */}
-      <div className="flex sm:gap-5 sm:w-[490px] sm:flex-row flex-col w-full">
+      <div className="flex sm:gap-5 sm:flex-row flex-col w-full">
         {/* phone */}
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Phone</label>
           <input
             type="number"
+            placeholder="Your phone number"
             className={`block w-full h-[36px] ${
               errors?.phone ? 'mb-[5px]' : 'mb-[10px]'
             } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('phone', {
-              required: true,
+              required: false,
               pattern: Regex_PhoneNumber,
             })}
           />
@@ -157,7 +147,7 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">Date of birth</label>
           <Controller
             name="dateOfBirth"
-            rules={{ required: true }}
+            rules={{ required: false }}
             defaultValue={dob}
             control={control}
             render={({ field: { onChange, ...restField } }) => (
@@ -194,88 +184,85 @@ const Form: React.FC<FormProps> = (props) => {
           />
         </div>
       </div>
-      {/* email */}
-      <>
-        <label className="text-t3 font-semibold text-[#424856]">Email</label>
-        <input
-          disabled={isModalDetail}
-          type="text"
-          className={`${isModalDetail ? 'cursor-not-allowed' : ''} block w-full h-[36px] ${
-            errors?.email ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-          {...register('email', {
-            required: true,
-            pattern: Regex_Email,
-          })}
-        />
-        {errors?.email?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Email is required</p>}
-      </>
-      {/* password */}
-      {!isModalDetail && (
-        <>
-          <label className="text-t3 font-semibold text-[#424856]">Password</label>
-          <input
-            type="password"
-            className={`block w-full h-[36px] ${
-              errors?.password ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-            {...register('password', {
-              required: true,
-              // pattern: Regex_Email,
-            })}
+      {/* account */}
+      <div className="py-3 border-t border-t-[#D9D9D9] mt-5">
+        <p className="text-black text-t8 font-medium ">Account</p>
+        <div className="w-full flex justify-end">
+          <button className="text-primary text-t2 font-medium">Update password</button>
+        </div>
+
+        <div className="flex sm:gap-5  sm:flex-row flex-col w-full">
+          <div className="w-full">
+            <label className="text-t3 font-semibold text-[#424856]">Email</label>
+            <input
+              disabled
+              type="text"
+              className={`block w-full h-[36px]
+              mb-[10px] p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] 
+              rounded-[5px] focus:outline-primary`}
+              {...register('email', {
+                // required: true,
+                // pattern: Regex_Email,
+              })}
+            />
+          </div>
+
+          <div className="w-full">
+            <label className="text-t3 font-semibold text-[#424856]">Password</label>
+            <input
+              disabled
+              type="password"
+              value={12345679}
+              className={`block w-full h-[36px] mb-[10px] p-[12px] text-t3
+              bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            />
+          </div>
+        </div>
+      </div>
+      {/* options */}
+      <div className="py-3 border-t border-t-[#D9D9D9] mt-5">
+        <p className="text-black text-t8 font-medium mb-4">Options</p>
+
+        <div className="flex gap-1 items-start">
+          <Checkbox
+            checked={checked}
+            onChange={handleChange}
+            sx={{
+              color: '#535CE8',
+              '&.Mui-checked': {
+                color: '#535CE8',
+              },
+            }}
+            inputProps={{ 'aria-label': 'controlled' }}
           />
-          {errors?.password?.type === 'required' && (
-            <p className="mb-[5px] text-danger text-[14px]">Password is required</p>
-          )}
-        </>
-      )}
+
+          <div>
+            <p className="text-black text-t3 font-medium">Receive email notifications</p>
+            <p className="text-[#9095A1] text-t2 font-medium">
+              We will send email if there is high risk data is coming from LoRa networks to you
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* buttons */}
       <div className="flex justify-end items-center gap-4 mt-10">
+        {/* <button type="submit" className=" text-white bg-primary text-t3 font-medium px-6 py-3 rounded-[6px]">
+          Save information
+        </button> */}
         <button
-          onClick={() => setOpenModal(false)}
-          className="border-primary border text-primary text-t3 font-medium px-5 py-1 rounded-[6px]"
+          disabled={loading}
+          type="submit"
+          className={`${
+            loading ? 'cursor-not-allowed bg-primary-400' : 'bg-primary'
+          } flex items-center justify-center gap-3 md:w-fit w-full text-t3 text-white font-medium px-6 py-3 rounded-[6px] transition hover:scale-[1.01] duration-150`}
         >
-          Cancel
-        </button>
-        <button type="submit" className=" text-white bg-primary text-t3 font-medium px-5 py-1 rounded-[6px]">
-          Save
+          {loading && <img src={spinner} className="animate-spin h-5 w-5" />}
+          {loading ? 'Processing...' : 'Save information'}
         </button>
       </div>
     </form>
   );
 };
 
-const DetailModal: React.FC<DetailModalProps> = (props) => {
-  const { openModal, setOpenModal, title, isModalDetail, setUpdateData } = props;
-  const userDetail = useAppSelector((state) => state.users);
-
-  return (
-    <Modal open={openModal} onClose={() => setOpenModal(false)}>
-      <div
-        className="fixed left-[50%]
-      top-[50%] translate-y-[-50%] translate-x-[-50%] sm:w-fit w-full bg-white rounded-[4px] py-4 font-poppins"
-      >
-        {/* header */}
-        <div className="px-[25px] pb-4 border-b border-b-[#F3F4F6] text-t7 font-medium">
-          {!userDetail.loading && title}
-        </div>
-        {/* body */}
-        <div className="px-[25px] my-3">
-          {!userDetail.loading ? (
-            <Form
-              isModalDetail={isModalDetail}
-              userDetail={userDetail}
-              setOpenModal={setOpenModal}
-              setUpdateData={setUpdateData}
-            />
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
-      </div>
-    </Modal>
-  );
-};
-
-export default DetailModal;
+export default EditInfoForm;

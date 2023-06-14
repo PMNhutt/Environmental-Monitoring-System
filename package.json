@@ -20,6 +20,7 @@
     "axios": "1.2.1",
     "chart.js": "4.3.0",
     "dayjs": "1.11.7",
+    "firebase": "9.15.0",
     "framer-motion": "10.11.2",
     "jwt-decode": "3.1.2",
     "lottie-react": "^2.4.0",

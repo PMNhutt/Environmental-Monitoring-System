@@ -42,9 +42,16 @@ export interface UsersProps {
   phone: string;
   isDeleted: boolean;
   role: string;
+  avatar: string;
 }
 
 export interface UserDetailProps extends UsersProps {
+  dateOfBirth: string;
+  address: string;
+  sub: string;
+}
+
+export interface UserDetailById extends UsersProps {
   dateOfBirth: string;
   address: string;
 }
