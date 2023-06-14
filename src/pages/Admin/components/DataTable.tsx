@@ -135,6 +135,9 @@ const DataTable: React.FC<Props> = (props) => {
           '& .MuiDataGrid-columnHeaderTitle': {
             fontWeight: 700,
           },
+          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
         }}
       />
     </div>

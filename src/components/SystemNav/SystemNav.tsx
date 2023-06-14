@@ -14,6 +14,7 @@ import jwt_decode from 'jwt-decode';
 import avatar from 'src/assets/images/avatar.svg';
 import dropDown from 'src/assets/images/drop_down.svg';
 import logout from 'src/assets/images/Logout.svg';
+import manage from 'src/assets/images/Stack.svg';
 
 const SystemNav = () => {
   const accessToken = localStorage.getItem('accessToken');
@@ -43,6 +44,23 @@ const SystemNav = () => {
   const handleNavigatePersonal = () => {
     navigate(`/personal/${decoded_jwt.sub}`);
     dispatch(setOpenDropDown());
+  };
+
+  const handleNavigateManage = (role: string) => {
+    dispatch(setOpenDropDown());
+    switch (role) {
+      case 'ADMIN':
+        navigate('/admin');
+        break;
+      case 'STAFF':
+        navigate('/nodes');
+        break;
+      case 'USER':
+        navigate('/');
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -88,6 +106,13 @@ const SystemNav = () => {
                 >
                   <img src={avatar} className="w-[24px] h-[24px] object-contain" />
                   <p className="text-t3">Personal Information</p>
+                </li>
+                <li
+                  onClick={() => handleNavigateManage(decoded_jwt.role)}
+                  className="flex items-center gap-3 cursor-pointer px-5 py-3 transition hover:bg-gray-100"
+                >
+                  <img src={manage} className="w-[25px] h-[25px] object-contain" />
+                  <p className="text-t3">Manage</p>
                 </li>
                 <li
                   onClick={() => handleLogout()}

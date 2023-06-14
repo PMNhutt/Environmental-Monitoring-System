@@ -155,6 +155,11 @@ const EditInfoForm = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     {...restField}
+                    slotProps={{
+                      textField: {
+                        disabled: true,
+                      },
+                    }}
                     value={dob}
                     onChange={(event) => {
                       onChange(event);

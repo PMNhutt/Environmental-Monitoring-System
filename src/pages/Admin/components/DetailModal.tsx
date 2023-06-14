@@ -165,6 +165,11 @@ const Form: React.FC<FormProps> = (props) => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     {...restField}
+                    slotProps={{
+                      textField: {
+                        disabled: true,
+                      },
+                    }}
                     value={dob}
                     onChange={(event) => {
                       onChange(event);
@@ -209,6 +214,7 @@ const Form: React.FC<FormProps> = (props) => {
           })}
         />
         {errors?.email?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Email is required</p>}
+        {errors?.email?.type === 'pattern' && <p className="mb-[5px] text-danger text-[14px]">Email is not valid</p>}
       </>
       {/* password */}
       {!isModalDetail && (
