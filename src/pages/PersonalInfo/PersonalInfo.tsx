@@ -33,7 +33,7 @@ const PersonalInfo = () => {
       <div className={`${styles.container} 2xl:px-20`}>
         {!loading ? (
           dataValid ? (
-            <div className="flex gap-[30px] justify-between xl:flex-row flex-col my-16">
+            <div className="flex gap-[30px] justify-center xl:flex-row flex-col my-16">
               <ProfileAva />
               <ProfileInfo />
             </div>
