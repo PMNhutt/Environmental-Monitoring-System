@@ -33,14 +33,13 @@ const LoRa = () => {
         </div>
       </div>
       {/* body */}
-      <div className="flex xl:flex-row flex-col w-full gap-12 justify-between">
+      <div className="flex xl:flex-row flex-col w-full gap-12 justify-center">
         <button className="rounded-[6px] transition hover:bg-[#F3F4F6] flex flex-col justify-center items-center w-full xl:w-[362px] min-h-[275px] border-2 border-dashed border-gray-300 text-t4 font-medium text-black">
           <div className="rounded-full bg-primary w-[60px] h-[60px] mb-[24px] flex justify-center items-center">
             <img src={plus} className="object-cover w-[30px] h-[30px]" />
           </div>
           Create new node
         </button>
-
         <Node />
         <Node />
       </div>
