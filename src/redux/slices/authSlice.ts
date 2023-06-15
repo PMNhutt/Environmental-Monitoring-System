@@ -44,6 +44,26 @@ export const fetchRegister = createAsyncThunk('auth/register', async (req: any, 
   }
 });
 
+export const forgotPass = createAsyncThunk('auth/forgotPass', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.post('/user/sendResetPasscode', {
+      email: req.email,
+    });
+    return res.data;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
+});
+
+export const resetPass = createAsyncThunk('auth/resetPass', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.post('/user/resetPasscode', req);
+    return res.data;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -56,7 +76,7 @@ export const authSlice = createSlice({
     builder
       .addCase(fetchLogin.pending, (state) => {
         state.loading = true;
-        // toast.loading("Checking informration...")
+        state.error = '';
       })
       .addCase(fetchLogin.fulfilled, (state, action: PayloadAction<any>) => {
         state.currentUser = jwt_decode(action.payload.token);
@@ -79,6 +99,30 @@ export const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchRegister.rejected, (state, action: any) => {
+        state.loading = false;
+        state.error = action.payload.response.data.detail;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(forgotPass.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(forgotPass.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(forgotPass.rejected, (state, action: any) => {
+        state.loading = false;
+        state.error = action.payload.response.data.detail;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(resetPass.pending, (state) => {
+        state.loading = true;
+        state.error = '';
+      })
+      .addCase(resetPass.fulfilled, (state) => {
+        toast.success('Reset password succussfully! 👌');
+        state.loading = false;
+      })
+      .addCase(resetPass.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload.response.data.detail;
         toast.error(action.payload.response.data.detail);

@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 
-import instances from 'src/utils/plugins/axios';
 import { Regex_Email, Regex_Password } from 'src/utils/regex';
 import { AuthFormProps } from 'src/utils/interface';
 import { fetchLogin, fetchRegister } from 'src/redux/slices/authSlice';
@@ -21,7 +18,6 @@ import spinner from 'src/assets/images/spinner.svg';
 const AuthForm: React.FC<AuthFormProps> = (props) => {
   //** Const */
   const { isLogin } = props;
-  const accessToken = sessionStorage.getItem('accessToken');
 
   const {
     register,
@@ -34,11 +30,6 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
   const [passwordShown, setPasswordShown] = useState(false);
   const [passwordRepShown, setPasswordRepShown] = useState(false);
   const [checkMatchPass, setCheckMatchPass] = useState(true);
-
-  // const notifyError = (err: string) =>
-  //   toast.error(err, {
-  //     pauseOnHover: false,
-  //   });
 
   // ** toggle show password
   // ** Funct
@@ -65,32 +56,6 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
           navigate('/');
         }
       });
-
-      // toast.promise(
-      //   // instances.post('/user/login', data).then((res) => {
-      //   //   const decoded: any = jwt_decode(res?.data?.token);
-      //   //   sessionStorage.setItem('accessToken', res.data.token);
-      //   //   if (decoded?.role == 'ADMIN') {
-      //   //     navigate('/admin');
-      //   //   }
-      //   //   if (decoded?.role === 'STAFF') {
-      //   //     navigate('/nodes');
-      //   //   }
-      //   //   if (decoded?.role === 'USER') {
-      //   //     navigate('/');
-      //   //   }
-      //   // })
-      //   dispatch(fetchLogin(data)),
-      //   {
-      //     pending: 'Checking information...',
-      //     success: 'Login succussfully! 👌',
-      //     error: {
-      //       render({ data }: any) {
-      //         return data.response?.data.detail;
-      //       },
-      //     },
-      //   },
-      // );
     } else {
       if (data.password == data.rePassword) {
         const registerReq: any = {
@@ -247,7 +212,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
         {isLogin && (
           <div className="w-full flex justify-end">
             <p
-              onClick={() => navigate('/forgot-password')}
+              onClick={() => navigate('/forgot-pass')}
               className="text-[15px] cursor-pointer font-medium text-primary w-fit"
             >
               Forgot password?
