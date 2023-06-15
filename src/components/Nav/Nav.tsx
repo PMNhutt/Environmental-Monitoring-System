@@ -17,7 +17,7 @@ import jwt_decode from 'jwt-decode';
 const Nav = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   let decoded_jwt: any = {};
   if (accessToken) {
     decoded_jwt = jwt_decode(accessToken);

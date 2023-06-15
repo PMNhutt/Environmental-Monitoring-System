@@ -11,12 +11,12 @@ const instances = axios.create({
 
 instances.interceptors.request.use(
   (config: any) => {
-    // ** Get token from localStorage
-    const accessToken = localStorage.getItem('accessToken');
+    // ** Get token from sessionStorage
+    const accessToken = sessionStorage.getItem('accessToken');
 
     // ** If token is present add it to request's Authorization Header
     if (accessToken) {
-      // localStorage.setItem('EXPIRED_TOKEN', false)
+      // sessionStorage.setItem('EXPIRED_TOKEN', false)
       // ** eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${accessToken}`;
     }

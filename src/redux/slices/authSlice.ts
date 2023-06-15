@@ -60,7 +60,7 @@ export const authSlice = createSlice({
       })
       .addCase(fetchLogin.fulfilled, (state, action: PayloadAction<any>) => {
         state.currentUser = jwt_decode(action.payload.token);
-        localStorage.setItem('accessToken', action.payload.token);
+        sessionStorage.setItem('accessToken', action.payload.token);
         toast.success('Login succussfully! 👌');
         state.loading = false;
       })
@@ -74,7 +74,7 @@ export const authSlice = createSlice({
       })
       .addCase(fetchRegister.fulfilled, (state, action: PayloadAction<any>) => {
         state.currentUser = jwt_decode(action.payload.token);
-        localStorage.setItem('accessToken', action.payload.token);
+        sessionStorage.setItem('accessToken', action.payload.token);
         toast.success('Register succussfully! 👌');
         state.loading = false;
       })

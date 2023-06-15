@@ -19,7 +19,7 @@ const AuthenNav: React.FC<AuthenNavProps> = (props) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
     navigate('/login');
     // dispatch(setAccountInfo({}));
   };

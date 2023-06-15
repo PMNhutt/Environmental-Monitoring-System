@@ -122,7 +122,7 @@ const data = [
 
 const UserManagement = () => {
   // ** const
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   let decoded_jwt: any = {};
   if (accessToken) {
     decoded_jwt = jwt_decode(accessToken);

@@ -17,7 +17,7 @@ import logout from 'src/assets/images/Logout.svg';
 import manage from 'src/assets/images/Stack.svg';
 
 const SystemNav = () => {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   let decoded_jwt: any = {};
   if (accessToken) {
     decoded_jwt = jwt_decode(accessToken);
@@ -36,7 +36,7 @@ const SystemNav = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
     navigate('/login');
     dispatch(setOpenDropDown());
   };

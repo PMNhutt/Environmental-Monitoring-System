@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import { Regex_Email, Regex_PhoneNumber } from 'src/utils/regex';
-
 // ** components
 import EditInfoPlaceholder from './components/EditInfoPlaceholder';
 import EditInfoForm from './components/EditInfoForm';

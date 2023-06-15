@@ -11,6 +11,7 @@ interface InitialStateType {
   loading: boolean;
   updating: boolean;
   getUserLoading: boolean;
+  updatingPassword: boolean;
   error: string;
 }
 
@@ -21,6 +22,7 @@ const initialState: InitialStateType = {
   loading: false,
   updating: false,
   getUserLoading: false,
+  updatingPassword: false,
   error: '',
 };
 
@@ -45,7 +47,7 @@ export const getUserDetail = createAsyncThunk('users/getUserDetail', async (id: 
     const res = await instances.get(`/user/${id}`);
     return res.data;
   } catch (e) {
-    rejectWithValue(e);
+    return rejectWithValue(e);
   }
 });
 
@@ -62,7 +64,7 @@ export const createUser = createAsyncThunk('users/createUser', async (req: any, 
     });
     return res.data;
   } catch (e) {
-    rejectWithValue(e);
+    return rejectWithValue(e);
   }
 });
 
@@ -77,7 +79,7 @@ export const editUser = createAsyncThunk('users/editUser', async (req: any, { re
     });
     return res.data;
   } catch (e) {
-    rejectWithValue(e);
+    return rejectWithValue(e);
   }
 });
 
@@ -88,7 +90,7 @@ export const activateUser = createAsyncThunk('users/activateUser', async (req: a
     });
     return res.data;
   } catch (e) {
-    rejectWithValue(e);
+    return rejectWithValue(e);
   }
 });
 
@@ -115,6 +117,19 @@ export const changeUserAvatar = createAsyncThunk('users/changeUserAvatar', async
     avatar: req.avatar,
   });
   return res.data;
+});
+
+export const updatePassword = createAsyncThunk('users/updatePassword', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.post(`/user/updatePassword`, {
+      email: req.email,
+      oldPassword: req.oldPassword,
+      newPassword: req.newPassword,
+    });
+    return res.data;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
 });
 
 export const usersSlice = createSlice({
@@ -196,6 +211,18 @@ export const usersSlice = createSlice({
       })
       .addCase(changeUserAvatar.rejected, (state, action: any) => {
         state.error = action.error;
+      })
+      .addCase(updatePassword.pending, (state) => {
+        state.updatingPassword = true;
+      })
+      .addCase(updatePassword.fulfilled, (state) => {
+        state.updatingPassword = false;
+        toast.success('Update succussfully! 👌');
+      })
+      .addCase(updatePassword.rejected, (state, action: any) => {
+        state.updatingPassword = false;
+        state.error = action.payload.response.data.detail;
+        toast.error(action.payload.response.data.detail);
       });
   },
 });

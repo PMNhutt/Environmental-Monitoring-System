@@ -21,7 +21,7 @@ import spinner from 'src/assets/images/spinner.svg';
 const AuthForm: React.FC<AuthFormProps> = (props) => {
   //** Const */
   const { isLogin } = props;
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   const {
     register,
@@ -69,7 +69,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
       // toast.promise(
       //   // instances.post('/user/login', data).then((res) => {
       //   //   const decoded: any = jwt_decode(res?.data?.token);
-      //   //   localStorage.setItem('accessToken', res.data.token);
+      //   //   sessionStorage.setItem('accessToken', res.data.token);
       //   //   if (decoded?.role == 'ADMIN') {
       //   //     navigate('/admin');
       //   //   }
@@ -208,7 +208,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
           <p className="mb-[5px] text-danger text-[14px]">Password is required</p>
         )}
         {errors?.password?.type === 'pattern' && (
-          <p className="mb-[5px] text-danger text-[14px]">Mật khẩu không hợp lệ</p>
+          <p className="mb-[5px] text-danger text-[14px]">Password is not valid</p>
         )}
 
         {/* repeat pass */}

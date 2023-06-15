@@ -9,12 +9,12 @@ import ScrollToTop from './utils/scrollToTop';
 import { RouteProps } from './utils/interface';
 
 const PrivateRoute = () => {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   return accessToken ? <Outlet /> : <Navigate replace to="/login" />;
 };
 
 function App() {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   return (
     <Router>
