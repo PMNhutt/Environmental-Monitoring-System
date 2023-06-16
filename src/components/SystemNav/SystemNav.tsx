@@ -77,8 +77,11 @@ const SystemNav = () => {
             onClick={() => dispatch(setOpenDropDown())}
             className="pl-4 py-3 flex items-center gap-3 cursor-pointer select-none"
           >
-            <div className="w-[30px] h-[30px]">
-              <img src={decoded_jwt.avatar ? decoded_jwt.avatar : avatar} className="w-full object-contain" />
+            <div className="">
+              <img
+                src={decoded_jwt.avatar ? decoded_jwt.avatar : avatar}
+                className="object-contain w-[30px] h-[30px] rounded-full"
+              />
             </div>
 
             <div className="flex items-center gap-2 ">

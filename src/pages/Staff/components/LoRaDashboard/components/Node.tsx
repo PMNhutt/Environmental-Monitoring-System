@@ -9,7 +9,7 @@ const Node = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="rounded-[6px] flex flex-col justify-center items-center w-full xl:w-[362px] h-[275px] border-2 border-gray-300 text-t4 font-medium text-black">
+    <div className="rounded-[6px] hover:shadow-md flex flex-col justify-center items-center w-full xl:w-[362px] h-[275px] border-2 border-gray-300 text-t4 font-medium text-black">
       {/* images */}
       <div
         onClick={() => navigate(`/nodes/${crypto.randomUUID()}`)}

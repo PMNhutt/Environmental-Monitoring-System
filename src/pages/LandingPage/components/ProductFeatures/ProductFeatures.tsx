@@ -1,5 +1,6 @@
 import styles, { layout } from 'src/utils/style';
 import { useRef, useEffect } from 'react';
+import defaultValue from 'src/utils/default';
 
 import { motion, useInView, useAnimation } from 'framer-motion';
 import { reveal } from 'src/utils/animation';
@@ -52,20 +53,20 @@ const ProductFeatures = () => {
           lottieSrc={dataLottie}
           position={layout.section}
           title="Instant Data Mornitoring"
-          description="Real-time data mornitoring enables immidiate insights and informed decision making."
+          description={defaultValue.featureInstaneData}
         />
         <Feature
           lottieSrc={notifyLottie}
           position={layout.sectionReverse}
           title="Timely Risk Alerts"
-          description="Proactive alerts ensure timely response to potential risks."
+          description={defaultValue.featureTimelyRisk}
           isEven
         />
         <Feature
           lottieSrc={mobileLottie}
           position={layout.section}
           title="Mobile Platform"
-          description="Convenient mobile platform for instant data access and alerts."
+          description={defaultValue.featureMobile}
         />
       </div>
     </div>

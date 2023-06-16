@@ -51,7 +51,7 @@ const AuthenNav: React.FC<AuthenNavProps> = (props) => {
         onClick={() => setOpenDropDown((prev) => !prev)}
         className="md:flex hidden items-center gap-3 hover:bg-gray-100 transition px-4 py-2 rounded-[5px] cursor-pointer"
       >
-        <img src={data.avatar ? data.avatar : avatar} className="object-contain w-[30px]" />
+        <img src={data.avatar ? data.avatar : avatar} className="object-contain w-[30px] h-[30px] rounded-full" />
         <p className="font-medium">{data.firstName + ' ' + data.lastName}</p>
       </div>
 

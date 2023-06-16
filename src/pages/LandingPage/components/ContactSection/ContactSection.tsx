@@ -1,5 +1,6 @@
 import styles from 'src/utils/style';
 import decor from 'src/assets/images/Saly-16.png';
+import defaultValue from 'src/utils/default';
 
 import { useRef, useEffect } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
@@ -46,8 +47,7 @@ const ContactSection = () => {
               transition={{ delay: 1, duration: 0.5 }}
               className="text-white font-semibold mt-5 md:w-2/3"
             >
-              Start experience the transformative benefits of real-time environmental mornitoring, empowering you to
-              safeguard your health and well-being with actionable insihts.
+              {defaultValue.getStarted}
             </motion.p>
           </div>
           <motion.button
