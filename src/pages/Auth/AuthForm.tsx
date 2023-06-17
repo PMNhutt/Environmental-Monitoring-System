@@ -53,7 +53,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
           navigate('/nodes');
         }
         if (res.payload.role == 'USER') {
-          navigate('/');
+          navigate('/nodes');
         }
       });
     } else {
@@ -73,7 +73,7 @@ const AuthForm: React.FC<AuthFormProps> = (props) => {
             navigate('/nodes');
           }
           if (res.payload.role == 'USER') {
-            navigate('/');
+            navigate('/nodes');
           }
         });
         setCheckMatchPass(true);

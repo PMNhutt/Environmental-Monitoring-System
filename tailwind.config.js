@@ -267,6 +267,9 @@ export default {
           },
         },
       },
+      screens: {
+        xl3: '1700px',
+      },
     },
   },
   // eslint-disable-next-line no-undef

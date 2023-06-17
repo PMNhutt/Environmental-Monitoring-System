@@ -12,7 +12,8 @@ const RegisterPage = lazy(() => import('src/pages/Auth/Register/Register'));
 const ResetPasswordPage = lazy(() => import('src/pages/Auth/ResetPass/ResetPass'));
 
 const UserManagementPage = lazy(() => import('src/pages/Admin/UserManagement'));
-const Staff = lazy(() => import('src/pages/Staff/Container'));
+const Nodes = lazy(() => import('src/pages/Staff/Nodes/NodeContainer'));
+const Sensors = lazy(() => import('src/pages/Staff/Sensors/SensorContainer'));
 const PersonalInfo = lazy(() => import('src/pages/PersonalInfo/PersonalInfo'));
 
 // ** public routes (no need authen)
@@ -27,7 +28,8 @@ const publicRoutes: RouteProps[] = [
 // ** private routes (need authen + authorization)
 const privateRoutes: RouteProps[] = [
   { path: '/admin', component: UserManagementPage, title: 'Envi - Admin', layout: SystemLayout },
-  { path: '/nodes/*', component: Staff, title: 'Envi - LoRa', layout: SystemLayout },
+  { path: '/nodes/*', component: Nodes, title: 'Envi - LoRa', layout: SystemLayout },
+  { path: '/sensors/*', component: Sensors, title: 'Envi - LoRa', layout: SystemLayout },
   { path: '/personal/:id', component: PersonalInfo, title: 'Envi - Personal Information', layout: SystemLayout },
 ];
 

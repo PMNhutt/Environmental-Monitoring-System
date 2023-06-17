@@ -3,21 +3,40 @@ import styles from 'src/utils/style';
 import { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 import { setCurrentUser } from 'src/redux/slices/authSlice';
-import { setOpenDropDown } from 'src/redux/slices/contextSlice';
+import { setOpenDropDown, setMobileOpen } from 'src/redux/slices/contextSlice';
 
 // ** lib
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import { IconButton } from '@mui/material';
 
 // ** assets
 import avatar from 'src/assets/images/avatar.svg';
 import dropDown from 'src/assets/images/drop_down.svg';
 import logout from 'src/assets/images/Logout.svg';
 import manage from 'src/assets/images/Stack.svg';
+import sidebarmenu from 'src/assets/images/menu.svg';
 
 const SystemNav = () => {
   const accessToken = sessionStorage.getItem('accessToken');
+  const location = useLocation();
+
+  const [showLogo, setShowLogo] = useState(true);
+  useEffect(() => {
+    switch (location.pathname.split('/')[1]) {
+      case 'nodes':
+        setShowLogo(false);
+        break;
+      case 'sensors':
+        setShowLogo(false);
+        break;
+      default:
+        setShowLogo(true);
+        break;
+    }
+  }, [location]);
+
   let decoded_jwt: any = {};
   if (accessToken) {
     decoded_jwt = jwt_decode(accessToken);
@@ -27,6 +46,7 @@ const SystemNav = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const context = useAppSelector((state) => state.context);
+  const mobileOpen = useAppSelector((state) => state.context.mobileOpen);
 
   //**  Get shopping cart, set account info
   useEffect(() => {
@@ -56,11 +76,15 @@ const SystemNav = () => {
         navigate('/nodes');
         break;
       case 'USER':
-        navigate('/');
+        navigate('/nodes');
         break;
       default:
         break;
     }
+  };
+
+  const handleDrawerToggle = () => {
+    dispatch(setMobileOpen(!mobileOpen));
   };
 
   return (
@@ -68,9 +92,19 @@ const SystemNav = () => {
       className={`${styles.flexCenter} px-5 w-full h-[72px] fixed top-0 bg-white z-[100] border-b-gray-200 border-b font-poppins`}
     >
       <div className={`${styles.container} ${styles.flexBetween} flex justify-between `}>
-        <div onClick={() => navigate('/')} className="w-[90px] cursor-pointer">
-          <Logo />
-        </div>
+        {showLogo ? (
+          <div onClick={() => navigate('/')} className="w-[90px] cursor-pointer">
+            <Logo />
+          </div>
+        ) : (
+          <div className="w-[90px]">
+            <div className="sm:hidden block">
+              <IconButton onClick={() => handleDrawerToggle()}>
+                <img src={sidebarmenu} />
+              </IconButton>
+            </div>
+          </div>
+        )}
 
         <div className="relative">
           <div

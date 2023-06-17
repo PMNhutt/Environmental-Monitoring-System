@@ -29,7 +29,7 @@ const PersonalInfo = () => {
   }, [params.id]);
 
   return (
-    <div className={`${styles.flexCenter} ${styles.paddingX} lg:px-40 font-poppins w-full`}>
+    <div className={`${styles.flexCenter} ${styles.paddingX} font-poppins w-full`}>
       <div className={`${styles.container} 2xl:px-20`}>
         {!loading ? (
           dataValid ? (

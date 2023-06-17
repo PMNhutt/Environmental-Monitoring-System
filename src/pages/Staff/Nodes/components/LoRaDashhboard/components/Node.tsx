@@ -19,7 +19,7 @@ const Node = () => {
       </div>
       {/* details */}
       <div className="h-1/4 w-full px-5 py-2 border-t-2 border-gray-300 flex justify-between">
-        <div onClick={() => navigate('/staff/lora-data')} className="cursor-pointer">
+        <div onClick={() => navigate(`/nodes/${crypto.randomUUID()}`)} className="cursor-pointer">
           <p className="text-t4 font-semibold text-black">Living room sensors</p>
           <p className="text-t2 font-medium text-[#8792AB]">Yesterday</p>
         </div>

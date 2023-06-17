@@ -41,7 +41,7 @@ const columns = [
     flex: 1,
     renderCell: (params: any) => (
       <div className="flex items-center gap-5">
-        <img className="rounded-full h-[30px] w-[30vpx] object-cover" src={params.row.avatar || avatar} />
+        <img className="rounded-full h-[30px] w-[30px] object-cover" src={params.row.avatar || avatar} />
         <p className="font-bold">{params.row.name}</p>
       </div>
     ),
