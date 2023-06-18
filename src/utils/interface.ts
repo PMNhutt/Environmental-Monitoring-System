@@ -14,6 +14,21 @@ export interface FeatureProps {
   isEven?: boolean;
 }
 
+export interface FeatureCardProps {
+  lottieSrc: any;
+  title: string;
+  description: string;
+  delay: number;
+}
+
+export interface IntroProps {
+  position: string;
+  image: any;
+  title: string;
+  description: string;
+  isEven?: boolean;
+}
+
 export interface AuthFormProps {
   isLogin: boolean;
 }

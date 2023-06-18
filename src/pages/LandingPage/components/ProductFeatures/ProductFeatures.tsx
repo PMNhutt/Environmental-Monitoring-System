@@ -6,6 +6,7 @@ import { motion, useInView, useAnimation } from 'framer-motion';
 import { reveal } from 'src/utils/animation';
 
 import Feature from './components/Feature';
+import FeatureCard from './components/FeatureCard';
 import dataLottie from 'src/share/lottie/data-animation.json';
 import notifyLottie from 'src/share/lottie/mobile-development.json';
 import mobileLottie from 'src/share/lottie/mobile-animation.json';
@@ -49,7 +50,7 @@ const ProductFeatures = () => {
           </motion.p>
         </div>
         {/* features */}
-        <Feature
+        {/* <Feature
           lottieSrc={dataLottie}
           position={layout.section}
           title="Instant Data Mornitoring"
@@ -67,7 +68,32 @@ const ProductFeatures = () => {
           position={layout.section}
           title="Mobile Platform"
           description={defaultValue.featureMobile}
-        />
+        /> */}
+
+        {/* feature card */}
+        <div className="flex sm:flex-row flex-col justify-center gap-20 my-5">
+          <FeatureCard
+            lottieSrc={dataLottie}
+            // position={layout.section}
+            title="Instant Data Mornitoring"
+            description={defaultValue.cardInstanceData}
+            delay={1.2}
+          />
+          <FeatureCard
+            lottieSrc={notifyLottie}
+            // position={layout.sectionReverse}
+            title="Timely Risk Alerts"
+            description={defaultValue.cardTimelyRisk}
+            delay={1.6}
+          />
+          <FeatureCard
+            lottieSrc={mobileLottie}
+            // position={layout.section}
+            title="Mobile Platform"
+            description={defaultValue.cardMobile}
+            delay={2.2}
+          />
+        </div>
       </div>
     </div>
   );
