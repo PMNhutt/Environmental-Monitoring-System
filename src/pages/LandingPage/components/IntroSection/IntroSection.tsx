@@ -53,20 +53,20 @@ const IntroSection = () => {
           image={intro1}
           position={layout.section}
           title="Light aspect of orchids"
-          description={defaultValue.introCard1}
+          description={defaultValue.introCard3}
         />
         <Intro
           image={intro2}
           position={layout.sectionReverse}
           title="Temperature aspect of orchids"
-          description={defaultValue.introCard2}
+          description={defaultValue.introCard1}
           isEven
         />
         <Intro
           image={intro3}
           position={layout.section}
           title="Humidity aspect of orchids"
-          description={defaultValue.introCard3}
+          description={defaultValue.introCard2}
         />
       </div>
     </div>
