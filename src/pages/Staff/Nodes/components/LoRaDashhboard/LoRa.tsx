@@ -6,15 +6,22 @@ import Node from './components/Node';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
+// ** redux
+import { useAppSelector } from 'src/redux/store/hooks';
+
 const LoRa = () => {
+  const currentUser = useAppSelector((state) => state.auth.currentUser);
   const [activeDropdown, setActiveDropdown] = useState('');
+  const [nodeList, setNodeList] = useState([]);
 
   return (
-    <div className="my-12">
+    <div className="my-12 mx-14">
       {/* header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-t7 font-semibold text-black">Personal space</h1>
+          <h1 className="text-t7 font-semibold text-black">
+            {currentUser.role == 'USER' ? 'Personal space' : 'Nodes list'}
+          </h1>
           <p className="text-[#8792AB] text-t4">Node in Personal Space are only accessible to you</p>
         </div>
 
@@ -28,20 +35,33 @@ const LoRa = () => {
             className={`block w-full h-[36px] text-[#D9D9D9] text-t3  border rounded-[5px] focus:outline-primary`}
           >
             <MenuItem value={1}>Last created</MenuItem>
-            <MenuItem value={0}>Latest created</MenuItem>
+            <MenuItem value={0}>Oldest created</MenuItem>
           </Select>
         </div>
       </div>
       {/* body */}
-      <div className="flex xl:flex-row flex-col w-full gap-12 justify-center">
-        <button className="rounded-[6px] transition hover:bg-[#F3F4F6] flex flex-col justify-center items-center w-full xl:w-[362px] min-h-[275px] border-2 border-dashed border-gray-300 text-t4 font-medium text-black">
-          <div className="rounded-full bg-primary w-[60px] h-[60px] mb-[24px] flex justify-center items-center">
-            <img src={plus} className="object-cover w-[30px] h-[30px]" />
-          </div>
-          Create new node
-        </button>
-        <Node />
-        <Node />
+      <div className="flex xl:flex-row flex-col flex-wrap w-full gap-12 justify-center">
+        {currentUser.role == 'STAFF' && (
+          <button className="rounded-[6px] transition hover:bg-[#F3F4F6] flex flex-col justify-center items-center w-full xl:w-[362px] min-h-[275px] border-2 border-dashed border-gray-300 text-t4 font-medium text-black">
+            <div className="rounded-full bg-primary w-[60px] h-[60px] mb-[24px] flex justify-center items-center">
+              <img src={plus} className="object-cover w-[30px] h-[30px]" />
+            </div>
+            Create new node
+          </button>
+        )}
+        {nodeList.length > 0 ? (
+          <>
+            <Node />
+          </>
+        ) : (
+          <>
+            {currentUser.role == 'USER' && (
+              <p className="my-5 font-medium">
+                No nodes have been set up yet, Please reach out to our staff for asistance
+              </p>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

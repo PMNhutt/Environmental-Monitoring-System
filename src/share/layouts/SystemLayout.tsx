@@ -37,7 +37,7 @@ const SystemLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <SystemNav />
-      <div className={`${allowRoute ? 'flex' : ''} justify-center sm:flex-row flex-col`}>
+      <div className={`${allowRoute ? 'flex' : ''} justify-center sm:flex-row flex-col `}>
         {allowRoute && (
           <>
             <>
@@ -70,11 +70,11 @@ const SystemLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
               </Drawer>
             </>
-            <div className={`w-[210px] sm:block xl3:hidden hidden font-poppins`}></div>
+            <div className={`w-[243px] sm:block xl3:hidden hidden font-poppins`}></div>
           </>
         )}
 
-        <div className="font-poppins mt-[72px]">{children}</div>
+        <div className="font-poppins mt-[72px] w-full">{children}</div>
       </div>
     </div>
   );
