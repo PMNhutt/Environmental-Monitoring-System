@@ -78,3 +78,12 @@ export interface ConfirmModalProps {
   handleConfirm: any;
   rowData: any;
 }
+
+export interface NodeProps {
+  id: string;
+  name: string;
+  description: string;
+  nodeId: string;
+  createdDate: string;
+  updatedDate: string;
+}
