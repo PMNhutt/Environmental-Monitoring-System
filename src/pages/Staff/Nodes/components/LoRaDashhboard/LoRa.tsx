@@ -19,6 +19,8 @@ const LoRa = () => {
   const [openModal, setOpenModal] = useState(false);
   const [updateData, setUpdateData] = useState(false);
   const [nodeList, setNodeList] = useState([]);
+  // state to save node data
+  const [editNodeData, setEditNodeData] = useState();
 
   useEffect(() => {
     dispatch(getNodes()).then((res: any) => {
@@ -28,7 +30,14 @@ const LoRa = () => {
 
   return (
     <>
-      {openModal && <CreateModal openModal={openModal} setOpenModal={setOpenModal} setUpdateData={setUpdateData} />}
+      {openModal && (
+        <CreateModal
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          setUpdateData={setUpdateData}
+          editData={editNodeData}
+        />
+      )}
       <div className="my-12 mx-14">
         {/* header */}
         <div className="flex items-center justify-between mb-6">
@@ -61,7 +70,10 @@ const LoRa = () => {
         >
           {currentUser.role == 'STAFF' && (
             <button
-              onClick={() => setOpenModal(true)}
+              onClick={() => {
+                setOpenModal(true);
+                setEditNodeData(undefined);
+              }}
               className="rounded-[6px] transition hover:bg-[#F3F4F6] flex flex-col justify-center items-center w-full xl:w-[362px] min-h-[275px] border-2 border-dashed border-gray-300 text-t4 font-medium text-black"
             >
               <div className="rounded-full bg-primary w-[60px] h-[60px] mb-[24px] flex justify-center items-center">
@@ -74,7 +86,12 @@ const LoRa = () => {
             <>
               {nodeList.map((node: NodeProps) => (
                 <div key={node.id}>
-                  <Node nodeData={node} />
+                  <Node
+                    nodeData={node}
+                    setUpdateData={setUpdateData}
+                    setEditNodeData={setEditNodeData}
+                    setOpenEditModal={setOpenModal}
+                  />
                 </div>
               ))}
             </>

@@ -5,11 +5,15 @@ import instances from 'src/utils/plugins/axios';
 interface InitialStateType {
   listLoading: boolean;
   creating: boolean;
+  deleteting: boolean;
+  editing: boolean;
 }
 
 const initialState: InitialStateType = {
   listLoading: false,
   creating: false,
+  deleteting: false,
+  editing: false,
 };
 
 export const getNodes = createAsyncThunk('nodes/getNodes', async () => {
@@ -20,6 +24,27 @@ export const getNodes = createAsyncThunk('nodes/getNodes', async () => {
 export const createNodes = createAsyncThunk('nodes/createNodes', async (req: any, { rejectWithValue }) => {
   try {
     const res = await instances.post('/node', req);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const editNodes = createAsyncThunk('nodes/editNodes', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.put(`/node/${req.id}`, {
+      name: req.name,
+      description: req.description,
+    });
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const deleteNodes = createAsyncThunk('nodes/deleteNodes', async (id: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.delete(`/node/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error);
@@ -51,7 +76,29 @@ export const nodeSlice = createSlice({
       })
       .addCase(createNodes.rejected, (state, action: any) => {
         state.creating = false;
-        toast.error(action.error.message);
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(deleteNodes.pending, (state) => {
+        state.deleteting = true;
+      })
+      .addCase(deleteNodes.fulfilled, (state) => {
+        state.deleteting = false;
+        toast.success('Delete successfully!');
+      })
+      .addCase(deleteNodes.rejected, (state, action: any) => {
+        state.deleteting = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(editNodes.pending, (state) => {
+        state.editing = true;
+      })
+      .addCase(editNodes.fulfilled, (state) => {
+        state.editing = false;
+        toast.success('Update successfully!');
+      })
+      .addCase(editNodes.rejected, (state, action: any) => {
+        state.editing = false;
+        toast.error(action.payload.response.data.detail);
       });
   },
 });

@@ -10,7 +10,7 @@ import useDebounce from 'src/share/hooks/useDebounce';
 import Header from './components/Header/Header';
 import DataTable from './components/DataTable';
 import DetailModal from './components/DetailModal';
-import ConfirmModal from './components/ConfirmModal';
+import ConfirmModal from 'src/share/components/ConfirmModal';
 import { UsersProps } from 'src/utils/interface';
 
 const data = [
