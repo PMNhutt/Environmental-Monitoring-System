@@ -98,7 +98,7 @@ const LoRa = () => {
           ) : (
             <>
               {currentUser.role == 'USER' && (
-                <p className="my-5 font-medium">
+                <p className="my-5 font-medium text-danger">
                   No nodes have been set up yet, Please reach out to our staff for asistance
                 </p>
               )}

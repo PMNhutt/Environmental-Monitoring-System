@@ -3,6 +3,7 @@ import nodes from 'src/assets/images/Nodes.svg';
 import options from 'src/assets/images/table_options.svg';
 import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
 import ConfirmModal from 'src/share/components/ConfirmModal';
+import PermissonsModal from './PermissonsModal';
 
 // ** redux
 import { useAppDispatch } from 'src/redux/store/hooks';
@@ -34,6 +35,7 @@ const Node: React.FC<Props> = (props) => {
 
   const [openOptions, setOpenOptions] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openPermission, setOpenPermission] = useState(false);
   const ref = useOutsideClick(() => {
     if (openOptions) {
       setOpenOptions(false);
@@ -65,6 +67,7 @@ const Node: React.FC<Props> = (props) => {
           handleConfirm={handleDeleteNode}
         />
       )}
+      {openPermission && <PermissonsModal openModal={openPermission} setOpenModal={setOpenPermission} />}
       <div className="rounded-[6px] hover:shadow-md flex flex-col justify-center items-center w-full xl:w-[362px] border-2 border-gray-300 text-t4 font-medium text-black">
         {/* images */}
         <div
@@ -112,7 +115,9 @@ const Node: React.FC<Props> = (props) => {
                   <li onClick={() => setOpenConfirm(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
                     Delete
                   </li>
-                  <li className="cursor-pointer py-2 px-3 hover:bg-gray-100">Permissions</li>
+                  <li onClick={() => setOpenPermission(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
+                    Permissions
+                  </li>
                 </motion.ul>
               )}
             </AnimatePresence>
