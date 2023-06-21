@@ -1,23 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import nodes from 'src/assets/images/Nodes.svg';
 import options from 'src/assets/images/table_options.svg';
-import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
 import ConfirmModal from 'src/share/components/ConfirmModal';
+import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
 import PermissonsModal from './PermissonsModal';
 
 // ** redux
-import { useAppDispatch } from 'src/redux/store/hooks';
 import { deleteNodes } from 'src/redux/slices/nodeSlice';
+import { useAppDispatch } from 'src/redux/store/hooks';
 
-import { IconButton } from '@mui/material';
-import { Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { NodeProps } from 'src/utils/interface';
 
-import relativeTime from 'dayjs/plugin/relativeTime';
-import localFormat from 'dayjs/plugin/localizedFormat';
 import dayjs from 'dayjs';
-import { motion, AnimatePresence } from 'framer-motion';
+import localFormat from 'dayjs/plugin/localizedFormat';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface Props {
   nodeData: NodeProps;
