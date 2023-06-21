@@ -87,3 +87,18 @@ export interface NodeProps {
   createdDate: string;
   updatedDate: string;
 }
+
+export interface SensorProps {
+  id: string;
+  sensorId: string;
+  minThreshold: number;
+  maxThreshold: number;
+  type: string;
+  power: string;
+  size: string;
+  productLine: string;
+  interval: number;
+  location: string;
+  createdDate: string;
+  updatedDate: string;
+}

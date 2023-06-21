@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 //** components */
+import { useParams } from 'react-router-dom';
+import { getSensors } from 'src/redux/slices/loraDataSlice';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 import LineChart from './components/LineChart';
 import LoRaType from './components/LoRaType';
 import SensorList from './components/SensorList';
@@ -46,8 +49,15 @@ const water = [
 ];
 
 const LoRaData = () => {
+  const currentUser = useAppSelector((state) => state.auth.currentUser);
   const [chartData, setChartData] = useState<any>([]);
   const [loRaUnit, setLoRaUnit] = useState('dp');
+  const [sensorList, setSensorList] = useState([]);
+  const [updateData, setUpdateData] = useState(false);
+  const [editSensorData, setEditSensorData] = useState();
+  const params = useParams();
+  const nodeId = params.id;
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     switch (loRaUnit) {
@@ -67,6 +77,14 @@ const LoRaData = () => {
         break;
     }
   }, [loRaUnit]);
+
+  useEffect(() => {
+    if (nodeId) {
+      dispatch(getSensors(nodeId)).then((res: any) => {
+        setSensorList(res.payload.data);
+      });
+    }
+  }, [updateData]);
 
   return (
     <div className="my-12 mx-14">
@@ -94,7 +112,14 @@ const LoRaData = () => {
         </div>
         {/* sensor list */}
         <div className="w-full">
-          <SensorList />
+          <SensorList
+            currentUser={currentUser}
+            sensorList={sensorList}
+            setUpdateData={setUpdateData}
+            editSensorData={editSensorData}
+            setEditSensorData={setEditSensorData}
+            nodeId={nodeId}
+          />
         </div>
       </div>
     </div>

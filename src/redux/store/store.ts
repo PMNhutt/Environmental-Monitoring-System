@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../slices/authSlice';
-import usersReducer from '../slices/usersSlice';
 import contextReducer from '../slices/contextSlice';
+import nodeSensorReducer from '../slices/loraDataSlice';
 import nodeReducer from '../slices/nodeSlice';
+import usersReducer from '../slices/usersSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     users: usersReducer,
     context: contextReducer,
     nodes: nodeReducer,
+    nodeSensors: nodeSensorReducer,
   },
 });
 
