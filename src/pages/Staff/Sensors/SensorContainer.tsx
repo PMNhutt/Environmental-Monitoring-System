@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
+
+import styles from 'src/utils/style';
+import Loading from 'src/share/loading/Loading';
+
+// ** pages
+import SensorDashboard from './components/SensorDashhboard/SensorDashboard';
 
 const SensorContainer = () => {
-  return <div>SensorContainer</div>;
+  return (
+    <div className={`${styles.flexCenter} font-poppins w-full`}>
+      <div className={`${styles.container}`}>
+        {/* <Suspense fallback={<Loading />}> */}
+        <Routes>
+          <Route path="/">
+            <Route index element={<SensorDashboard />} />
+            <Route path="/:id" element={<SensorDashboard />} />
+          </Route>
+        </Routes>
+        {/* </Suspense> */}
+      </div>
+    </div>
+  );
 };
 
 export default SensorContainer;
