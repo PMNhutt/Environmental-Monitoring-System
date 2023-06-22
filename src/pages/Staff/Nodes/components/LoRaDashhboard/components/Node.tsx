@@ -55,6 +55,11 @@ const Node: React.FC<Props> = (props) => {
     setEditNodeData(nodeData);
   };
 
+  // handle assign user
+  const handleAssignUser = () => {
+    console.log('');
+  };
+
   return (
     <>
       {openConfirm && (
@@ -66,7 +71,9 @@ const Node: React.FC<Props> = (props) => {
           handleConfirm={handleDeleteNode}
         />
       )}
-      {openPermission && <PermissonsModal openModal={openPermission} setOpenModal={setOpenPermission} />}
+      {openPermission && (
+        <PermissonsModal openModal={openPermission} setOpenModal={setOpenPermission} nodeId={nodeData.id} />
+      )}
       <div className="rounded-[6px] hover:shadow-md flex flex-col justify-center items-center w-full xl:w-[362px] border-2 border-gray-300 text-t4 font-medium text-black">
         {/* images */}
         <div

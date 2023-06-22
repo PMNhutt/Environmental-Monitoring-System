@@ -56,6 +56,7 @@ export interface UsersProps {
   isDeleted: boolean;
   role: string;
   avatar: string;
+  name?: string;
 }
 
 export interface UserDetailProps extends UsersProps {
