@@ -88,6 +88,9 @@ const LineChart: React.FC<ChartProps> = (props) => {
         },
       },
     },
+    interaction: {
+      intersect: false,
+    },
     plugins: {
       legend: {
         display: false,

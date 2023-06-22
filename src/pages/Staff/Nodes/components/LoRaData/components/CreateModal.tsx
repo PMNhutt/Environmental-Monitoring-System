@@ -1,5 +1,4 @@
 import { Modal } from '@mui/material';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { createSensors, editSensors } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
@@ -217,8 +216,6 @@ interface CreateModalProps {
 
 const CreateModal: React.FC<CreateModalProps> = (props) => {
   const { openModal, setOpenModal, setUpdateData, editData, nodeId } = props;
-  console.log(nodeId);
-  const [editNodeData, setEditNodeData] = useState<any>();
 
   return (
     <Modal open={openModal} onClose={() => setOpenModal(false)}>

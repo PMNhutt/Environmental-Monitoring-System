@@ -45,6 +45,9 @@ export interface DetailModalProps {
 export interface LoRaTypeProps {
   sensorData: any;
   setSelectedSensorId: any;
+  selectedSensorId: any;
+  setSensorList: any;
+  sensorList: any;
 }
 
 export interface UsersProps {

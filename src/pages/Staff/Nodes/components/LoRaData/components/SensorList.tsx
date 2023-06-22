@@ -4,7 +4,7 @@ import { useState } from 'react';
 import plus from 'src/assets/images/plus_white.svg';
 import sensor from 'src/assets/images/sensor.svg';
 import actions from 'src/assets/images/sensorAction.svg';
-import { deleteSensors } from 'src/redux/slices/loraDataSlice';
+import { deleteSensors, getSensor } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
 import ConfirmModal from 'src/share/components/ConfirmModal';
 import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
@@ -47,9 +47,11 @@ const ListItem: React.FC<ListItemProps> = (props) => {
   };
 
   // handle edit node
-  const handleEditNode = () => {
+  const handleEditNode = async () => {
+    const res = await dispatch(getSensor(sensorData.id));
+    console.log(res.payload);
     setOpenEditModal(true);
-    setEditSensorData(sensorData);
+    setEditSensorData(res.payload);
   };
 
   const getSensorLabel = (data: any) => {

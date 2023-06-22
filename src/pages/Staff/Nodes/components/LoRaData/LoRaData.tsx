@@ -50,7 +50,7 @@ const LoRaData = () => {
       <div className="w-full flex flex-col items-center justify-center my-7">
         {/* chart */}
         <div className="sm:w-[95%] w-[100%] border-[#333333] border rounded p-4">
-          <LineChart selectedSensorId={selectedSensorId}/>
+          <LineChart selectedSensorId={selectedSensorId} />
         </div>
         {/* data type component */}
         <div className="mt-10 mb-20 flex flex-wrap gap-10 justify-center w-full">
@@ -58,7 +58,13 @@ const LoRaData = () => {
             <>
               {sensorList.map((sensor: SensorProps) => (
                 <div key={sensor.id}>
-                  <LoRaType sensorData={sensor} setSelectedSensorId={setSelectedSensorId} />
+                  <LoRaType
+                    sensorData={sensor}
+                    setSelectedSensorId={setSelectedSensorId}
+                    selectedSensorId={selectedSensorId}
+                    setSensorList={setSensorList}
+                    sensorList={sensorList}
+                  />
                 </div>
               ))}
             </>
