@@ -7,6 +7,7 @@ interface InitialStateType {
   creating: boolean;
   deleteting: boolean;
   editing: boolean;
+  assigning: boolean;
 }
 
 const initialState: InitialStateType = {
@@ -14,6 +15,7 @@ const initialState: InitialStateType = {
   creating: false,
   deleteting: false,
   editing: false,
+  assigning: false,
 };
 
 export const getNodes = createAsyncThunk('nodes/getNodes', async () => {
@@ -50,6 +52,17 @@ export const editNodes = createAsyncThunk('nodes/editNodes', async (req: any, { 
 export const deleteNodes = createAsyncThunk('nodes/deleteNodes', async (id: any, { rejectWithValue }) => {
   try {
     const res = await instances.delete(`/node/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const assignNode = createAsyncThunk('nodes/assignNode', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.post(`/node/${req.nodeId}/assign-users`, {
+      assignCustomerIds: req.users,
+    });
     return res.data;
   } catch (error) {
     return rejectWithValue(error);
@@ -103,6 +116,17 @@ export const nodeSlice = createSlice({
       })
       .addCase(editNodes.rejected, (state, action: any) => {
         state.editing = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(assignNode.pending, (state) => {
+        state.assigning = true;
+      })
+      .addCase(assignNode.fulfilled, (state) => {
+        state.assigning = false;
+        toast.success('Assigned successfully!');
+      })
+      .addCase(assignNode.rejected, (state, action: any) => {
+        state.assigning = false;
         toast.error(action.payload.response.data.detail);
       });
   },

@@ -12,6 +12,10 @@ const SensorDashboard = () => {
         <div className="sm:w-[85%] w-[100%]">
           <LineChart dataLabel={'sensor 1'} loRaData={chartData} />
         </div>
+        {/* filter */}
+
+        {/* sensor list */}
+        <div></div>
       </div>
     </div>
   );
