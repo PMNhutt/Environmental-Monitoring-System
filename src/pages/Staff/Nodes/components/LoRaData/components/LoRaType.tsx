@@ -1,27 +1,48 @@
-import water from 'src/assets/images/Water.svg';
-import dust from 'src/assets/images/Dust.svg';
-import temp from 'src/assets/images/temperature.svg';
-import humidity from 'src/assets/images/humidity_mid.svg';
 
+import { useEffect, useState } from 'react';
+import { getSensorIntervalLatestData } from 'src/redux/slices/loraDataSlice';
+import { useAppDispatch } from 'src/redux/store/hooks';
 import { LoRaTypeProps } from 'src/utils/interface';
 
-const data = {
-  id: 'adadad',
-  unit: 'dp',
-  value: 9.1,
-  level: 'High',
-};
-
 const LoRaType: React.FC<LoRaTypeProps> = (props) => {
-  const { unit, level, value, setLoRaUnit } = props;
+  const { sensorData, setSelectedSensorId } = props;
+  const [latestData, setLatestData] = useState(0);
+  const [level, setLevel] = useState("");
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(getSensorIntervalLatestData(sensorData.id)).then((res: any) => {
+        const resData = res.payload.data;
+        if (resData) {
+          setLatestData(res.payload.data);
+        }
+        if (resData > sensorData.maxThreshold) {
+          setLevel('High');
+        } else if (resData < sensorData.minThreshold) {
+          setLevel('Low');
+        } else if (resData !== undefined) {
+          setLevel('Normal');
+        } else if (resData === undefined) {
+          setLatestData(0);
+          setLevel('');
+        }
+      });
+    }
+    fetchData();
+    const handler = setInterval(() => {
+      fetchData();
+    }, 3000);
+
+    return () => clearInterval(handler);
+  }, []);
 
   // ** get lora type data
   const getLoRaLevel = (data: any) => {
     switch (data) {
       case 'High':
+      case 'Low':
         return 'text-danger';
-      case 'Pretty High':
-        return 'text-warning';
       case 'Normal':
         return 'text-success';
       default:
@@ -29,17 +50,16 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
     }
   };
 
-  // ** get icon src
-  const getLoRaIcon = (data: any) => {
+  const getSensorLabel = (data: any) => {
     switch (data) {
-      case 'dp':
-        return water;
-      case 'mg':
-        return dust;
-      case 'Celsius':
-        return temp;
-      case 'Grams of water':
-        return humidity;
+      case 'HUMIDITY':
+        return 'Humidity';
+      case 'LIGHT':
+        return 'Light';
+      case 'TEMPERATURE':
+        return 'Temperature';
+      case 'SMOKE':
+        return 'Smoke';
       default:
         break;
     }
@@ -47,19 +67,24 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
 
   return (
     <div
-      onClick={() => setLoRaUnit(unit)}
+      onClick={() => setSelectedSensorId(sensorData.id)}
       className="min-w-[200px] min-h-[200px] border-[#B4BECF] border bg-white p-4 rounded cursor-pointer transition hover:bg-gray-100"
     >
-      <div className="flex justify-between">
+      <p className="font-semibold text-black text-t7 text-center">{getSensorLabel(sensorData.type)}</p>
+      <div className="flex justify-center">
         {/* number */}
-        <p className={`text-[60px] leading-[90px] ${getLoRaLevel(level)}`}>{value}</p>
-        {/* icon descripe */}
-        <img src={getLoRaIcon(unit)} className="object-contain" />
+        <p className={`text-[60px] leading-[90px] ${getLoRaLevel(level)}`}>{latestData}</p>
       </div>
-
-      <p className="text-[#323743E5] text-t3">Unit: {unit}</p>
-      <p className="text-[#323743] text-t4">
-        Level: <span className={`${getLoRaLevel(level)} font-semibold`}>{level}</span>
+      <p className="text-[#323743] text-t5 text-center">
+        {level ? (
+          <>
+            Level: <span className={`${getLoRaLevel(level)} font-semibold`}>{level}</span>
+          </>
+        ) : (
+          <>
+            No Data
+          </>
+        )}
       </p>
     </div>
   );

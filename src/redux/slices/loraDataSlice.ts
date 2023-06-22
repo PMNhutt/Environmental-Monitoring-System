@@ -21,6 +21,16 @@ export const getSensors = createAsyncThunk('/node/sensors/getSensors', async (no
   return res.data;
 });
 
+export const getSensorIntervalLatestData = createAsyncThunk('/node/sensors/getSensorIntervalLatestData', async (sensorId: any) => {
+  const res = await instances.get(`/sensor/${sensorId}/data/interval/latest`);
+  return res.data;
+});
+
+export const getSensorIntervalData = createAsyncThunk('/node/sensors/getSensorIntervalData', async (sensorId: any) => {
+  const res = await instances.get(`/sensor/${sensorId}/data/interval`);
+  return res.data;
+});
+
 export const createSensors = createAsyncThunk('sensors/createSensors', async ({ req, nodeId }: { req: any; nodeId: any },{ rejectWithValue }) => {
   try {
     const res = await instances.post(`/node/${nodeId}/sensor`, req);
