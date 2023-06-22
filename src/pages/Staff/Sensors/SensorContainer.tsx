@@ -1,8 +1,6 @@
-import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import styles from 'src/utils/style';
-import Loading from 'src/share/loading/Loading';
 
 // ** pages
 import SensorDashboard from './components/SensorDashhboard/SensorDashboard';

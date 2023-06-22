@@ -52,6 +52,21 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     setEditSensorData(sensorData);
   };
 
+  const getSensorLabel = (data: any) => {
+    switch (data) {
+      case 'HUMIDITY':
+        return 'Humidity Sensor';
+      case 'LIGHT':
+        return 'Light Sensor';
+      case 'TEMPERATURE':
+        return 'Temperature Sensor';
+      case 'SMOKE':
+        return 'Smoke Sensor';
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       {openConfirm && (
@@ -68,12 +83,10 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           <div className="w-[133px] h-[68px] bg-[#F3F4F6] border border-[#BDC1CA] flex justify-center items-center">
             <img src={sensor} className="object-contain" />
           </div>
-          {/* <p className="text-t4">{title}</p> */}
           <div className="flex flex-col">
-            <p className="text-t4 font-semibold text-black">{sensorData.sensorId}</p>
+            <p className="text-t4 font-semibold text-black">{getSensorLabel(sensorData.type)}</p>
             <p className="text-t3 font-medium text-black">ID: {sensorData.sensorId}</p>
           </div>
-
         </div>
         <div className="relative">
           <Tooltip title={'Options'} placement="top">

@@ -43,10 +43,8 @@ export interface DetailModalProps {
 }
 
 export interface LoRaTypeProps {
-  unit: string;
-  level: string;
-  value: number;
-  setLoRaUnit: any;
+  sensorData: any;
+  setSelectedSensorId: any;
 }
 
 export interface UsersProps {

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import instances from 'src/utils/plugins/axios';
 
@@ -18,6 +18,11 @@ const initialState: InitialStateType = {
 
 export const getNodes = createAsyncThunk('nodes/getNodes', async () => {
   const res = await instances.get('/nodes');
+  return res.data;
+});
+
+export const getNode = createAsyncThunk('nodes/getNode', async (id: any) => {
+  const res = await instances.get(`/node/${id}`);
   return res.data;
 });
 
