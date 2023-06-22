@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  ChartData,
   Chart as ChartJs,
+  ChartOptions,
   Legend,
   LineElement,
   LinearScale,
@@ -51,7 +53,7 @@ const LineChart: React.FC<ChartProps> = (props) => {
     return () => clearInterval(handler);
   }, [selectedSensorId]);
 
-  const data = {
+  const data: ChartData<'line'> = {
     labels: labels,
     datasets: [
       {
@@ -66,14 +68,14 @@ const LineChart: React.FC<ChartProps> = (props) => {
     ],
   };
 
-  const options = {
-    animation: false,
+  const options: ChartOptions<"line"> = {
+    // animation: false,
     normalized: true,
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       x: {
-        type: 'time',
+        type: "time",
         time: {
           unit: 'day',
         },
