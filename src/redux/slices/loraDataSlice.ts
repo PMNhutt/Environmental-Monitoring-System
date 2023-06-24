@@ -16,6 +16,15 @@ const initialState: InitialStateType = {
   editing: false,
 };
 
+export const getSensor = createAsyncThunk('sensors/getSensor', async (sensorId: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.get(`/sensor/${sensorId}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
 export const getSensors = createAsyncThunk('/node/sensors/getSensors', async (nodeId: any) => {
   const res = await instances.get(`/node/${nodeId}/sensors`);
   return res.data;
@@ -43,6 +52,17 @@ export const createSensors = createAsyncThunk('sensors/createSensors', async ({ 
 export const editSensors = createAsyncThunk('sensors/editSensors', async (req: any, { rejectWithValue }) => {
   try {
     const res = await instances.put(`/sensor/${req.id}`, {
+      ...req
+    });
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const editSensorThreshold = createAsyncThunk('sensors/editSensorThreshold', async ({ req, sensorId }: { req: any; sensorId: any }, { rejectWithValue }) => {
+  try {
+    const res = await instances.put(`/sensor/${sensorId}/threshold`, {
       ...req
     });
     return res.data;
@@ -106,6 +126,17 @@ export const sensorSlice = createSlice({
         toast.success('Update successfully!');
       })
       .addCase(editSensors.rejected, (state, action: any) => {
+        state.editing = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(editSensorThreshold.pending, (state) => {
+        state.editing = true;
+      })
+      .addCase(editSensorThreshold.fulfilled, (state) => {
+        state.editing = false;
+        toast.success('Update successfully!');
+      })
+      .addCase(editSensorThreshold.rejected, (state, action: any) => {
         state.editing = false;
         toast.error(action.payload.response.data.detail);
       });
