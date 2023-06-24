@@ -12,6 +12,7 @@ interface InitialStateType {
   updating: boolean;
   getUserLoading: boolean;
   updatingPassword: boolean;
+  searching: boolean;
   error: string;
 }
 
@@ -23,6 +24,7 @@ const initialState: InitialStateType = {
   updating: false,
   getUserLoading: false,
   updatingPassword: false,
+  searching: false,
   error: '',
 };
 
@@ -40,6 +42,26 @@ export const getUsers = createAsyncThunk('users/getUsers', async (req?: any) => 
     };
   });
   return list;
+});
+
+export const searchUsers = createAsyncThunk('users/searchUsers', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.get('/users/customer', { params: { search: req } });
+    const list = res.data.data.map((u: UsersProps) => {
+      return {
+        name: u.firstName + ' ' + u.lastName,
+        email: u.email,
+        phone: u.phone,
+        role: u.role,
+        isDeleted: u.isDeleted,
+        id: u.id,
+        avatar: u.avatar,
+      };
+    });
+    return list;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
 });
 
 export const getUserDetail = createAsyncThunk('users/getUserDetail', async (id: any, { rejectWithValue }) => {
@@ -222,6 +244,16 @@ export const usersSlice = createSlice({
       .addCase(updatePassword.rejected, (state, action: any) => {
         state.updatingPassword = false;
         state.error = action.payload.response.data.detail;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(searchUsers.pending, (state) => {
+        state.searching = true;
+      })
+      .addCase(searchUsers.fulfilled, (state) => {
+        state.searching = false;
+      })
+      .addCase(searchUsers.rejected, (state, action: any) => {
+        state.searching = false;
         toast.error(action.payload.response.data.detail);
       });
   },

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { UsersProps } from 'src/utils/interface';
 import instances from 'src/utils/plugins/axios';
 
 interface InitialStateType {
@@ -8,6 +9,7 @@ interface InitialStateType {
   deleteting: boolean;
   editing: boolean;
   assigning: boolean;
+  getAssigning: boolean;
 }
 
 const initialState: InitialStateType = {
@@ -16,6 +18,7 @@ const initialState: InitialStateType = {
   deleteting: false,
   editing: false,
   assigning: false,
+  getAssigning: false,
 };
 
 export const getNodes = createAsyncThunk('nodes/getNodes', async () => {
@@ -68,6 +71,29 @@ export const assignNode = createAsyncThunk('nodes/assignNode', async (req: any, 
     return rejectWithValue(error);
   }
 });
+
+export const getAssignedUsers = createAsyncThunk(
+  'nodes/getAssignedUsers',
+  async (nodeId: string, { rejectWithValue }) => {
+    try {
+      const res = await instances.get(`/node/${nodeId}/assign-users`);
+      const list = res.data.data.map((u: UsersProps) => {
+        return {
+          name: u.firstName + ' ' + u.lastName,
+          email: u.email,
+          phone: u.phone,
+          role: u.role,
+          isDeleted: u.isDeleted,
+          id: u.id,
+          avatar: u.avatar,
+        };
+      });
+      return list;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const nodeSlice = createSlice({
   name: 'nodes',
@@ -127,6 +153,16 @@ export const nodeSlice = createSlice({
       })
       .addCase(assignNode.rejected, (state, action: any) => {
         state.assigning = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(getAssignedUsers.pending, (state) => {
+        state.getAssigning = true;
+      })
+      .addCase(getAssignedUsers.fulfilled, (state) => {
+        state.getAssigning = false;
+      })
+      .addCase(getAssignedUsers.rejected, (state, action: any) => {
+        state.getAssigning = false;
         toast.error(action.payload.response.data.detail);
       });
   },
