@@ -4,8 +4,8 @@ import { Modal } from '@mui/material';
 import icon from 'src/assets/images/permission.svg';
 import useDebounce from 'src/share/hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
-import { getUsers } from 'src/redux/slices/usersSlice';
-import { assignNode } from 'src/redux/slices/nodeSlice';
+import { searchUsers } from 'src/redux/slices/usersSlice';
+import { assignNode, getAssignedUsers } from 'src/redux/slices/nodeSlice';
 import { UsersProps } from 'src/utils/interface';
 
 // ** compoennts
@@ -31,23 +31,27 @@ const PermissonsModal: React.FC<PermissonProps> = (props) => {
 
   // handle save permisson
   const handleConfirmModal = () => {
-    if (assignedUsers.length > 0) {
-      const idArray = assignedUsers.map((user: UsersProps) => user.id);
-      const req = {
-        nodeId: nodeId,
-        users: idArray,
-      };
-      dispatch(assignNode(req)).then(() => {
-        setOpenModal(false);
-      });
-      console.log(req);
-    }
+    const idArray = assignedUsers.map((user: UsersProps) => user.id);
+    const req = {
+      nodeId: nodeId,
+      users: idArray,
+    };
+    dispatch(assignNode(req)).then(() => {
+      setOpenModal(false);
+    });
   };
+
+  // ** get assigned user in this node
+  useEffect(() => {
+    dispatch(getAssignedUsers(nodeId)).then((res) => {
+      setAssignedUsers(res.payload);
+    });
+  }, []);
 
   // ** get user data list
   useEffect(() => {
     if (debounced !== '') {
-      dispatch(getUsers(debounced?.trim())).then((res) => {
+      dispatch(searchUsers(debounced?.trim())).then((res) => {
         setUserList(res.payload);
       });
     } else {
@@ -122,7 +126,7 @@ const PermissonsModal: React.FC<PermissonProps> = (props) => {
         </div>
 
         {/* assigned user */}
-        {assignedUsers.length > 0 && (
+        {assignedUsers.length > 0 ? (
           <div className="my-5 max-h-[200px] overflow-y-scroll">
             {assignedUsers.map((u: any) => (
               <div key={u.id}>
@@ -130,6 +134,8 @@ const PermissonsModal: React.FC<PermissonProps> = (props) => {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="my-5 text-center text-t3 text-gray-500 italic">Not assigned to any user</div>
         )}
 
         {/* buttons */}
