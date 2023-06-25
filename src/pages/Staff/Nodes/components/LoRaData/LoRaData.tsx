@@ -38,7 +38,6 @@ const LoRaData = () => {
   return (
     <div className="my-12 mx-14 mt-5">
       {/* header */}
-      {/* ah */}
       <div>
         <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${
           currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'

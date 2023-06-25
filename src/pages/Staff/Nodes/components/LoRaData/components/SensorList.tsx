@@ -1,14 +1,20 @@
+import { useState } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
+import { SensorProps, UsersProps } from 'src/utils/interface';
+
+// ** assets
 import plus from 'src/assets/images/plus_white.svg';
 import sensor from 'src/assets/images/sensor.svg';
 import actions from 'src/assets/images/sensorAction.svg';
+
+// ** redux
 import { deleteSensors, getSensor } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
+
+//** components
 import ConfirmModal from 'src/share/components/ConfirmModal';
-import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
-import { SensorProps, UsersProps } from 'src/utils/interface';
 import CreateModal from './CreateModal';
 
 interface Props {
@@ -21,15 +27,14 @@ interface Props {
 }
 
 interface ListItemProps {
-  sensorData: any,
-  title: string,
-  setOpenEditModal: any,
+  sensorData: any;
+  setOpenEditModal: any;
   setUpdateData: any;
   setEditSensorData: any;
 }
 
 const ListItem: React.FC<ListItemProps> = (props) => {
-  const { sensorData, title, setOpenEditModal, setUpdateData, setEditSensorData } = props;
+  const { sensorData, setOpenEditModal, setUpdateData, setEditSensorData } = props;
   const [openOptions, setOpenOptions] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const dispatch = useAppDispatch();
@@ -73,7 +78,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
     <>
       {openConfirm && (
         <ConfirmModal
-          description="Delete this node?"
+          description="Delete this sensor?"
           openModal={openConfirm}
           setOpenModal={setOpenConfirm}
           rowData={sensorData.id}
@@ -87,7 +92,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </div>
           <div className="flex flex-col">
             <p className="text-t4 font-semibold text-black">{getSensorLabel(sensorData.type)}</p>
-            <p className="text-t3 font-medium text-black">ID: {sensorData.sensorId}</p>
+            <p className="text-t3 font-medium text-[#8792AB]">ID: {sensorData.sensorId}</p>
           </div>
         </div>
         <div className="relative">
@@ -128,14 +133,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
 };
 
 const SensorList: React.FC<Props> = (props) => {
-  const {
-    sensorList,
-    setUpdateData,
-    currentUser,
-    editSensorData,
-    setEditSensorData,
-    nodeId,
-  } = props;
+  const { sensorList, setUpdateData, currentUser, editSensorData, setEditSensorData, nodeId } = props;
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -176,7 +174,6 @@ const SensorList: React.FC<Props> = (props) => {
                 <div key={sensor.id}>
                   <ListItem
                     sensorData={sensor}
-                    title="Water sensors"
                     setOpenEditModal={setOpenModal}
                     setUpdateData={setUpdateData}
                     setEditSensorData={setEditSensorData}
