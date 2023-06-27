@@ -24,7 +24,11 @@ const LoRaData = () => {
   useEffect(() => {
     if (nodeId) {
       dispatch(getSensors(nodeId)).then((res: any) => {
-        setSensorList(res.payload.data);
+        const sensorList = res.payload.data;
+        setSensorList(sensorList);
+        if(sensorList.length >= 1) {
+          setSelectedSensorId(sensorList[0].id);
+        }
       });
     }
   }, [updateData]);
