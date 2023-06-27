@@ -45,22 +45,22 @@ interface ChartProps {
   dataLabel: string;
 }
 
-const getOrCreateLegendList = (chart: any, id: any) => {
-  const legendContainer = document.getElementById(id);
-  let listContainer = legendContainer?.querySelector('ul');
+// const getOrCreateLegendList = (chart: any, id: any) => {
+//   const legendContainer = document.getElementById(id);
+//   let listContainer = legendContainer?.querySelector('ul');
 
-  if (!listContainer) {
-    listContainer = document.createElement('ul');
-    listContainer.style.display = 'flex';
-    listContainer.style.flexDirection = 'row';
-    listContainer.style.margin = '0';
-    listContainer.style.padding = '0';
+//   if (!listContainer) {
+//     listContainer = document.createElement('ul');
+//     listContainer.style.display = 'flex';
+//     listContainer.style.flexDirection = 'row';
+//     listContainer.style.margin = '0';
+//     listContainer.style.padding = '0';
 
-    legendContainer?.appendChild(listContainer);
-  }
+//     legendContainer?.appendChild(listContainer);
+//   }
 
-  return listContainer;
-};
+//   return listContainer;
+// };
 
 // const htmlLegendPlugin = {
 //   id: 'htmlLegend',
