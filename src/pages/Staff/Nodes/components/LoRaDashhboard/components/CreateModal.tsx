@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Modal } from '@mui/material';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useAppDispatch } from 'src/redux/store/hooks';
 import { createNodes, editNodes } from 'src/redux/slices/nodeSlice';
+import { useAppDispatch } from 'src/redux/store/hooks';
 
 interface FormProps {
   setOpenModal: any;
@@ -44,18 +44,18 @@ const Form: React.FC<FormProps> = (props) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* nodeid */}
       <>
-        <label className="text-t3 font-semibold text-[#424856]">Node Id</label>
+        <label className="text-t3 font-semibold text-[#424856]">Node Code</label>
         <input
           disabled={editData}
           type="text"
-          className={`block w-full h-[36px] ${errors?.nodeId ? 'mb-[5px]' : 'mb-[10px]'} ${
+          className={`block w-full h-[36px] ${errors?.nodeCode ? 'mb-[5px]' : 'mb-[10px]'} ${
             editData ? 'cursor-not-allowed' : ''
           } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-          {...register('nodeId', {
+          {...register('nodeCode', {
             required: true,
           })}
         />
-        {errors?.nodeId?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Node Id is required</p>}
+        {errors?.nodeCode?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Node Code is required</p>}
       </>
       {/* name */}
       <>

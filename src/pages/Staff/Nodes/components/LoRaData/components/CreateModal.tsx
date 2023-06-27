@@ -47,20 +47,20 @@ const Form: React.FC<FormProps> = (props) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {/* sensorId and Type */}
+      {/* sensorCode and Type */}
       <div className="flex sm:gap-5  sm:flex-row flex-col w-full">
         <div className="w-full">
-          <label className="text-t3 font-semibold text-[#424856]">Sensor Id</label>
+          <label className="text-t3 font-semibold text-[#424856]">Sensor Code</label>
           <input
             disabled={editData}
             type="text"
-            className={`block w-full h-[36px] ${errors?.sensorId ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
+            className={`block w-full h-[36px] ${errors?.sensorCode ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
               } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-            {...register('sensorId', {
+            {...register('sensorCode', {
               required: true,
             })}
           />
-          {errors?.sensorId?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Sensor Id is required</p>}
+          {errors?.sensorCode?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Sensor Code is required</p>}
         </div>
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Sensor Type</label>

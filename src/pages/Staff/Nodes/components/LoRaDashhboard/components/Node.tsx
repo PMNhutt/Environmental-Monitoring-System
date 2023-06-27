@@ -86,7 +86,7 @@ const Node: React.FC<Props> = (props) => {
         <div className="h-1/4 w-full px-5 py-2 border-t-2 border-gray-300 flex justify-between">
           <div onClick={() => navigate(`/nodes/${nodeData.id}`)} className="cursor-pointer">
             <p className="text-t4 font-semibold text-black">{nodeData.name}</p>
-            <p className="text-t3 font-medium text-black">ID: {nodeData.nodeId}</p>
+            <p className="text-t3 font-medium text-black">CODE: {nodeData.nodeCode}</p>
             <p className="text-t2 font-medium text-[#8792AB] mt-1">
               Created: {dayjs(nodeData.createdDate).format('D/M/YYYY')}
             </p>

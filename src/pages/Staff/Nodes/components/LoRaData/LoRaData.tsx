@@ -24,7 +24,11 @@ const LoRaData = () => {
   useEffect(() => {
     if (nodeId) {
       dispatch(getSensors(nodeId)).then((res: any) => {
-        setSensorList(res.payload.data);
+        const sensorList = res.payload.data;
+        setSensorList(sensorList);
+        if(sensorList.length >= 1) {
+          setSelectedSensorId(sensorList[0].id);
+        }
       });
     }
   }, [updateData]);
@@ -38,7 +42,6 @@ const LoRaData = () => {
   return (
     <div className="my-12 mx-14 mt-5">
       {/* header */}
-      {/* ah */}
       <div>
         <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${
           currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'

@@ -85,7 +85,7 @@ export interface NodeProps {
   id: string;
   name: string;
   description: string;
-  nodeId: string;
+  nodeCode: string;
   createdDate: string;
   updatedDate: string;
 }
