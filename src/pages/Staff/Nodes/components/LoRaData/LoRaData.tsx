@@ -9,6 +9,7 @@ import { SensorProps } from 'src/utils/interface';
 import LineChart from './components/LineChart';
 import LoRaType from './components/LoRaType';
 import SensorList from './components/SensorList';
+import ChangeLog from './components/ChangeLog';
 
 const LoRaData = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
@@ -26,7 +27,7 @@ const LoRaData = () => {
       dispatch(getSensors(nodeId)).then((res: any) => {
         const sensorList = res.payload.data;
         setSensorList(sensorList);
-        if(sensorList.length >= 1) {
+        if (sensorList.length >= 1) {
           setSelectedSensorId(sensorList[0].id);
         }
       });
@@ -91,6 +92,10 @@ const LoRaData = () => {
             setEditSensorData={setEditSensorData}
             nodeId={nodeId}
           />
+        </div>
+        {/* change log */}
+        <div className="w-full my-8">
+          <ChangeLog />
         </div>
       </div>
     </div>
