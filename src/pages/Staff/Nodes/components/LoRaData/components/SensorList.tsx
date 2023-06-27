@@ -92,7 +92,7 @@ const ListItem: React.FC<ListItemProps> = (props) => {
           </div>
           <div className="flex flex-col">
             <p className="text-t4 font-semibold text-black">{getSensorLabel(sensorData.type)}</p>
-            <p className="text-t3 font-medium text-[#8792AB]">CODE {sensorData.sensorCode}</p>
+            <p className="text-t3 font-medium text-[#8792AB]">CODE: {sensorData.sensorCode}</p>
           </div>
         </div>
         <div className="relative">
