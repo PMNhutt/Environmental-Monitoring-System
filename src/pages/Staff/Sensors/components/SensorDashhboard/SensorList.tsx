@@ -77,8 +77,8 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
           </div>
         </div>
         {/* belong */}
-        <div className="lg:w-1/2 w-full flex items-center">
-          <div className="flex flex-col">
+        <div className="lg:w-1/2 w-full flex items-center lg:justify-end ">
+          <div className="lg:w-1/2 w-full flex flex-col ">
             <p className="text-t4 font-semibold text-black">{sensorData.nodeBelongName}</p>
             <p className="text-t3 font-medium text-[#8792AB]">Code: {sensorData.nodeBelongCode}</p>
           </div>
@@ -171,12 +171,14 @@ const SensorList: React.FC<Props> = (props) => {
       <div className="border border-[#B4BECF] px-5 py-2 rounded my-4">
         {/* label */}
         <div className="flex">
-          <div className="md:w-2/4 w-full">
-            <p className="">Name</p>
+          <div className="md:w-2/3 w-full flex">
+            <p className="md:w-1/2 w-full">Name</p>
+            <div className="md:w-1/2 md:flex hidden lg:justify-end">
+              <p className="md:w-1/2 w-full">Belong to node</p>
+            </div>
           </div>
-          <div className="md:w-2/4 w-full flex md:flex-row flex-col">
-            <p className="md:w-1/2 hidden md:block">Belong to node</p>
-            <p className="md:w-1/2 w-full flex justify-end">Actions</p>
+          <div className="md:w-1/3 w-full flex md:flex-row flex-col">
+            <p className="w-full flex justify-end">Actions</p>
           </div>
         </div>
         {/* list sensors */}
