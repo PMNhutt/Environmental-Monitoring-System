@@ -1,28 +1,37 @@
 import { useEffect, useState } from 'react';
-import LineChart from './LineChart';
+import { getAllSensors } from 'src/redux/slices/loraDataSlice';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 import Filter from './Filter';
+import LineChart from './LineChart';
 import SensorList from './SensorList';
-import { useAppSelector } from 'src/redux/store/hooks';
 
 const SensorDashboard = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const [chartData, setChartData] = useState<any>([]);
+  const [sensorList, setSensorList] = useState([]);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getAllSensors()).then((res: any) => {
+      const sensorList = res.payload.data;
+      console.log(sensorList);
+      setSensorList(sensorList);
+    });
+  }, []);
 
   return (
     <div className="my-12 mx-14">
       {/* body */}
-      <div className="w-full flex flex-col items-center justify-center my-7">
+      <div className="w-full flex items-center justify-between my-7">
         {/* chart */}
-        <div className="sm:w-[85%] w-[100%]">
-          <LineChart dataLabel={'sensor 1'} loRaData={chartData} />
-        </div>
+        <LineChart dataLabel={'sensor 1'} loRaData={chartData} />
       </div>
       {/* filter */}
       <Filter />
       {/* sensor list */}
       <SensorList
         currentUser={currentUser}
-        sensorList={[]}
+        sensorList={sensorList}
+        setSensorList={setSensorList}
         setUpdateData={'setUpdateData'}
         editSensorData={'editSensorData'}
         setEditSensorData={'setEditSensorData'}

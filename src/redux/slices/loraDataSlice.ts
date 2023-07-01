@@ -30,6 +30,11 @@ export const getSensors = createAsyncThunk('/node/sensors/getSensors', async (no
   return res.data;
 });
 
+export const getAllSensors = createAsyncThunk('/sensors/getSensors', async () => {
+  const res = await instances.get(`/sensors`);
+  return res.data;
+});
+
 export const getSensorIntervalLatestData = createAsyncThunk('/node/sensors/getSensorIntervalLatestData', async (sensorId: any) => {
   const res = await instances.get(`/sensor/${sensorId}/data/interval/latest`);
   return res.data;

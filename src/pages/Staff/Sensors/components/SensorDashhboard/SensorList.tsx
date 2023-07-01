@@ -14,6 +14,7 @@ import { useAppDispatch } from 'src/redux/store/hooks';
 interface Props {
   currentUser: UsersProps;
   sensorList: SensorProps[];
+  setSensorList: any;
   setUpdateData: any;
   editSensorData: any;
   setEditSensorData: any;
@@ -47,6 +48,21 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
     console.log('do sth');
   };
 
+  const getSensorLabel = (data: any) => {
+    switch (data) {
+      case 'HUMIDITY':
+        return 'Humidity Sensor';
+      case 'LIGHT':
+        return 'Light Sensor';
+      case 'TEMPERATURE':
+        return 'Temperature Sensor';
+      case 'SMOKE':
+        return 'Smoke Sensor';
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="w-full flex justify-between items-center pb-2 mb-2 border-b border-b-[#D9D9D9]">
       <div className="md:w-2/3 w-full flex lg:flex-row flex-col gap-3">
@@ -56,15 +72,15 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
             <img src={sensor} className="object-contain" />
           </div>
           <div className="flex flex-col">
-            <p className="text-t4 font-semibold text-black">Temperature sensor</p>
-            <p className="text-t3 font-medium text-[#8792AB]">ID: Temperature-S-2</p>
+            <p className="text-t4 font-semibold text-black">{getSensorLabel(sensorData.type)}</p>
+            <p className="text-t3 font-medium text-[#8792AB]">Code: {sensorData.sensorCode}</p>
           </div>
         </div>
         {/* belong */}
-        <div className="lg:w-1/2 w-full flex lg:justify-end items-center">
+        <div className="lg:w-1/2 w-full flex items-center">
           <div className="flex flex-col">
-            <p className="text-t4 font-semibold text-black">Tran Van A Living Room</p>
-            <p className="text-t3 font-medium text-[#8792AB]">ID: TranVanALivingRoom</p>
+            <p className="text-t4 font-semibold text-black">{sensorData.nodeBelongName}</p>
+            <p className="text-t3 font-medium text-[#8792AB]">Code: {sensorData.nodeBelongCode}</p>
           </div>
         </div>
       </div>
@@ -165,12 +181,16 @@ const SensorList: React.FC<Props> = (props) => {
         </div>
         {/* list sensors */}
         <div className="my-5">
-          <SensorItem
-            sensorData={sensor}
-            setOpenEditModal={setOpenModal}
-            setUpdateData={setUpdateData}
-            setEditSensorData={setEditSensorData}
-          />
+          {sensorList.map((sensor: SensorProps) => (
+            <div key={sensor.id}>
+              <SensorItem
+                sensorData={sensor}
+                setOpenEditModal={setOpenModal}
+                setUpdateData={setUpdateData}
+                setEditSensorData={setEditSensorData}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>
