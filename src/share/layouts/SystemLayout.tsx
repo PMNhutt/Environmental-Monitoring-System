@@ -5,8 +5,8 @@ import SideBar from 'src/pages/Staff/SideBar/SideBar';
 import { setMobileOpen } from 'src/redux/slices/contextSlice';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 
-import { useLocation } from 'react-router-dom';
 import Drawer from '@mui/material/Drawer';
+import { useLocation } from 'react-router-dom';
 
 const SystemLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();

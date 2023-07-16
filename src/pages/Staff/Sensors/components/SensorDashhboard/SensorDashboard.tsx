@@ -7,13 +7,80 @@ import SensorList from './SensorList';
 
 const SensorDashboard = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
-  const [chartData, setChartData] = useState<any>([]);
   const [sensorList, setSensorList] = useState([]);
+  const [chartData, setChartData] = useState<Map<string, number[][]>>(new Map());
+  const [chartOptions, setChartOptions] = useState<Highcharts.Options>(
+    {
+      chart: {
+        height: '500px',
+      },
+      xAxis: {
+        minRange: 1,
+      },
+      rangeSelector: {
+        buttonTheme: {
+          fill: 'none',
+          stroke: 'none',
+          'stroke-width': 0,
+          r: 8,
+          style: {
+            color: '#039',
+            fontWeight: 'bold',
+            padding: '100',
+          },
+          width: 40,
+          states: {
+            hover: {
+            },
+            select: {
+              fill: '#039',
+              style: {
+                color: 'white'
+              }
+            }
+          }
+        },
+        selected: 2,
+        buttons: [{
+          type: 'day',
+          count: 1,
+          text: 'Day',
+        }, {
+          type: 'week',
+          count: 1,
+          text: 'Week',
+        }, {
+          type: 'month',
+          count: 1,
+          text: 'Month',
+        }],
+      },
+      scrollbar: {
+        barBorderRadius: 0,
+        barBorderWidth: 1,
+        buttonsEnabled: true,
+        height: 14,
+        margin: 0,
+        rifleColor: '#333',
+        trackBackgroundColor: '#f2f2f2',
+        trackBorderRadius: 0
+      },
+      series: [
+        {
+          type: 'line',
+          name: 'Stock Price',
+          data: [], // Replace with your actual data
+          tooltip: {
+            valueDecimals: 2
+          }
+        },
+      ],
+    }
+  );
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getAllSensors()).then((res: any) => {
       const sensorList = res.payload.data;
-      console.log(sensorList);
       setSensorList(sensorList);
     });
   }, []);
@@ -23,10 +90,16 @@ const SensorDashboard = () => {
       {/* body */}
       <div className="w-full flex items-center justify-between my-7">
         {/* chart */}
-        <LineChart dataLabel={'sensor 1'} loRaData={chartData} />
+        <LineChart
+          setChartOptions={setChartOptions}
+          chartOptions={chartOptions}
+          chartData={chartData}
+        />
       </div>
       {/* filter */}
-      <Filter />
+      <Filter
+        setChartData={setChartData}
+      />
       {/* sensor list */}
       <SensorList
         currentUser={currentUser}

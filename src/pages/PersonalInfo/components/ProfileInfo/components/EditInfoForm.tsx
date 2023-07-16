@@ -5,17 +5,15 @@ import UpdatePassModal from './UpdatePassModal';
 import spinner from 'src/assets/images/spinner.svg';
 
 // ** redux
-import { useAppSelector } from 'src/redux/store/hooks';
-import { useAppDispatch } from 'src/redux/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 
 // ** libs
-import { toast } from 'react-toastify';
 import Checkbox from '@mui/material/Checkbox';
-import { useForm, Controller } from 'react-hook-form';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+import { Controller, useForm } from 'react-hook-form';
 import { editUser, getUserById } from 'src/redux/slices/usersSlice';
 import { Regex_PhoneNumber } from 'src/utils/regex';
 
@@ -44,7 +42,11 @@ const EditInfoForm = () => {
 
   // ** handle submit form
   const onSubmit = (data: any) => {
-    const dobFormatted = dayjs(data?.dateOfBirth).format();
+    let dobFormatted: string | null = dayjs(data?.dateOfBirth).format();
+    console.log(dobFormatted);
+    if(dobFormatted === 'Invalid Date') {
+      dobFormatted = null;
+    }
     const requestEditUser = {
       id: userData?.id,
       address: data.address,

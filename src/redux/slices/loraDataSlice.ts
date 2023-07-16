@@ -30,6 +30,11 @@ export const getSensors = createAsyncThunk('/node/sensors/getSensors', async (no
   return res.data;
 });
 
+export const getNodeAlertList = createAsyncThunk('/node/sensors/getNodeAlertList', async (nodeId: any) => {
+  const res = await instances.get(`/node/${nodeId}/alerts`);
+  return res.data;
+});
+
 export const getAllSensors = createAsyncThunk('/sensors/getSensors', async () => {
   const res = await instances.get(`/sensors`);
   return res.data;
@@ -41,11 +46,26 @@ export const getSensorIntervalLatestData = createAsyncThunk('/node/sensors/getSe
 });
 
 export const getSensorIntervalData = createAsyncThunk('/node/sensors/getSensorIntervalData', async (sensorId: any) => {
-  const res = await instances.get(`/sensor/${sensorId}/data/interval`);
+  const res = await instances.get(`/v2/sensor/${sensorId}/data/interval`);
   return res.data;
 });
 
-export const createSensors = createAsyncThunk('sensors/createSensors', async ({ req, nodeId }: { req: any; nodeId: any },{ rejectWithValue }) => {
+export const getSensorOfTypeIntervalData = createAsyncThunk('/node/sensors/getSensorOfTypeIntervalData', async ({ type, req }: { type: string; req: any }) => {
+  const res = await instances.get(`/sensor/type/${type}/data/interval`, {
+    params: {
+      startDate: req.startDate,
+      endDate: req.endDate,
+    },
+  });
+  return res.data;
+});
+
+export const getSensorOfTypeIntervalDataVer2 = createAsyncThunk('/node/sensors/getSensorOfTypeIntervalDataVer2', async (type: string) => {
+  const res = await instances.get(`/v2/sensor/type/${type}/data/interval`);
+  return res.data;
+});
+
+export const createSensors = createAsyncThunk('sensors/createSensors', async ({ req, nodeId }: { req: any; nodeId: any }, { rejectWithValue }) => {
   try {
     const res = await instances.post(`/node/${nodeId}/sensor`, req);
     return res.data;

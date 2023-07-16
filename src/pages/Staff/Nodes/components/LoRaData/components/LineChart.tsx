@@ -1,105 +1,116 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  ChartData,
-  Chart as ChartJs,
-  ChartOptions,
-  Legend,
-  LineElement,
-  LinearScale,
-  PointElement,
-  TimeScale,
-  Tooltip,
-} from 'chart.js';
-import 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
-import { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { HighchartsReact } from 'highcharts-react-official';
+import Highcharts from 'highcharts/highstock';
+import React, { useEffect, useState } from 'react';
 import { getSensorIntervalData } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
-
-ChartJs.register(
-  LineElement,
-  TimeScale,
-  LinearScale,
-  PointElement,
-  Tooltip,
-  Legend,
-)
 
 interface ChartProps {
   selectedSensorId: string;
 }
 
 const LineChart: React.FC<ChartProps> = (props) => {
-  const { selectedSensorId } = props;
-  const [labels, setLabels] = useState([]);
-  const [datasets, setDatasets] = useState([]);
   const dispatch = useAppDispatch();
+  const { selectedSensorId } = props;
+  const [chartOptions, setChartOptions] = useState<Highcharts.Options>(
+    {
+      chart: {
+        height: '500px',
+      },
+      xAxis: {
+        minRange: 1,
+      },
+      rangeSelector: {
+        buttonTheme: {
+          fill: 'none',
+          stroke: 'none',
+          'stroke-width': 0,
+          r: 8,
+          style: {
+            color: '#039',
+            fontWeight: 'bold',
+            padding: '100',
+          },
+          width: 40,
+          states: {
+            hover: {
+            },
+            select: {
+              fill: '#039',
+              style: {
+                color: 'white'
+              }
+            }
+          }
+        },
+        selected: 2,
+        buttons: [{
+          type: 'day',
+          count: 1,
+          text: 'Day',
+        }, {
+          type: 'week',
+          count: 1,
+          text: 'Week',
+        }, {
+          type: 'month',
+          count: 1,
+          text: 'Month',
+        }],
+      },
+      scrollbar: {
+        barBorderRadius: 0,
+        barBorderWidth: 1,
+        buttonsEnabled: true,
+        height: 14,
+        margin: 0,
+        rifleColor: '#333',
+        trackBackgroundColor: '#f2f2f2',
+        trackBorderRadius: 0
+      },
+      series: [
+        {
+          type: 'line',
+          name: 'Stock Price',
+          data: [], // Replace with your actual data
+          tooltip: {
+            valueDecimals: 2
+          }
+        },
+      ],
+    });
 
   useEffect(() => {
     const fetchData = async () => {
       if (selectedSensorId !== null && selectedSensorId !== undefined && selectedSensorId !== '') {
         dispatch(getSensorIntervalData(selectedSensorId)).then((res: any) => {
-          setLabels(res.payload.createTimestamp);
-          setDatasets(res.payload.data);
+          const chartData: number[][] = res.payload
+          setChartOptions({
+            series: [
+              {
+                type: 'line',
+                name: 'Temperature',
+                data: chartData, // Replace with your actual data
+                tooltip: {
+                  valueDecimals: 2
+                }
+              },
+            ],
+          });
         });
       }
     }
     fetchData();
-
-    const handler = setInterval(() => {
-      fetchData();
-    }, 10000);
+    const handler = setInterval(fetchData, 10000);
     return () => clearInterval(handler);
   }, [selectedSensorId]);
 
-  const data: ChartData<'line'> = {
-    labels: labels,
-    datasets: [
-      {
-        data: datasets,
-        fill: true,
-        backgroundColor: 'rgba(83,92,232,0.2)',
-        borderColor: '#535CE8',
-        borderWidth: 1,
-        pointRadius: 1,
-      },
-    ],
-  };
-
-  const options: ChartOptions<"line"> = {
-    // animation: false,
-    normalized: true,
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        type: "time",
-        time: {
-          unit: 'day',
-        },
-        ticks: {
-          autoSkip: false,
-          maxTicksLimit: 10,
-          minRotation: 0,
-          maxRotation: 0,
-          sampleSize: 10,
-        },
-      },
-    },
-    interaction: {
-      intersect: false,
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  };
-
   return (
     <div>
-      <Line data={data} options={options} style={{ maxWidth: '100%', height: '400px' }} />
+      <HighchartsReact
+        highcharts={Highcharts}
+        constructorType={"stockChart"}
+        options={chartOptions}
+      />
     </div>
   );
 };

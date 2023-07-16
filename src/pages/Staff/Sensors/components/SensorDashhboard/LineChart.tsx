@@ -1,114 +1,39 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  ChartData,
-  Chart as ChartJs,
-  ChartOptions,
-  Legend,
-  LineElement,
-  LinearScale,
-  PointElement,
-  TimeScale,
-  Tooltip,
-} from 'chart.js';
-import 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
-import { Line } from 'react-chartjs-2';
-import { useAppDispatch } from 'src/redux/store/hooks';
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
-import { useEffect, useState } from 'react';
-import { getSensorIntervalData } from 'src/redux/slices/loraDataSlice';
+import { HighchartsReact } from 'highcharts-react-official';
+import Highcharts from 'highcharts/highstock';
+import React, { useEffect } from 'react';
 
-ChartJs.register(
-  LineElement,
-  TimeScale,
-  LinearScale,
-  PointElement,
-  Tooltip,
-  Legend,
-)
 
 interface ChartProps {
-  loRaData: any;
-  dataLabel: string;
+  chartOptions: Highcharts.Options;
+  setChartOptions: any;
+  chartData: Map<string, number[][]>;
 }
 
 const LineChart: React.FC<ChartProps> = (props) => {
-  const { loRaData, dataLabel } = props;
-  const [labels, setLabels] = useState([]);
-  const [datasets, setDatasets] = useState([]);
-  const dispatch = useAppDispatch();
+  const { chartOptions, setChartOptions, chartData } = props;
 
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch(getSensorIntervalData('326961e5-143b-4276-90a3-c4031462a09d')).then((res: any) => {
-        setLabels(res.payload.createTimestamp);
-        setDatasets(res.payload.data);
-      });
-    }
-    fetchData();
-
-    const handler = setInterval(() => {
-      fetchData();
-    }, 10000);
-    return () => clearInterval(handler);
-  }, []);
-
-  const data: ChartData<'line'> = {
-    labels: labels,
-    datasets: [
-      {
-        label: "TEST",
-        data: datasets,
-        borderWidth: 1,
-        pointRadius: 1,
-      },
-    ],
-  };
-
-  const options: ChartOptions<"line"> = {
-    // animation: false,
-    normalized: true,
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        type: "time",
-        time: {
-          unit: 'day',
+    setChartOptions({
+      series: Object.entries(chartData).map(([key, value]): any => ({
+        type: 'line',
+        name: key,
+        data: value, // Replace with your actual data
+        tooltip: {
+          valueDecimals: 2
         },
-        ticks: {
-          autoSkip: false,
-          maxTicksLimit: 10,
-          minRotation: 0,
-          maxRotation: 0,
-          sampleSize: 10,
-        },
-      },
-    },
-    // interaction: {
-    //   intersect: false,
-    // },
-    plugins: {
-      legend: {
-        display: true,
-        position: 'right',
-        labels: {
-          boxHeight: 15,
-          boxWidth: 15,
-        }
-      },
-    },
-  };
+        showInNavigator: true
+      })),
+    });
+  }, [chartData]);
 
   return (
     <>
       <div className="border border-[#333333] p-4 w-[100%]">
-        <Line
-          data={data}
-          options={options}
-          style={{ maxWidth: '100%', height: '400px' }}
+        <HighchartsReact
+          highcharts={Highcharts}
+          constructorType={"stockChart"}
+          options={chartOptions}
         />
       </div>
     </>

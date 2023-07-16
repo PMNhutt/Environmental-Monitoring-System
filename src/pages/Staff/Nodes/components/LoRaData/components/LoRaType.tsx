@@ -1,4 +1,5 @@
 import { IconButton } from '@mui/material';
+import Switch from '@mui/material/Switch';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -12,6 +13,50 @@ import ConfirmModal from 'src/share/components/ConfirmModal';
 import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
 import { LoRaTypeProps, SensorProps } from 'src/utils/interface';
 import InfoTooltip from './InfoTooltip';
+
+const Android12Switch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  '& .MuiSwitch-track': {
+    borderRadius: 22 / 2,
+    '&:before, &:after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 16,
+      height: 16,
+    },
+    '&:before': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" transform="rotate(90)"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+      // transform: 'rotate(-90deg)'
+    },
+    '&:after': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxShadow: 'none',
+    width: 16,
+    height: 16,
+    margin: 2,
+  },
+  '& .MuiSwitch-switchBase': {
+    // transitionDuration: '300ms',
+    '&.Mui-checked': {
+      color: '#fff',
+      '& + .MuiSwitch-track': {
+        backgroundColor: '#535CE8',
+        opacity: 1,
+      },
+    },
+  },
+}));
 
 const LoRaType: React.FC<LoRaTypeProps> = (props) => {
   const { sensorData, setSelectedSensorId, selectedSensorId, sensorList, setSensorList, setUpdateData, setOpenEditModal, setEditSensorData } = props;
@@ -57,12 +102,33 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
         if (resData) {
           setLatestData(res.payload.data);
         }
-        if (resData > sensorData.maxThreshold) {
-          setLevel('High');
-        } else if (resData < sensorData.minThreshold) {
+        const maxThreshold = sensorData.maxThreshold;
+        const minThreshold = sensorData.minThreshold;
+        const thresholdRange = maxThreshold - minThreshold;
+        const lowThreshold = minThreshold - (thresholdRange * 0.2);
+        const veryLowThreshold = minThreshold - (thresholdRange * 0.6);
+        const pretttLowThreshold = minThreshold + (thresholdRange * 0.2);
+        const pretttHighThreshold = maxThreshold - (thresholdRange * 0.2);
+        const highThreshold = maxThreshold + (thresholdRange * 0.2);
+        const veryHighThreshold = maxThreshold + (thresholdRange * 0.6);
+        if (resData < veryLowThreshold) {
+          setLevel('Extremely Low');
+        } else if (resData >= veryLowThreshold && resData < lowThreshold) {
+          setLevel('Very Low');
+        } else if (resData >= lowThreshold && resData < minThreshold) {
           setLevel('Low');
-        } else if (resData !== undefined) {
+        } else if (resData >= minThreshold && resData < pretttLowThreshold) {
+          setLevel('Pretty Low');
+        } else if (resData >= pretttLowThreshold && resData <= pretttHighThreshold) {
           setLevel('Normal');
+        } else if (resData > pretttHighThreshold && resData <= maxThreshold) {
+          setLevel('Pretty High');
+        } else if (resData > maxThreshold && resData <= highThreshold) {
+          setLevel('High');
+        } else if (resData > highThreshold && resData <= veryHighThreshold) {
+          setLevel('Very High');
+        } else if (resData > veryHighThreshold) {
+          setLevel('Extremely High');
         } else if (resData === undefined) {
           setLatestData(0);
           setLevel('');
@@ -80,12 +146,25 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
   // ** get lora type data
   const getLoRaLevel = (data: any) => {
     switch (data) {
-      case 'High':
+      case 'Extremely Low':
+        return 'text-[##006FFF]';
+      case 'Very Low':
+        return 'text-[#00ADFF]';
       case 'Low':
-        return 'text-danger';
+        return 'text-[#00D9F3]';
+      case 'Pretty Low':
+        return 'text-[#6CFACD]';
       case 'Normal':
         return 'text-success';
-      default:
+      case 'Pretty High':
+        return 'text-warning';
+      case 'High':
+        return 'text-[FF8C5E]';
+      case 'Very High':
+        return 'text-[B50000]';
+      case 'Extremely High':
+        return 'text-[#FF0000]';
+        // return 'text-danger';
         break;
     }
   };
@@ -161,7 +240,7 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
           className={`${selectedSensorId === sensorData.id
             ? 'bg-[#EFEDFD] border-primary '
             : 'bg-white border-[#B4BECF] hover:bg-gray-100'
-            } max-w-[200px] max-h-[200px] border bg-[#EFEDFD] p-4 pt-5 rounded cursor-pointer transition relative`}
+            } w-[225px] h-[205px] border bg-[#EFEDFD] p-4 pt-5 rounded cursor-pointer transition relative`}
         >
           <p
             className={`${selectedSensorId === sensorData.id ? 'text-primary' : 'text-[#424856]'
@@ -176,7 +255,7 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
           <p className="text-[#323743] text-t5 text-center">
             {level ? (
               <>
-                Level: <span className={`${getLoRaLevel(level)} font-semibold`}>{level}</span>
+                Level: <span className={`${getLoRaLevel(level)} font-semibold text-t5`}>{level}</span>
               </>
             ) : (
               <>No Data</>
@@ -200,7 +279,6 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
               <Tooltip title={'Options'} placement="top">
                 <IconButton
                   sx={{ padding: "5px" }}
-                  classes='p-0'
                   disabled={openOptions}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -238,10 +316,18 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
               </AnimatePresence>
             </div>
           </div>
+          <div className="absolute rotate-[270deg] top-[-0.4rem] right-[-3.5rem]">
+            <Android12Switch
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              // checked={sensorData}
+              defaultChecked />
+          </div>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between py-2 min-w-[200px]">
-            <label className="text-t3 max-w-[50px] font-semibold  pr-2 text-center">Min:</label>
+          <div className="flex items-center justify-between py-2 max-w-[300px]">
+            <label className="text-t3 max-w-[50px] font-semibold pr-2 text-center">Min:</label>
             <input
               type="text"
               placeholder="Min threshold"
@@ -253,8 +339,8 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
             />
             {errors?.min?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Min is required</p>}
           </div>
-          <div className="flex items-center justify-between py-2 max-w-[200px]">
-            <label className="text-t3 max-w-[50px] font-semibold text-[#424856] pr-2">Max:</label>
+          <div className="flex items-center justify-between py-2 max-w-[300px]">
+            <label className="text-t3 max-w-[50px] font-semibold pr-2 text-center">Max:</label>
             <input
               type="text"
               placeholder="Max threshold"
