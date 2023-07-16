@@ -1,3 +1,4 @@
+import { plPL } from '@mui/x-data-grid';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import instances from 'src/utils/plugins/axios';
@@ -30,54 +31,76 @@ export const getSensors = createAsyncThunk('/node/sensors/getSensors', async (no
   return res.data;
 });
 
-export const getNodeAlertList = createAsyncThunk('/node/sensors/getNodeAlertList', async (nodeId: any) => {
-  const res = await instances.get(`/node/${nodeId}/alerts`);
+export const getNodeAlertList = createAsyncThunk('/node/sensors/getNodeAlertList', async (params: any) => {
+  const res = await instances.get(`/node/${params.nodeId}/alerts`, {
+    params: {
+      offset: params.offset,
+      limit: params.limit,
+    },
+  });
   return res.data;
 });
 
-export const getAllSensors = createAsyncThunk('/sensors/getSensors', async () => {
-  const res = await instances.get(`/sensors`);
+export const getAllSensors = createAsyncThunk('/sensors/getSensors', async (params: any) => {
+  const res = await instances.get(`/sensors`, {
+    params: {
+      offset: params.offset,
+      limit: params.limit,
+    },
+  });
   return res.data;
 });
 
-export const getSensorIntervalLatestData = createAsyncThunk('/node/sensors/getSensorIntervalLatestData', async (sensorId: any) => {
-  const res = await instances.get(`/sensor/${sensorId}/data/interval/latest`);
-  return res.data;
-});
+export const getSensorIntervalLatestData = createAsyncThunk(
+  '/node/sensors/getSensorIntervalLatestData',
+  async (sensorId: any) => {
+    const res = await instances.get(`/sensor/${sensorId}/data/interval/latest`);
+    return res.data;
+  },
+);
 
 export const getSensorIntervalData = createAsyncThunk('/node/sensors/getSensorIntervalData', async (sensorId: any) => {
   const res = await instances.get(`/v2/sensor/${sensorId}/data/interval`);
   return res.data;
 });
 
-export const getSensorOfTypeIntervalData = createAsyncThunk('/node/sensors/getSensorOfTypeIntervalData', async ({ type, req }: { type: string; req: any }) => {
-  const res = await instances.get(`/sensor/type/${type}/data/interval`, {
-    params: {
-      startDate: req.startDate,
-      endDate: req.endDate,
-    },
-  });
-  return res.data;
-});
-
-export const getSensorOfTypeIntervalDataVer2 = createAsyncThunk('/node/sensors/getSensorOfTypeIntervalDataVer2', async (type: string) => {
-  const res = await instances.get(`/v2/sensor/type/${type}/data/interval`);
-  return res.data;
-});
-
-export const createSensors = createAsyncThunk('sensors/createSensors', async ({ req, nodeId }: { req: any; nodeId: any }, { rejectWithValue }) => {
-  try {
-    const res = await instances.post(`/node/${nodeId}/sensor`, req);
+export const getSensorOfTypeIntervalData = createAsyncThunk(
+  '/node/sensors/getSensorOfTypeIntervalData',
+  async ({ type, req }: { type: string; req: any }) => {
+    const res = await instances.get(`/sensor/type/${type}/data/interval`, {
+      params: {
+        startDate: req.startDate,
+        endDate: req.endDate,
+      },
+    });
     return res.data;
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+  },
+);
+
+export const getSensorOfTypeIntervalDataVer2 = createAsyncThunk(
+  '/node/sensors/getSensorOfTypeIntervalDataVer2',
+  async (type: string) => {
+    const res = await instances.get(`/v2/sensor/type/${type}/data/interval`);
+    return res.data;
+  },
+);
+
+export const createSensors = createAsyncThunk(
+  'sensors/createSensors',
+  async ({ req, nodeId }: { req: any; nodeId: any }, { rejectWithValue }) => {
+    try {
+      const res = await instances.post(`/node/${nodeId}/sensor`, req);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const editSensors = createAsyncThunk('sensors/editSensors', async (req: any, { rejectWithValue }) => {
   try {
     const res = await instances.put(`/sensor/${req.id}`, {
-      ...req
+      ...req,
     });
     return res.data;
   } catch (error) {
@@ -85,16 +108,19 @@ export const editSensors = createAsyncThunk('sensors/editSensors', async (req: a
   }
 });
 
-export const editSensorThreshold = createAsyncThunk('sensors/editSensorThreshold', async ({ req, sensorId }: { req: any; sensorId: any }, { rejectWithValue }) => {
-  try {
-    const res = await instances.put(`/sensor/${sensorId}/threshold`, {
-      ...req
-    });
-    return res.data;
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
+export const editSensorThreshold = createAsyncThunk(
+  'sensors/editSensorThreshold',
+  async ({ req, sensorId }: { req: any; sensorId: any }, { rejectWithValue }) => {
+    try {
+      const res = await instances.put(`/sensor/${sensorId}/threshold`, {
+        ...req,
+      });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const deleteSensors = createAsyncThunk('sensors/deleteSensors', async (id: any, { rejectWithValue }) => {
   try {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 //** components */
 import { useParams } from 'react-router-dom';
@@ -10,8 +10,12 @@ import ChangeLog from './components/ChangeLog';
 import CreateModal from './components/CreateModal';
 import LineChart from './components/LineChart';
 import LoRaType from './components/LoRaType';
+import ReactMapGL, { Marker } from '@goongmaps/goong-map-react';
 // ** assets
 import plus from 'src/assets/images/plus_white.svg';
+import pin from 'src/assets/images/pin.png';
+
+import '@goongmaps/goong-js/dist/goong-js.css';
 
 const LoRaData = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
@@ -28,6 +32,51 @@ const LoRaData = () => {
   const params = useParams();
   const nodeId = params.id;
   const dispatch = useAppDispatch();
+  const [data, setData] = useState([
+    {
+      name: 'place 1',
+      longitude: 106.6525115,
+      latitude: 10.7596269,
+    },
+    {
+      name: 'place 2',
+      longitude: 106.63426645500004,
+      latitude: 10.769253775000038,
+    },
+    {
+      name: 'place 3',
+      longitude: 106.66048396400004,
+      latitude: 10.835563540000066,
+    },
+    {
+      name: 'place 4',
+      longitude: 106.63531267900004,
+      latitude: 10.749946617000035,
+    },
+  ]);
+  const [pagination, setPagination] = useState({ offset: 0, limit: 5 });
+  const [totalItem, setTotalItem] = useState(0);
+
+  const [viewport, setViewport] = useState({
+    longitude: 106.70105355500004,
+    latitude: 10.776553100000058,
+    zoom: 11,
+  });
+
+  // Only rerender markers if props.data has changed
+  const markers = useMemo(
+    () =>
+      data.map((city) => (
+        <Marker key={city.name} longitude={city.longitude} latitude={city.latitude}>
+          <img src={pin} className="w-[50px]" />
+        </Marker>
+      )),
+    [data],
+  );
+
+  const handleChangePage = (_event: React.ChangeEvent<unknown>, page: number) => {
+    setPagination({ ...pagination, offset: page - 1 });
+  };
 
   useEffect(() => {
     if (nodeId) {
@@ -39,12 +88,19 @@ const LoRaData = () => {
         }
       });
 
-      dispatch(getNodeAlertList(nodeId)).then((res: any) => {
+      const requestData = {
+        nodeId,
+        offset: pagination.offset,
+        limit: pagination.limit,
+      };
+
+      dispatch(getNodeAlertList(requestData)).then((res: any) => {
         const alertList = res.payload.data;
+        setTotalItem(Math.round((res.payload.count + pagination.limit - 1) / pagination.limit));
         setAlertList(alertList);
       });
     }
-  }, [updateData]);
+  }, [updateData, pagination]);
 
   useEffect(() => {
     dispatch(getNode(nodeId)).then((res: any) => {
@@ -66,17 +122,16 @@ const LoRaData = () => {
       <div className="my-12 mx-14 mt-5">
         {/* header */}
         <div>
-          <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'
-            } `}</button>
+          <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${
+            currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'
+          } `}</button>
           <h1 className="text-t7 font-semibold">{nodeName}</h1>
         </div>
         {/* body */}
         <div className="w-full flex flex-col items-center justify-center my-7">
           {/* chart */}
           <div className="w-[95%] border-[#333333] border rounded p-4">
-            <LineChart
-              selectedSensorId={selectedSensorId}
-            />
+            <LineChart selectedSensorId={selectedSensorId} />
           </div>
           {/* data type component */}
           <div className="sm:w-[95%] w-[100%] pt-2">
@@ -132,9 +187,27 @@ const LoRaData = () => {
               </>
             )}
           </div>
+
+          {/* map display */}
+          <div>
+            <ReactMapGL
+              {...viewport}
+              width="80vw"
+              height="400px"
+              onViewportChange={setViewport}
+              goongApiAccessToken={import.meta.env.VITE_TILESMAP_API}
+            >
+              {markers}
+            </ReactMapGL>
+          </div>
           {/* change log */}
           <div className="w-full my-8">
-            <ChangeLog alertList={alertList} />
+            <ChangeLog
+              alertList={alertList}
+              onChange={handleChangePage}
+              pageIndex={pagination.offset}
+              totalPage={totalItem}
+            />
           </div>
         </div>
       </div>

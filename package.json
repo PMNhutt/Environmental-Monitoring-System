@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@goongmaps/goong-map-react": "^1.1.2",
     "@mui/material": "^5.13.4",
     "@mui/styles": "^5.13.2",
     "@mui/x-data-grid": "5.17.7",
