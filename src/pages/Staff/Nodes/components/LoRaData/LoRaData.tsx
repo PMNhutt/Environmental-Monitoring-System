@@ -54,6 +54,8 @@ const LoRaData = () => {
       latitude: 10.749946617000035,
     },
   ]);
+  const [pagination, setPagination] = useState({ offset: 0, limit: 5 });
+  const [totalItem, setTotalItem] = useState(0);
 
   const [viewport, setViewport] = useState({
     longitude: 106.70105355500004,
@@ -72,6 +74,10 @@ const LoRaData = () => {
     [data],
   );
 
+  const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
+    setPagination({ ...pagination, offset: page - 1 });
+  };
+
   useEffect(() => {
     if (nodeId) {
       dispatch(getSensors(nodeId)).then((res: any) => {
@@ -82,12 +88,19 @@ const LoRaData = () => {
         }
       });
 
-      dispatch(getNodeAlertList(nodeId)).then((res: any) => {
+      const requestData = {
+        nodeId,
+        offset: pagination.offset,
+        limit: pagination.limit,
+      };
+
+      dispatch(getNodeAlertList(requestData)).then((res: any) => {
         const alertList = res.payload.data;
+        setTotalItem(Math.round((res.payload.count + pagination.limit - 1) / pagination.limit));
         setAlertList(alertList);
       });
     }
-  }, [updateData]);
+  }, [updateData, pagination]);
 
   useEffect(() => {
     dispatch(getNode(nodeId)).then((res: any) => {
@@ -189,7 +202,12 @@ const LoRaData = () => {
           </div>
           {/* change log */}
           <div className="w-full my-8">
-            <ChangeLog alertList={alertList} />
+            <ChangeLog
+              alertList={alertList}
+              onChange={handleChangePage}
+              pageIndex={pagination.offset}
+              totalPage={totalItem}
+            />
           </div>
         </div>
       </div>

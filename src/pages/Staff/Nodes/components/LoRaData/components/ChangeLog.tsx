@@ -1,13 +1,15 @@
-
 import Pagination from '@mui/material/Pagination';
 import { AlertProps } from 'src/utils/interface';
 
 interface ChangeLogProps {
   alertList: any;
+  totalPage: number;
+  pageIndex: number;
+  onChange: any;
 }
 
 const ChangeLog: React.FC<ChangeLogProps> = (props) => {
-  const { alertList } = props;
+  const { alertList, totalPage, pageIndex, onChange } = props;
   return (
     <div className="p-5 border-[#B4BECF] border bg-white rounded w-full">
       <p className="text-t7 font-semibold mb-3">Alert History</p>
@@ -29,14 +31,14 @@ const ChangeLog: React.FC<ChangeLogProps> = (props) => {
         </>
       ) : (
         <>
-          <p className="my-5 font-medium text-danger">
-            No alert has been record
-          </p>
+          <p className="my-5 font-medium text-danger">No alert has been record</p>
         </>
       )}
       <div className="w-full flex justify-end">
         <Pagination
-          count={10}
+          count={totalPage}
+          page={pageIndex + 1}
+          onChange={onChange}
           shape="rounded"
           sx={{
             '& .Mui-selected': {

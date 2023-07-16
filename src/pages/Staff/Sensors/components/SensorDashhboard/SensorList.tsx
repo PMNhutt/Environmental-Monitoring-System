@@ -7,6 +7,7 @@ import sensor from 'src/assets/images/sensor.svg';
 
 // ** redux
 import { useAppDispatch } from 'src/redux/store/hooks';
+import { Pagination } from '@mui/material';
 
 interface Props {
   currentUser: UsersProps;
@@ -16,6 +17,9 @@ interface Props {
   editSensorData: any;
   setEditSensorData: any;
   nodeId: any;
+  totalPage: number;
+  pageIndex: number;
+  onChange: any;
 }
 
 interface SensorItemProps {
@@ -123,7 +127,17 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
 };
 
 const SensorList: React.FC<Props> = (props) => {
-  const { sensorList, setUpdateData, currentUser, editSensorData, setEditSensorData, nodeId } = props;
+  const {
+    sensorList,
+    setUpdateData,
+    currentUser,
+    editSensorData,
+    setEditSensorData,
+    nodeId,
+    onChange,
+    pageIndex,
+    totalPage,
+  } = props;
 
   const [searchValue, setSearchValue] = useState('');
   const [openModal, setOpenModal] = useState(false);
@@ -187,6 +201,21 @@ const SensorList: React.FC<Props> = (props) => {
               />
             </div>
           ))}
+
+          <div className="w-full flex justify-end mt-5">
+            <Pagination
+              count={totalPage}
+              page={pageIndex + 1}
+              onChange={onChange}
+              shape="rounded"
+              sx={{
+                '& .Mui-selected': {
+                  backgroundColor: '#535CE8 !important',
+                  color: 'white',
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
