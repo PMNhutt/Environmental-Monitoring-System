@@ -81,7 +81,7 @@ const SensorDashboard = () => {
   const [pagination, setPagination] = useState({ offset: 0, limit: 5 });
   const [totalItem, setTotalItem] = useState(0);
 
-  const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handleChangePage = (_event: React.ChangeEvent<unknown>, page: number) => {
     setPagination({ ...pagination, offset: page - 1 });
   };
 

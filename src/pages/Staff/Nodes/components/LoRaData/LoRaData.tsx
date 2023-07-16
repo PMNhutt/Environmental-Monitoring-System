@@ -74,7 +74,7 @@ const LoRaData = () => {
     [data],
   );
 
-  const handleChangePage = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handleChangePage = (_event: React.ChangeEvent<unknown>, page: number) => {
     setPagination({ ...pagination, offset: page - 1 });
   };
 
