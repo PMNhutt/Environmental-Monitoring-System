@@ -9,6 +9,11 @@ const instances = axios.create({
   },
 });
 
+// goong (like google map api)
+export const goong = axios.create({
+  baseURL: import.meta.env.VITE_GOONG_BASE_URL,
+});
+
 instances.interceptors.request.use(
   (config: any) => {
     // ** Get token from sessionStorage

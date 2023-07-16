@@ -2,6 +2,8 @@ import { Modal } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { createSensors, editSensors } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
+import GoongAutoComplete from './GoongAutoComplete';
+import { useEffect, useState } from 'react';
 
 interface FormProps {
   setOpenModal: any;
@@ -13,6 +15,12 @@ interface FormProps {
 const Form: React.FC<FormProps> = (props) => {
   const { setOpenModal, setUpdateData, editData, nodeId } = props;
   const dispatch = useAppDispatch();
+  const [mapAddress, setMapAddress] = useState('');
+  const [mapAddressError, setMapAddressError] = useState(false);
+
+  useEffect(() => {
+    console.log('-- MAP ADDRESS -- ', mapAddress);
+  }, [mapAddress]);
 
   const {
     register,
@@ -54,30 +62,33 @@ const Form: React.FC<FormProps> = (props) => {
           <input
             disabled={editData}
             type="text"
-            className={`block w-full h-[36px] ${errors?.sensorCode ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
-              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.sensorCode ? 'mb-[5px]' : 'mb-[10px]'} ${
+              editData ? 'cursor-not-allowed' : ''
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('sensorCode', {
               required: true,
             })}
           />
-          {errors?.sensorCode?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Sensor Code is required</p>}
+          {errors?.sensorCode?.type === 'required' && (
+            <p className="mb-[5px] text-danger text-[14px]">Sensor Code is required</p>
+          )}
         </div>
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Sensor Type</label>
           <select
-            className={`block w-full h-[36px] ${errors?.type ? 'mb-[5px]' : 'mb-[10px]'
-              } pl-[10px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-            {...register("type", {
+            className={`block w-full h-[36px] ${
+              errors?.type ? 'mb-[5px]' : 'mb-[10px]'
+            } pl-[10px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            {...register('type', {
               required: true,
-            })}>
+            })}
+          >
             <option value="TEMPERATURE">Temperature</option>
             <option value="LIGHT">Light</option>
             <option value="HUMIDITY">Humidity</option>
             <option value="SMOKE">Smoke</option>
           </select>
-          {errors?.type?.type === 'required' && (
-            <p className="mb-[5px] text-danger text-[14px]">Type is required</p>
-          )}
+          {errors?.type?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Type is required</p>}
         </div>
       </div>
       {/* Min Max Threshold */}
@@ -87,8 +98,9 @@ const Form: React.FC<FormProps> = (props) => {
           <input
             type="number"
             disabled={editData}
-            className={`block w-full h-[36px] ${errors?.minThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
-              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.minThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${
+              editData ? 'cursor-not-allowed' : ''
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('minThreshold', {
               required: true,
             })}
@@ -102,8 +114,9 @@ const Form: React.FC<FormProps> = (props) => {
           <input
             type="number"
             disabled={editData}
-            className={`block w-full h-[36px] ${errors?.maxThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
-              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.maxThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${
+              editData ? 'cursor-not-allowed' : ''
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('maxThreshold', {
               required: true,
             })}
@@ -118,8 +131,9 @@ const Form: React.FC<FormProps> = (props) => {
         <label className="text-t3 font-semibold text-[#424856]">Interval</label>
         <input
           type="number"
-          className={`block w-full h-[36px] ${errors?.interval ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${
+            errors?.interval ? 'mb-[5px]' : 'mb-[10px]'
+          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('interval', {
             required: true,
           })}
@@ -131,14 +145,16 @@ const Form: React.FC<FormProps> = (props) => {
       {/* location */}
       <>
         <label className="text-t3 font-semibold text-[#424856]">Location</label>
-        <input
+        {/* <input
           type="text"
           className={`block w-full h-[36px] ${errors?.location ? 'mb-[5px]' : 'mb-[10px]'
             } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('location', {
             required: false,
           })}
-        />
+        /> */}
+        <GoongAutoComplete setMapAddress={setMapAddress} mapAddressError={mapAddressError} />
+
         {errors?.location?.type === 'required' && (
           <p className="mb-[5px] text-danger text-[14px]">Location is required</p>
         )}
@@ -149,29 +165,27 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">Power</label>
           <input
             type="text"
-            className={`block w-full h-[36px] ${errors?.power ? 'mb-[5px]' : 'mb-[10px]'
-              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${
+              errors?.power ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('power', {
               required: false,
             })}
           />
-          {errors?.power?.type === 'required' && (
-            <p className="mb-[5px] text-danger text-[14px]">Power is required</p>
-          )}
+          {errors?.power?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Power is required</p>}
         </div>
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Size</label>
           <input
             type="text"
-            className={`block w-full h-[36px] ${errors?.size ? 'mb-[5px]' : 'mb-[10px]'
-              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${
+              errors?.size ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('size', {
               required: false,
             })}
           />
-          {errors?.size?.type === 'required' && (
-            <p className="mb-[5px] text-danger text-[14px]">Size is required</p>
-          )}
+          {errors?.size?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Size is required</p>}
         </div>
       </div>
       {/* productLine */}
@@ -179,8 +193,9 @@ const Form: React.FC<FormProps> = (props) => {
         <label className="text-t3 font-semibold text-[#424856]">Product Line</label>
         <input
           type="text"
-          className={`block w-full h-[36px] ${errors?.productLine ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${
+            errors?.productLine ? 'mb-[5px]' : 'mb-[10px]'
+          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('productLine', {
             required: false,
           })}
