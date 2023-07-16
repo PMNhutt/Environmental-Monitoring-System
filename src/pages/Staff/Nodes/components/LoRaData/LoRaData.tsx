@@ -53,26 +53,36 @@ const LoRaData = () => {
   }, []);
 
   return (
-    <div className="my-12 mx-14 mt-5">
-      {/* header */}
-      <div>
-        <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'
-          } `}</button>
-        <h1 className="text-t7 font-semibold">{nodeName}</h1>
-      </div>
-      {/* body */}
-      <div className="w-full flex flex-col items-center justify-center my-7">
-        {/* chart */}
-        <div className="w-[95%] border-[#333333] border rounded p-4">
-          <LineChart
-            selectedSensorId={selectedSensorId}
-          />
+    <>
+      {openModal && (
+        <CreateModal
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          setUpdateData={setUpdateData}
+          editData={editSensorData}
+          nodeId={nodeId}
+        />
+      )}
+      <div className="my-12 mx-14 mt-5">
+        {/* header */}
+        <div>
+          <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'
+            } `}</button>
+          <h1 className="text-t7 font-semibold">{nodeName}</h1>
         </div>
-        {/* data type component */}
-        <div className="sm:w-[95%] w-[100%] pt-2">
-          <div className="flex justify-between">
-            <div className="flex h-fit">
-              {/* <p className="p-2 mr-2 border-primary border rounded-[8px] text-t3">
+        {/* body */}
+        <div className="w-full flex flex-col items-center justify-center my-7">
+          {/* chart */}
+          <div className="w-[95%] border-[#333333] border rounded p-4">
+            <LineChart
+              selectedSensorId={selectedSensorId}
+            />
+          </div>
+          {/* data type component */}
+          <div className="sm:w-[95%] w-[100%] pt-2">
+            <div className="flex justify-between">
+              <div className="flex h-fit">
+                {/* <p className="p-2 mr-2 border-primary border rounded-[8px] text-t3">
                 Min: {min}
               </p>
               <p className="p-2 mr-2 border-primary border rounded-[8px] text-t3">
@@ -81,62 +91,54 @@ const LoRaData = () => {
               <p className="p-2 border-primary border rounded-[8px] text-t3">
                 Average: {avg}
               </p> */}
-            </div>
-            <button
-              onClick={() => {
-                setOpenModal(true);
-                setEditSensorData(undefined);
-              }}
-            >
-              <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
-                <img src={plus} className="object-cover w-[25px] h-[25px]" />
               </div>
-            </button>
+              <button
+                onClick={() => {
+                  setOpenModal(true);
+                  setEditSensorData(undefined);
+                }}
+              >
+                <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
+                  <img src={plus} className="object-cover w-[25px] h-[25px]" />
+                </div>
+              </button>
+            </div>
+          </div>
+          <div className="mt-5 mb-5 flex flex-wrap gap-12 justify-center w-[95%]">
+            {sensorList.length > 0 ? (
+              <>
+                {sensorList.map((sensor: SensorProps) => (
+                  <div key={sensor.id}>
+                    <LoRaType
+                      setEditSensorData={setEditSensorData}
+                      setOpenEditModal={setOpenModal}
+                      setUpdateData={setUpdateData}
+                      sensorData={sensor}
+                      setSelectedSensorId={setSelectedSensorId}
+                      selectedSensorId={selectedSensorId}
+                      setSensorList={setSensorList}
+                      sensorList={sensorList}
+                    />
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {currentUser.role == 'USER' && (
+                  <p className="my-5 font-medium text-danger">
+                    No sensors have been configure yet, Please reach out to our staff for asistance
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+          {/* change log */}
+          <div className="w-full my-8">
+            <ChangeLog alertList={alertList} />
           </div>
         </div>
-        <div className="mt-5 mb-5 flex flex-wrap gap-12 justify-center w-[95%]">
-          {sensorList.length > 0 ? (
-            <>
-              {openModal && (
-                <CreateModal
-                  openModal={openModal}
-                  setOpenModal={setOpenModal}
-                  setUpdateData={setUpdateData}
-                  editData={editSensorData}
-                  nodeId={nodeId}
-                />
-              )}
-              {sensorList.map((sensor: SensorProps) => (
-                <div key={sensor.id}>
-                  <LoRaType
-                    setEditSensorData={setEditSensorData}
-                    setOpenEditModal={setOpenModal}
-                    setUpdateData={setUpdateData}
-                    sensorData={sensor}
-                    setSelectedSensorId={setSelectedSensorId}
-                    selectedSensorId={selectedSensorId}
-                    setSensorList={setSensorList}
-                    sensorList={sensorList}
-                  />
-                </div>
-              ))}
-            </>
-          ) : (
-            <>
-              {currentUser.role == 'USER' && (
-                <p className="my-5 font-medium text-danger">
-                  No sensors have been configure yet, Please reach out to our staff for asistance
-                </p>
-              )}
-            </>
-          )}
-        </div>
-        {/* change log */}
-        <div className="w-full my-8">
-          <ChangeLog alertList={alertList} />
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 

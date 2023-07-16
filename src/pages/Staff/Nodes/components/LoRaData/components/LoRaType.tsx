@@ -147,7 +147,7 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
   const getLoRaLevel = (data: any) => {
     switch (data) {
       case 'Extremely Low':
-        return 'text-[##006FFF]';
+        return 'text-[#006FFF]';
       case 'Very Low':
         return 'text-[#00ADFF]';
       case 'Low':
@@ -159,9 +159,9 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
       case 'Pretty High':
         return 'text-warning';
       case 'High':
-        return 'text-[FF8C5E]';
+        return 'text-[#FF8C5E]';
       case 'Very High':
-        return 'text-[B50000]';
+        return 'text-[#B50000]';
       case 'Extremely High':
         return 'text-[#FF0000]';
         // return 'text-danger';

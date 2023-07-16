@@ -1,12 +1,9 @@
-import { IconButton, Tooltip } from '@mui/material';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
 import { SensorProps, UsersProps } from 'src/utils/interface';
 
 // ** assets
 import sensor from 'src/assets/images/sensor.svg';
-import actions from 'src/assets/images/sensorAction.svg';
 
 // ** redux
 import { useAppDispatch } from 'src/redux/store/hooks';
@@ -65,9 +62,9 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
 
   return (
     <div className="w-full flex justify-between items-center pb-2 mb-2 border-b border-b-[#D9D9D9]">
-      <div className="md:w-2/3 w-full flex lg:flex-row flex-col gap-3">
+      <div className="w-full flex lg:flex-row flex-col gap-3">
         {/* sensor name */}
-        <div className="flex sm:flex-row flex-col sm:items-center gap-3 lg:w-1/2 w-full">
+        <div className="flex sm:flex-row flex-col sm:items-center gap-3 lg:w-3/4 w-full">
           <div className="w-[133px] h-[68px] bg-[#F3F4F6] border border-[#BDC1CA] flex justify-center items-center">
             <img src={sensor} className="object-contain" />
           </div>
@@ -77,15 +74,15 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
           </div>
         </div>
         {/* belong */}
-        <div className="lg:w-1/2 w-full flex items-center lg:justify-end ">
-          <div className="lg:w-1/2 w-full flex flex-col ">
+        <div className="lg:w-1/4 w-full flex items-center">
+          <div className="flex flex-col">
             <p className="text-t4 font-semibold text-black">{sensorData.nodeBelongName}</p>
             <p className="text-t3 font-medium text-[#8792AB]">Code: {sensorData.nodeBelongCode}</p>
           </div>
         </div>
       </div>
-      <div className="md:w-1/3 w-full flex md:flex-row flex-col">
-        {/* actions */}
+      {/* <div className="md:w-1/3 w-full flex md:flex-row flex-col">
+        actions
         <div className="w-full flex justify-end">
           <div className="relative">
             <Tooltip title={'Options'} placement="top">
@@ -98,7 +95,7 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
                 <img src={actions} className="object-contain" />
               </IconButton>
             </Tooltip>
-            {/* options menu */}
+            options menu
             <AnimatePresence>
               {openOptions && (
                 <motion.ul
@@ -120,7 +117,7 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
             </AnimatePresence>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -171,14 +168,11 @@ const SensorList: React.FC<Props> = (props) => {
       <div className="border border-[#B4BECF] px-5 py-2 rounded my-4">
         {/* label */}
         <div className="flex">
-          <div className="md:w-2/3 w-full flex">
-            <p className="md:w-1/2 w-full">Name</p>
-            <div className="md:w-1/2 md:flex hidden lg:justify-end">
-              <p className="md:w-1/2 w-full">Belong to node</p>
-            </div>
+          <div className="md:w-3/4 w-full">
+            <p className="">Name</p>
           </div>
-          <div className="md:w-1/3 w-full flex md:flex-row flex-col">
-            <p className="w-full flex justify-end">Actions</p>
+          <div className="md:w-1/4 w-full">
+            <p className="hidden md:block">Belong to node</p>
           </div>
         </div>
         {/* list sensors */}
