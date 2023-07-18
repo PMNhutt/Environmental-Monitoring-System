@@ -1,4 +1,3 @@
-import { plPL } from '@mui/x-data-grid';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import instances from 'src/utils/plugins/axios';
@@ -64,6 +63,11 @@ export const getSensorIntervalData = createAsyncThunk('/node/sensors/getSensorIn
   return res.data;
 });
 
+export const getSensorEventData = createAsyncThunk('/node/sensors/getSensorIntervalData', async (sensorId: any) => {
+  const res = await instances.get(`/v2/sensor/${sensorId}/data/event`);
+  return res.data;
+});
+
 export const getSensorOfTypeIntervalData = createAsyncThunk(
   '/node/sensors/getSensorOfTypeIntervalData',
   async ({ type, req }: { type: string; req: any }) => {
@@ -102,6 +106,15 @@ export const editSensors = createAsyncThunk('sensors/editSensors', async (req: a
     const res = await instances.put(`/sensor/${req.id}`, {
       ...req,
     });
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const editSensorActive = createAsyncThunk('sensors/editSensorActive', async (id: string, { rejectWithValue }) => {
+  try {
+    const res = await instances.put(`/sensor/${id}/isActive`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error);

@@ -10,6 +10,9 @@ interface InitialStateType {
   editing: boolean;
   assigning: boolean;
   getAssigning: boolean;
+  sprinkler: boolean;
+  fan: boolean;
+  lightbulb: boolean;
 }
 
 const initialState: InitialStateType = {
@@ -19,10 +22,17 @@ const initialState: InitialStateType = {
   editing: false,
   assigning: false,
   getAssigning: false,
+  sprinkler: false,
+  fan: false,
+  lightbulb: false,
 };
 
-export const getNodes = createAsyncThunk('nodes/getNodes', async () => {
-  const res = await instances.get('/nodes');
+export const getNodes = createAsyncThunk('nodes/getNodes', async (sort: any) => {
+  const res = await instances.get('/nodes', {
+    params: {
+      sort
+    },
+  });
   return res.data;
 });
 
@@ -42,10 +52,7 @@ export const createNodes = createAsyncThunk('nodes/createNodes', async (req: any
 
 export const editNodes = createAsyncThunk('nodes/editNodes', async (req: any, { rejectWithValue }) => {
   try {
-    const res = await instances.put(`/node/${req.id}`, {
-      name: req.name,
-      description: req.description,
-    });
+    const res = await instances.put(`/node/${req.id}`, req);
     return res.data;
   } catch (error) {
     return rejectWithValue(error);
@@ -94,6 +101,33 @@ export const getAssignedUsers = createAsyncThunk(
     }
   },
 );
+
+export const sendSprinklerSignal = createAsyncThunk('nodes/sendSprinklerSignal', async (nodeId: string, { rejectWithValue }) => {
+  try {
+    const res = await instances.post(`/node/${nodeId}/sprinkler`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const sendLightBulbSignal = createAsyncThunk('nodes/sendLightBulbSignal', async (nodeId: string, { rejectWithValue }) => {
+  try {
+    const res = await instances.post(`/node/${nodeId}/light_bulb`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const sendFanSignal = createAsyncThunk('nodes/sendFanSignal', async (nodeId: string, { rejectWithValue }) => {
+  try {
+    const res = await instances.post(`/node/${nodeId}/fan`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
 
 export const nodeSlice = createSlice({
   name: 'nodes',
@@ -163,6 +197,39 @@ export const nodeSlice = createSlice({
       })
       .addCase(getAssignedUsers.rejected, (state, action: any) => {
         state.getAssigning = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(sendSprinklerSignal.pending, (state) => {
+        state.sprinkler = true;
+      })
+      .addCase(sendSprinklerSignal.fulfilled, (state) => {
+        state.sprinkler = false;
+        toast.success('Send Sprinkler signal successfully!');
+      })
+      .addCase(sendSprinklerSignal.rejected, (state, action: any) => {
+        state.sprinkler = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(sendLightBulbSignal.pending, (state) => {
+        state.lightbulb = true;
+      })
+      .addCase(sendLightBulbSignal.fulfilled, (state) => {
+        state.lightbulb = false;
+        toast.success('Send Light bulb signal successfully!');
+      })
+      .addCase(sendLightBulbSignal.rejected, (state, action: any) => {
+        state.lightbulb = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(sendFanSignal.pending, (state) => {
+        state.fan = true;
+      })
+      .addCase(sendFanSignal.fulfilled, (state) => {
+        state.fan = false;
+        toast.success('Send Fan signal successfully!');
+      })
+      .addCase(sendFanSignal.rejected, (state, action: any) => {
+        state.fan = false;
         toast.error(action.payload.response.data.detail);
       });
   },

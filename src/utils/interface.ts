@@ -87,7 +87,9 @@ export interface ConfirmModalProps {
 export interface NodeProps {
   id: string;
   name: string;
-  description: string;
+  location: string;
+  latitude: number;
+  longitude: number;
   nodeCode: string;
   createdDate: string;
   updatedDate: string;
@@ -103,6 +105,7 @@ export interface SensorProps {
   size: string;
   productLine: string;
   interval: number;
+  isActive: boolean;
   location: string;
   createdDate: string;
   updatedDate: string;
@@ -115,4 +118,9 @@ export interface AlertProps {
   content: string;
   isRead: boolean;
   createdDate: string;
+}
+
+export interface GoongLocation {
+  lat: number,
+  lng: number,
 }

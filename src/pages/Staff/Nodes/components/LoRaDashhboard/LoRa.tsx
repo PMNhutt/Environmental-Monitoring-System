@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import map from 'src/assets/images/map.svg';
 import plus from 'src/assets/images/plus_white.svg';
 import defaultValue from 'src/utils/default';
 import Node from './components/Node';
@@ -6,6 +7,7 @@ import Node from './components/Node';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import CreateModal from './components/CreateModal';
+import MapModal from './components/MapModal';
 
 // ** redux
 import { getNodes } from 'src/redux/slices/nodeSlice';
@@ -15,18 +17,19 @@ import { NodeProps } from 'src/utils/interface';
 const LoRa = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
   const dispatch = useAppDispatch();
-  const [activeDropdown, setActiveDropdown] = useState('');
+  const [activeDropdown, setActiveDropdown] = useState<any>(1);
   const [openModal, setOpenModal] = useState(false);
+  const [openMapModal, setOpenMapModal] = useState(false);
   const [updateData, setUpdateData] = useState(false);
   const [nodeList, setNodeList] = useState([]);
   // state to save node data
   const [editNodeData, setEditNodeData] = useState();
 
   useEffect(() => {
-    dispatch(getNodes()).then((res: any) => {
+    dispatch(getNodes(activeDropdown)).then((res: any) => {
       setNodeList(res.payload.data);
     });
-  }, [updateData]);
+  }, [updateData, activeDropdown]);
 
   return (
     <>
@@ -38,6 +41,12 @@ const LoRa = () => {
           editData={editNodeData}
         />
       )}
+      {openMapModal && (
+        <MapModal
+          openMapModal={openMapModal}
+          setOpenMapModal={setOpenMapModal}
+        />
+      )}
       <div className="my-12 mx-14">
         {/* header */}
         <div className="flex items-center justify-between mb-6">
@@ -47,14 +56,21 @@ const LoRa = () => {
             </h1>
             <p className="text-[#8792AB] text-t4">Node in Personal Space are only accessible to you</p>
           </div>
-
-          <div>
+          
+          <div className="flex">
+            <button
+              onClick={() => {
+                setOpenMapModal(true);
+              }}
+              className="rounded-[6px] text-t3 bg-primary text-white font-medium py-1 px-3 flex items-center gap-2 pr-8 mr-2"
+            >
+              <img src={map} className="object-cover w-[20px] h-[20px]" />
+              Map
+            </button>
             <Select
               MenuProps={defaultValue.MenuProps}
               value={activeDropdown}
               onChange={(e) => setActiveDropdown(e.target.value)}
-              displayEmpty
-              renderValue={activeDropdown !== '' ? undefined : () => <p className="text-[#898989]">Last created</p>}
               className={`block w-full h-[36px] text-[#D9D9D9] text-t3  border rounded-[5px] focus:outline-primary`}
             >
               <MenuItem value={1}>Last created</MenuItem>
@@ -64,9 +80,8 @@ const LoRa = () => {
         </div>
         {/* body */}
         <div
-          className={`flex xl:flex-row flex-col flex-wrap w-full gap-12 ${
-            nodeList.length > 0 ? 'justify-center' : ''
-          } `}
+          className={`flex xl:flex-row flex-col flex-wrap w-full gap-12 ${nodeList.length > 0 ? 'justify-center' : ''
+            } `}
         >
           {currentUser.role == 'STAFF' && (
             <button

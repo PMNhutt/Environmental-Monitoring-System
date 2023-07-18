@@ -2,8 +2,6 @@ import { Modal } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { createSensors, editSensors } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
-import GoongAutoComplete from './GoongAutoComplete';
-import { useEffect, useState } from 'react';
 
 interface FormProps {
   setOpenModal: any;
@@ -15,12 +13,6 @@ interface FormProps {
 const Form: React.FC<FormProps> = (props) => {
   const { setOpenModal, setUpdateData, editData, nodeId } = props;
   const dispatch = useAppDispatch();
-  const [mapAddress, setMapAddress] = useState('');
-  const [mapAddressError, setMapAddressError] = useState(false);
-
-  useEffect(() => {
-    console.log('-- MAP ADDRESS -- ', mapAddress);
-  }, [mapAddress]);
 
   const {
     register,
@@ -38,7 +30,6 @@ const Form: React.FC<FormProps> = (props) => {
         size: data.size,
         productLine: data.productLine,
         interval: data.interval,
-        location: data.location,
       };
       console.log(req);
       dispatch(editSensors(req)).then(() => {
@@ -140,23 +131,6 @@ const Form: React.FC<FormProps> = (props) => {
         />
         {errors?.interval?.type === 'required' && (
           <p className="mb-[5px] text-danger text-[14px]">Interval is required</p>
-        )}
-      </>
-      {/* location */}
-      <>
-        <label className="text-t3 font-semibold text-[#424856]">Location</label>
-        {/* <input
-          type="text"
-          className={`block w-full h-[36px] ${errors?.location ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-          {...register('location', {
-            required: false,
-          })}
-        /> */}
-        <GoongAutoComplete setMapAddress={setMapAddress} mapAddressError={mapAddressError} />
-
-        {errors?.location?.type === 'required' && (
-          <p className="mb-[5px] text-danger text-[14px]">Location is required</p>
         )}
       </>
       {/* Power and Size */}

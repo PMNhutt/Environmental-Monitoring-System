@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import moreInfoIcon from 'src/assets/images/more-info.png';
 import actions from 'src/assets/images/sensorAction.svg';
-import { deleteSensors, editSensorThreshold, getSensor, getSensorIntervalLatestData } from 'src/redux/slices/loraDataSlice';
+import { deleteSensors, editSensorActive, editSensorThreshold, getSensor, getSensorIntervalLatestData } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
 import ConfirmModal from 'src/share/components/ConfirmModal';
 import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
@@ -184,6 +184,24 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
     }
   };
 
+  const handleActiveSensor = () => {
+    dispatch(editSensorActive(sensorData.id)).then((res: any) => {
+      if (!res.error) {
+        const newList = sensorList.map((item: SensorProps) => {
+          if (item.id === sensorData.id) {
+            const updatedItem: SensorProps = {
+              ...item,
+              ...res.payload,
+            };
+            return updatedItem;
+          }
+          return item;
+        });
+        setSensorList(newList);
+      }
+    });
+  };
+
   const handleDeleteSensor = () => {
     dispatch(deleteSensors(sensorData.id)).then(() => {
       setUpdateData((prev: any) => !prev);
@@ -275,7 +293,7 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
             </div>
           </HtmlTooltip>
           <div className="absolute top-0 right-0 w-7 h-7">
-            <div className="relative z-[100]">
+            <div className="relative z-[50]">
               <Tooltip title={'Options'} placement="top">
                 <IconButton
                   sx={{ padding: "5px" }}
@@ -320,8 +338,9 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
             <Android12Switch
               onClick={(e) => {
                 e.stopPropagation();
+                handleActiveSensor();
               }}
-              // checked={sensorData}
+              checked={sensorData.isActive}
               defaultChecked />
           </div>
         </div>

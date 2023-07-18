@@ -1,21 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 //** components */
 import { useParams } from 'react-router-dom';
 import { getNodeAlertList, getSensors } from 'src/redux/slices/loraDataSlice';
-import { getNode } from 'src/redux/slices/nodeSlice';
+import { getNode, sendFanSignal, sendLightBulbSignal, sendSprinklerSignal } from 'src/redux/slices/nodeSlice';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 import { SensorProps } from 'src/utils/interface';
 import ChangeLog from './components/ChangeLog';
 import CreateModal from './components/CreateModal';
 import LineChart from './components/LineChart';
 import LoRaType from './components/LoRaType';
-import ReactMapGL, { Marker } from '@goongmaps/goong-map-react';
 // ** assets
+import { Tooltip } from '@mui/material';
+import fan from 'src/assets/images/fan.svg';
+import light_bulb from 'src/assets/images/light_bulb.svg';
 import plus from 'src/assets/images/plus_white.svg';
-import pin from 'src/assets/images/pin.png';
-
-import '@goongmaps/goong-js/dist/goong-js.css';
+import sprinker from 'src/assets/images/sprinker.svg';
 
 const LoRaData = () => {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
@@ -32,47 +32,8 @@ const LoRaData = () => {
   const params = useParams();
   const nodeId = params.id;
   const dispatch = useAppDispatch();
-  const [data, setData] = useState([
-    {
-      name: 'place 1',
-      longitude: 106.6525115,
-      latitude: 10.7596269,
-    },
-    {
-      name: 'place 2',
-      longitude: 106.63426645500004,
-      latitude: 10.769253775000038,
-    },
-    {
-      name: 'place 3',
-      longitude: 106.66048396400004,
-      latitude: 10.835563540000066,
-    },
-    {
-      name: 'place 4',
-      longitude: 106.63531267900004,
-      latitude: 10.749946617000035,
-    },
-  ]);
   const [pagination, setPagination] = useState({ offset: 0, limit: 5 });
   const [totalItem, setTotalItem] = useState(0);
-
-  const [viewport, setViewport] = useState({
-    longitude: 106.70105355500004,
-    latitude: 10.776553100000058,
-    zoom: 11,
-  });
-
-  // Only rerender markers if props.data has changed
-  const markers = useMemo(
-    () =>
-      data.map((city) => (
-        <Marker key={city.name} longitude={city.longitude} latitude={city.latitude}>
-          <img src={pin} className="w-[50px]" />
-        </Marker>
-      )),
-    [data],
-  );
 
   const handleChangePage = (_event: React.ChangeEvent<unknown>, page: number) => {
     setPagination({ ...pagination, offset: page - 1 });
@@ -108,6 +69,22 @@ const LoRaData = () => {
     });
   }, []);
 
+  
+  const handleSensSprinklerSignal = () => {
+    dispatch(sendSprinklerSignal(nodeId as string)).then(() => {
+    });
+  };
+
+  const handleSendFanSignal = () => {
+    dispatch(sendFanSignal(nodeId as string)).then(() => {
+    });
+  };
+
+  const handleSendLightBulbSignal = () => {
+    dispatch(sendLightBulbSignal(nodeId as string)).then(() => {
+    });
+  };
+
   return (
     <>
       {openModal && (
@@ -122,9 +99,8 @@ const LoRaData = () => {
       <div className="my-12 mx-14 mt-5">
         {/* header */}
         <div>
-          <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${
-            currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'
-          } `}</button>
+          <button onClick={() => history.back()} className="text-[#8792AB] text-t4 mb-4">{`${currentUser.role == 'USER' ? '< Back to Personal Space' : '< Back to Node List'
+            } `}</button>
           <h1 className="text-t7 font-semibold">{nodeName}</h1>
         </div>
         {/* body */}
@@ -147,16 +123,53 @@ const LoRaData = () => {
                 Average: {avg}
               </p> */}
               </div>
-              <button
-                onClick={() => {
-                  setOpenModal(true);
-                  setEditSensorData(undefined);
-                }}
-              >
-                <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
-                  <img src={plus} className="object-cover w-[25px] h-[25px]" />
-                </div>
-              </button>
+              <div className='flex gap-2'>
+              <Tooltip title={'Send light bulb signal'} placement="top">
+                  <button
+                    onClick={() => {
+                      handleSendLightBulbSignal();
+                    }}
+                  >
+                    <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
+                      <img src={light_bulb} className="object-cover w-[34px] h-[34px]" />
+                    </div>
+                  </button>
+                </Tooltip>
+                <Tooltip title={'Send sprinkler signal'} placement="top">
+                  <button
+                    onClick={() => {
+                      handleSensSprinklerSignal();
+                    }}
+                  >
+                    <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
+                      <img src={sprinker} className="object-cover w-[34px] h-[34px]" />
+                    </div>
+                  </button>
+                </Tooltip>
+                <Tooltip title={'Send Fan signal'} placement="top">
+                  <button
+                    onClick={() => {
+                      handleSendFanSignal();
+                    }}
+                  >
+                    <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
+                      <img src={fan} className="object-cover w-[34px] h-[34px]" />
+                    </div>
+                  </button>
+                </Tooltip>
+                <Tooltip title={'Options'} placement="top">
+                  <button
+                    onClick={() => {
+                      setOpenModal(true);
+                      setEditSensorData(undefined);
+                    }}
+                  >
+                    <div className="rounded-full bg-primary hover:bg-primary-400 w-[50px] h-[50px] flex justify-center items-center">
+                      <img src={plus} className="object-cover w-[25px] h-[25px]" />
+                    </div>
+                  </button>
+                </Tooltip>
+              </div>
             </div>
           </div>
           <div className="mt-5 mb-5 flex flex-wrap gap-12 justify-center w-[95%]">
@@ -186,19 +199,6 @@ const LoRaData = () => {
                 )}
               </>
             )}
-          </div>
-
-          {/* map display */}
-          <div>
-            <ReactMapGL
-              {...viewport}
-              width="80vw"
-              height="400px"
-              onViewportChange={setViewport}
-              goongApiAccessToken={import.meta.env.VITE_TILESMAP_API}
-            >
-              {markers}
-            </ReactMapGL>
           </div>
           {/* change log */}
           <div className="w-full my-8">

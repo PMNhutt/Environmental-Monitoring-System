@@ -38,7 +38,7 @@ const SensorDashboard = () => {
           },
         },
       },
-      selected: 2,
+      selected: 1,
       buttons: [
         {
           type: 'day',

@@ -1,8 +1,9 @@
 import { Modal } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { createNodes, editNodes } from 'src/redux/slices/nodeSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
+import GoongAutoComplete from '../../LoRaData/components/GoongAutoComplete';
 
 interface FormProps {
   setOpenModal: any;
@@ -13,7 +14,15 @@ interface FormProps {
 const Form: React.FC<FormProps> = (props) => {
   const { setOpenModal, setUpdateData, editData } = props;
   const dispatch = useAppDispatch();
+  const [mapAddress, setMapAddress] = useState('');
+  const [location, setLocation] = useState<any>();
+  const [mapAddressError, setMapAddressError] = useState(false);
 
+  useEffect(() => {
+    console.log('-- MAP ADDRESS -- ', mapAddress);
+    console.log('-- Location -- ', location);
+  }, [mapAddress]);
+  
   const {
     register,
     handleSubmit,
@@ -26,14 +35,22 @@ const Form: React.FC<FormProps> = (props) => {
       const req = {
         id: editData.id,
         name: data.name,
-        description: data.description,
+        location: mapAddress ? mapAddress : editData.location,
+        latitude: location ? location.lat : editData.latitude,
+        longitude: location ? location.lng : editData.longitude,
       };
       dispatch(editNodes(req)).then(() => {
         setOpenModal(false);
         setUpdateData((prev: boolean) => !prev);
       });
     } else {
-      dispatch(createNodes(data)).then(() => {
+      const req = {
+        ...data,
+        location: mapAddress ? mapAddress : editData.location,
+        latitude: location ? location.lat : editData.latitude,
+        longitude: location ? location.lng : editData.longitude,
+      };
+      dispatch(createNodes(req)).then(() => {
         setOpenModal(false);
         setUpdateData((prev: boolean) => !prev);
       });
@@ -48,9 +65,8 @@ const Form: React.FC<FormProps> = (props) => {
         <input
           disabled={editData}
           type="text"
-          className={`block w-full h-[36px] ${errors?.nodeCode ? 'mb-[5px]' : 'mb-[10px]'} ${
-            editData ? 'cursor-not-allowed' : ''
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${errors?.nodeCode ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('nodeCode', {
             required: true,
           })}
@@ -62,32 +78,31 @@ const Form: React.FC<FormProps> = (props) => {
         <label className="text-t3 font-semibold text-[#424856]">Name</label>
         <input
           type="text"
-          className={`block w-full h-[36px] ${
-            errors?.name ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${errors?.name ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('name', {
             required: true,
           })}
         />
         {errors?.name?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Name is required</p>}
       </>
-      {/* description */}
+      {/* location */}
       <>
-        <label className="text-t3 font-semibold text-[#424856]">Description</label>
-        <input
+        <label className="text-t3 font-semibold text-[#424856]">Location</label>
+        {/* <input
           type="text"
-          className={`block w-full h-[36px] ${
-            errors?.description ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-          {...register('description', {
+          className={`block w-full h-[36px] ${errors?.location ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          {...register('location', {
             required: true,
           })}
-        />
-        {errors?.description?.type === 'required' && (
-          <p className="mb-[5px] text-danger text-[14px]">Description is required</p>
+        /> */}
+        <GoongAutoComplete setMapAddress={setMapAddress} setLocation={setLocation} mapAddressError={mapAddressError} initSearchValue={editData ? editData.location : ''} />
+
+        {errors?.location?.type === 'required' && (
+          <p className="mb-[5px] text-danger text-[14px]">Location is required</p>
         )}
       </>
-
       {/* buttons */}
       <div className="flex justify-end items-center gap-4 mt-10">
         <button

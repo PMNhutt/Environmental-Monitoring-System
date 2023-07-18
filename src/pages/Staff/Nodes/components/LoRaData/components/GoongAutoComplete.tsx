@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { goong } from 'src/utils/plugins/axios';
 import useDebounce from 'src/share/hooks/useDebounce';
+import { goong } from 'src/utils/plugins/axios';
 
 import { useDispatch } from 'react-redux';
 
 const GoongAutoComplete = (props: any) => {
-  const { bounds, setMapAddress, mapAddressError } = props;
+  const { bounds, setMapAddress, setLocation, mapAddressError, initSearchValue } = props;
 
   const dispatch = useDispatch();
   const HCMLocation = '10.75, 106.67';
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState(initSearchValue ? initSearchValue : '');
   const [predictions, setPredictions] = useState([]);
   const searchDebounce = useDebounce(searchValue, 400);
-  const [allowSearch, setAllowSearch] = useState(true);
+  const [allowSearch, setAllowSearch] = useState(false);
 
   const handleInput = (e: any) => {
     setSearchValue(e.target.value);
@@ -32,8 +32,8 @@ const GoongAutoComplete = (props: any) => {
       setAllowSearch(false);
       setPredictions([]);
       const suggestAddress = res.data.result.formatted_address;
-      setMapAddress(suggestAddress.replace(/,/g, ''));
-      // console.log(res.data.result.geometry.location);
+      setMapAddress(suggestAddress);
+      setLocation(res.data.result.geometry.location);
     }
   };
 
@@ -68,9 +68,6 @@ const GoongAutoComplete = (props: any) => {
         }}
         value={searchValue}
         onChange={handleInput}
-        // disabled={!ready}
-        // disabled={ready ? (bounds ? false : true) : true}
-        // placeholder="Địa chỉ nhận hàng"
         className={`block w-full h-[36px] mb-[10px]
         p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
       />

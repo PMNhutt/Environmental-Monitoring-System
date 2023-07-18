@@ -1,7 +1,7 @@
 import { HighchartsReact } from 'highcharts-react-official';
 import Highcharts from 'highcharts/highstock';
 import React, { useEffect, useState } from 'react';
-import { getSensorIntervalData } from 'src/redux/slices/loraDataSlice';
+import { getSensorEventData, getSensorIntervalData } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
 
 interface ChartProps {
@@ -42,7 +42,7 @@ const LineChart: React.FC<ChartProps> = (props) => {
             }
           }
         },
-        selected: 2,
+        selected: 1,
         buttons: [{
           type: 'day',
           count: 1,
@@ -82,19 +82,41 @@ const LineChart: React.FC<ChartProps> = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       if (selectedSensorId !== null && selectedSensorId !== undefined && selectedSensorId !== '') {
+        let chartData1: number[][] = [];
+        let chartData2: number[][] = [];
         dispatch(getSensorIntervalData(selectedSensorId)).then((res: any) => {
-          const chartData: number[][] = res.payload
-          setChartOptions({
-            series: [
-              {
-                type: 'line',
-                name: 'Temperature',
-                data: chartData, // Replace with your actual data
-                tooltip: {
-                  valueDecimals: 2
-                }
-              },
-            ],
+          const chartData1 = res.payload;
+          dispatch(getSensorEventData(selectedSensorId)).then((res: any) => {
+            const chartData2 = res.payload;
+            setChartOptions({
+              series: [
+                {
+                  type: 'line',
+                  name: 'Temperature',
+                  data: chartData1, // Replace with your actual data
+                  tooltip: {
+                    valueDecimals: 2
+                  }
+                },
+                {
+                  type: 'scatter',
+                  name: 'Temperature',
+                  data: chartData2, // Replace with your actual data
+                  tooltip: {
+                    valueDecimals: 2,
+                    pointFormatter: function (this: Highcharts.Point) {
+                      return '' + this.y?.toFixed(2); // Show only the x-axis value in the tooltip
+                    },
+                  },
+                  marker: {
+                    symbol: 'line', // Use 'line' symbol for the markers (vertical lines)
+                    lineWidth: 2, // Set the width of the vertical lines
+                  },
+                  color: '#de3b40',
+                  // pointWidth: 1,
+                },
+              ],
+            });
           });
         });
       }
