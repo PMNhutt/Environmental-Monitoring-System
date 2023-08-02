@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { setUserDetail } from 'src/redux/slices/usersSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
 
 // ** assets
 import plus from 'src/assets/images/plus_white.svg';
-import fitler from 'src/assets/images/filter.svg';
 
 interface ButtonProps {
   active: number;
@@ -62,7 +61,7 @@ const Header: React.FC<HeaderProps> = (props) => {
         <button
           onClick={() => {
             setOpenModal(true);
-            setModalTitle('Create new account');
+            setModalTitle('Create a new account');
             setIsModalDetail(false);
             dispatch(setUserDetail(undefined));
           }}
@@ -97,10 +96,6 @@ const Header: React.FC<HeaderProps> = (props) => {
             placeholder={'Search'}
           />
         </div>
-        {/* filter button */}
-        <button className="bg-[#F3F4F6] rounded-[6px] p-2 px-3">
-          <img src={fitler} className="object-cover w-[12px] h-[12px]" />
-        </button>
       </div>
     </section>
   );

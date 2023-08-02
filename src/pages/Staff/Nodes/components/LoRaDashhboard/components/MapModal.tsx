@@ -1,39 +1,40 @@
-import ReactMapGL, { Marker } from '@goongmaps/goong-map-react';
+import ReactMapGL, { FullscreenControl, Marker, NavigationControl } from '@goongmaps/goong-map-react';
 import { Modal } from '@mui/material';
-import { useMemo, useState } from 'react';
-import pin from 'src/assets/images/pin.png';
+import { useEffect, useMemo, useState } from 'react';
 // assest
 import '@goongmaps/goong-js/dist/goong-js.css';
+import { getNodeLocations } from 'src/redux/slices/nodeSlice';
+import { useAppDispatch } from 'src/redux/store/hooks';
+import NodeMarker from './NodeMarker';
+// import NodeMarker from './NodeMarker';
 
 interface CreateModalProps {
   openMapModal: boolean;
   setOpenMapModal: any;
 }
 
+const fullscreenControlStyle = {
+  top: 36,
+  left: 0,
+  padding: '10px'
+};
+
+const navStyle = {
+  top: 72,
+  left: 0,
+  padding: '10px'
+};
+
 const CreateModal: React.FC<CreateModalProps> = (props) => {
   const { openMapModal, setOpenMapModal } = props;
-  const [data, setData] = useState([
-    {
-      name: 'place 1',
-      longitude: 106.6525115,
-      latitude: 10.7596269,
-    },
-    {
-      name: 'place 2',
-      longitude: 106.63426645500004,
-      latitude: 10.769253775000038,
-    },
-    {
-      name: 'place 3',
-      longitude: 106.66048396400004,
-      latitude: 10.835563540000066,
-    },
-    {
-      name: 'place 4',
-      longitude: 106.63531267900004,
-      latitude: 10.749946617000035,
-    },
-  ]);
+  const [nodeData, setNodeData] = useState([]);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getNodeLocations()).then((res: any) => {
+      const nodeList = res.payload;
+      setNodeData(nodeList);
+    });
+  }, []);
 
   const [viewport, setViewport] = useState({
     longitude: 106.70105355500004,
@@ -43,12 +44,18 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
 
   const markers = useMemo(
     () =>
-      data.map((city) => (
-        <Marker key={city.name} longitude={city.longitude} latitude={city.latitude}>
-          <img src={pin} className="w-[50px]" />
+      nodeData.map((node: any) => (
+        <Marker
+          offsetLeft={-20}
+          offsetTop={-10}
+          key={node.name}
+          longitude={node.longitude}
+          latitude={node.latitude}>
+          {/* <img src={pin} className="w-[50px]" /> */}
+          <NodeMarker nodeInfo={node} />
         </Marker>
       )),
-    [data],
+    [nodeData],
   );
 
   return (
@@ -67,11 +74,13 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
             <ReactMapGL
               {...viewport}
               width="948px"
-              height="400px"
+              height="500px"
               onViewportChange={setViewport}
               goongApiAccessToken={import.meta.env.VITE_TILESMAP_API}
             >
               {markers}
+              <FullscreenControl style={fullscreenControlStyle} />
+              <NavigationControl style={navStyle} />
             </ReactMapGL>
           </div>
         </div>

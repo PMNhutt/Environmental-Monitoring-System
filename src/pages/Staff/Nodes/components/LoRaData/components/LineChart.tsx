@@ -5,12 +5,15 @@ import { getSensorEventData, getSensorIntervalData } from 'src/redux/slices/lora
 import { useAppDispatch } from 'src/redux/store/hooks';
 
 interface ChartProps {
+  samplingValue: number;
   selectedSensorId: string;
+  selectedSensorMaxThreshold: number;
+  selectedSensorMinThreshold: number;
 }
 
 const LineChart: React.FC<ChartProps> = (props) => {
   const dispatch = useAppDispatch();
-  const { selectedSensorId } = props;
+  const { selectedSensorId, selectedSensorMaxThreshold, selectedSensorMinThreshold, samplingValue } = props;
   const [chartOptions, setChartOptions] = useState<Highcharts.Options>(
     {
       chart: {
@@ -84,7 +87,10 @@ const LineChart: React.FC<ChartProps> = (props) => {
       if (selectedSensorId !== null && selectedSensorId !== undefined && selectedSensorId !== '') {
         let chartData1: number[][] = [];
         let chartData2: number[][] = [];
-        dispatch(getSensorIntervalData(selectedSensorId)).then((res: any) => {
+        const params = {
+          sampling: samplingValue
+        }
+        dispatch(getSensorIntervalData({sensorId: selectedSensorId, params})).then((res: any) => {
           const chartData1 = res.payload;
           dispatch(getSensorEventData(selectedSensorId)).then((res: any) => {
             const chartData2 = res.payload;
@@ -103,9 +109,9 @@ const LineChart: React.FC<ChartProps> = (props) => {
                   name: 'Temperature',
                   data: chartData2, // Replace with your actual data
                   tooltip: {
-                    valueDecimals: 2,
+                    valueDecimals: 1,
                     pointFormatter: function (this: Highcharts.Point) {
-                      return '' + this.y?.toFixed(2); // Show only the x-axis value in the tooltip
+                      return '' + this.y?.toFixed(1) + " " + getLevel(selectedSensorMinThreshold, selectedSensorMaxThreshold, this.y? this.y : 0); // Show only the x-axis value in the tooltip
                     },
                   },
                   marker: {
@@ -124,7 +130,7 @@ const LineChart: React.FC<ChartProps> = (props) => {
     fetchData();
     const handler = setInterval(fetchData, 10000);
     return () => clearInterval(handler);
-  }, [selectedSensorId]);
+  }, [selectedSensorId, samplingValue]);
 
   return (
     <div>
@@ -136,5 +142,32 @@ const LineChart: React.FC<ChartProps> = (props) => {
     </div>
   );
 };
+
+const getLevel = (min: number, max: number, resData: number) => {
+  const maxThreshold = max;
+  const minThreshold = min;
+  const thresholdRange = maxThreshold - minThreshold;
+  const lowThreshold = minThreshold - (thresholdRange * 0.2);
+  const veryLowThreshold = minThreshold - (thresholdRange * 0.6);
+  const highThreshold = maxThreshold + (thresholdRange * 0.2);
+  const veryHighThreshold = maxThreshold + (thresholdRange * 0.6);
+  if (resData < veryLowThreshold) {
+    return 'Extremely Low';
+  } else if (resData >= veryLowThreshold && resData < lowThreshold) {
+    return 'Very Low';
+  } else if (resData >= lowThreshold && resData < minThreshold) {
+    return 'Low';
+  } else if (resData >= minThreshold && resData <= maxThreshold) {
+    return 'Normal';
+  } else if (resData > maxThreshold && resData <= highThreshold) {
+    return 'High';
+  } else if (resData > highThreshold && resData <= veryHighThreshold) {
+    return 'Very High';
+  } else if (resData > veryHighThreshold) {
+    return 'Extremely High';
+  } else if (resData === undefined) {
+    return '';
+  }
+}
 
 export default LineChart;

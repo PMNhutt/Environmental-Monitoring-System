@@ -11,7 +11,7 @@ import { useAppDispatch } from 'src/redux/store/hooks';
 
 import { IconButton, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { NodeProps } from 'src/utils/interface';
+import { NodeProps, UsersProps } from 'src/utils/interface';
 
 import dayjs from 'dayjs';
 import localFormat from 'dayjs/plugin/localizedFormat';
@@ -19,6 +19,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface Props {
+  currentUser: UsersProps;
   nodeData: NodeProps;
   setUpdateData: any;
   setEditNodeData: any;
@@ -26,7 +27,7 @@ interface Props {
 }
 
 const Node: React.FC<Props> = (props) => {
-  const { nodeData, setUpdateData, setEditNodeData, setOpenEditModal } = props;
+  const { nodeData, setUpdateData, setEditNodeData, setOpenEditModal, currentUser } = props;
   const navigate = useNavigate();
   dayjs.extend(relativeTime);
   dayjs.extend(localFormat);
@@ -113,17 +114,30 @@ const Node: React.FC<Props> = (props) => {
                   transition={{ duration: 0.5, type: 'spring' }}
                   exit={{ opacity: 0 }}
                   ref={ref}
-                  className="absolute top-8 left-[50%] transform translate-x-[-50%] bg-white border shadow-sm rounded-[5px] font-medium text-t3"
+                  className="absolute top-8 left-[40%] transform translate-x-[-50%] bg-white border shadow-sm shadow-md rounded-[5px] font-medium text-t3"
                 >
                   <li onClick={() => handleEditNode()} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                    Edit
+                    {currentUser.role == 'STAFF' && (
+                      <>
+                        Edit
+                      </>
+                    )}
+                    {currentUser.role == 'USER' && (
+                      <>
+                        View
+                      </>
+                    )}
                   </li>
-                  <li onClick={() => setOpenConfirm(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                    Delete
-                  </li>
-                  <li onClick={() => setOpenPermission(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                    Permissions
-                  </li>
+                  {currentUser.role == 'STAFF' && (
+                    <>
+                      <li onClick={() => setOpenConfirm(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
+                        Delete
+                      </li>
+                      <li onClick={() => setOpenPermission(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
+                        Permissions
+                      </li>
+                    </>
+                  )}
                 </motion.ul>
               )}
             </AnimatePresence>

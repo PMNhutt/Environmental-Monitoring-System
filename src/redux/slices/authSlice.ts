@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import instances from 'src/utils/plugins/axios';
-import { toast } from 'react-toastify';
 import jwt_decode from 'jwt-decode';
+import { toast } from 'react-toastify';
 import { UsersProps } from 'src/utils/interface';
+import instances from 'src/utils/plugins/axios';
 
 interface initialStateType {
   currentUser: UsersProps;
@@ -21,6 +21,7 @@ const initialState: initialStateType = {
     role: '',
     isDeleted: false,
     avatar: '',
+    createdDate: '',
   },
   loading: false,
   error: '',

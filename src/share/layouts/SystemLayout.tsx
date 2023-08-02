@@ -24,6 +24,9 @@ const SystemLayout = ({ children }: { children: React.ReactNode }) => {
       case 'sensors':
         setAllowRoute(true);
         break;
+      case 'location':
+        setAllowRoute(true);
+        break;
       default:
         setAllowRoute(false);
         break;
@@ -70,7 +73,7 @@ const SystemLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
               </Drawer>
             </>
-            <div className={`w-[243px] sm:block xl3:hidden hidden font-poppins`}></div>
+            {/* <div className={`w-[243px] block`}></div> */}
           </>
         )}
 

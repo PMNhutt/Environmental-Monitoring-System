@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import styles from 'src/utils/style';
 
 // ** pages
-import SensorDashboard from './components/SensorDashhboard/SensorDashboard';
+import LocationDashboard from './components/LocationDashboard/LocationDashboard';
 
 const SensorContainer = () => {
   return (
@@ -12,8 +12,8 @@ const SensorContainer = () => {
         {/* <Suspense fallback={<Loading />}> */}
         <Routes>
           <Route path="/">
-            <Route index element={<SensorDashboard />} />
-            <Route path="/:id" element={<SensorDashboard />} />
+            <Route index element={<LocationDashboard />} />
+            <Route path="/:id" element={<LocationDashboard />} />
           </Route>
         </Routes>
         {/* </Suspense> */}

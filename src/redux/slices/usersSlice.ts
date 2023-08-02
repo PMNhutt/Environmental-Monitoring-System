@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { UserDetailById, UsersProps } from 'src/utils/interface';
 import instances from 'src/utils/plugins/axios';
-import { UsersProps, UserDetailById } from 'src/utils/interface';
 
 interface InitialStateType {
   userDetailById: UserDetailById | undefined;
@@ -39,6 +39,7 @@ export const getUsers = createAsyncThunk('users/getUsers', async (req?: any) => 
       isDeleted: u.isDeleted,
       id: u.id,
       avatar: u.avatar,
+      createdDate: u.createdDate,
     };
   });
   return list;
@@ -83,6 +84,7 @@ export const createUser = createAsyncThunk('users/createUser', async (req: any, 
       address: req.address,
       dateOfBirth: req.dateOfBirth,
       password: req.password,
+      role: req.role,
     });
     return res.data;
   } catch (e) {
@@ -130,6 +132,7 @@ export const getUserById = createAsyncThunk('users/getUserById', async (id: any)
     avatar: res.data.avatar,
     address: res.data.address,
     dateOfBirth: res.data.dateOfBirth,
+    createdDate: res.data.createdDate,
   };
   return formated;
 });
@@ -192,7 +195,7 @@ export const usersSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state) => {
         state.updating = false;
-        toast.success('Create succussfully! 👌');
+        toast.success('Create successfully! 👌');
       })
       .addCase(createUser.rejected, (state, action: any) => {
         state.updating = false;

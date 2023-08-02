@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import moreInfoIcon from 'src/assets/images/more-info.png';
 import actions from 'src/assets/images/sensorAction.svg';
 import { deleteSensors, editSensorActive, editSensorThreshold, getSensor, getSensorIntervalLatestData } from 'src/redux/slices/loraDataSlice';
@@ -59,7 +60,20 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
 }));
 
 const LoRaType: React.FC<LoRaTypeProps> = (props) => {
-  const { sensorData, setSelectedSensorId, selectedSensorId, sensorList, setSensorList, setUpdateData, setOpenEditModal, setEditSensorData } = props;
+  const {
+    sensorData,
+    setSelectedSensorId,
+    selectedSensorId,
+    sensorList,
+    setSensorList,
+    setUpdateData,
+    setOpenEditModal,
+    setEditSensorData,
+    setSelectedSensorMaxThreshold,
+    setSelectedSensorMinThreshold,
+    currentUser,
+    permission,
+  } = props;
   const [latestData, setLatestData] = useState(0);
   const [openOptions, setOpenOptions] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -107,8 +121,6 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
         const thresholdRange = maxThreshold - minThreshold;
         const lowThreshold = minThreshold - (thresholdRange * 0.2);
         const veryLowThreshold = minThreshold - (thresholdRange * 0.6);
-        const pretttLowThreshold = minThreshold + (thresholdRange * 0.2);
-        const pretttHighThreshold = maxThreshold - (thresholdRange * 0.2);
         const highThreshold = maxThreshold + (thresholdRange * 0.2);
         const veryHighThreshold = maxThreshold + (thresholdRange * 0.6);
         if (resData < veryLowThreshold) {
@@ -117,12 +129,8 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
           setLevel('Very Low');
         } else if (resData >= lowThreshold && resData < minThreshold) {
           setLevel('Low');
-        } else if (resData >= minThreshold && resData < pretttLowThreshold) {
-          setLevel('Pretty Low');
-        } else if (resData >= pretttLowThreshold && resData <= pretttHighThreshold) {
+        } else if (resData >= minThreshold && resData <= maxThreshold) {
           setLevel('Normal');
-        } else if (resData > pretttHighThreshold && resData <= maxThreshold) {
-          setLevel('Pretty High');
         } else if (resData > maxThreshold && resData <= highThreshold) {
           setLevel('High');
         } else if (resData > highThreshold && resData <= veryHighThreshold) {
@@ -152,14 +160,10 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
         return 'text-[#00ADFF]';
       case 'Low':
         return 'text-[#00D9F3]';
-      case 'Pretty Low':
-        return 'text-[#6CFACD]';
       case 'Normal':
         return 'text-success';
-      case 'Pretty High':
-        return 'text-warning';
       case 'High':
-        return 'text-[#FF8C5E]';
+        return 'text-warning';
       case 'Very High':
         return 'text-[#B50000]';
       case 'Extremely High':
@@ -198,6 +202,8 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
           return item;
         });
         setSensorList(newList);
+        const template = res.payload.isActive ? "Activate" : "Deactivate"
+        toast.success(template + " sensor success")
       }
     });
   };
@@ -254,6 +260,8 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
         <div
           onClick={() => {
             setSelectedSensorId(sensorData.id)
+            setSelectedSensorMaxThreshold(sensorData.maxThreshold);
+            setSelectedSensorMinThreshold(sensorData.minThreshold);
           }}
           className={`${selectedSensorId === sensorData.id
             ? 'bg-[#EFEDFD] border-primary '
@@ -292,57 +300,61 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
               <img src={moreInfoIcon} className="object-contain" />
             </div>
           </HtmlTooltip>
-          <div className="absolute top-0 right-0 w-7 h-7">
-            <div className="relative z-[50]">
-              <Tooltip title={'Options'} placement="top">
-                <IconButton
-                  sx={{ padding: "5px" }}
-                  disabled={openOptions}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!openOptions) setOpenOptions(true);
-                  }}
-                >
-                  <img src={actions} className="object-contain" />
-                </IconButton>
-              </Tooltip>
-              {/* options menu */}
-              <AnimatePresence>
-                {openOptions && (
-                  <motion.ul
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, type: 'spring' }}
-                    exit={{ opacity: 0 }}
-                    ref={ref}
-                    className="absolute z-10 top-15 left-[25%] transform translate-x-[-50%] bg-white border shadow-sm rounded-[5px] font-medium text-t3"
+          {currentUser.role == 'STAFF' && (
+            <div className="absolute top-0 right-0 w-7 h-7">
+              <div className="relative z-[50]">
+                <Tooltip title={'Options'} placement="top">
+                  <IconButton
+                    sx={{ padding: "5px" }}
+                    disabled={openOptions}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!openOptions) setOpenOptions(true);
+                    }}
                   >
-                    <li onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditNode();
-                    }} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                      Edit
-                    </li>
-                    <li onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenConfirm(true);
-                    }} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                      Delete
-                    </li>
-                  </motion.ul>
-                )}
-              </AnimatePresence>
+                    <img src={actions} className="object-contain" />
+                  </IconButton>
+                </Tooltip>
+                {/* options menu */}
+                <AnimatePresence>
+                  {openOptions && (
+                    <motion.ul
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, type: 'spring' }}
+                      exit={{ opacity: 0 }}
+                      ref={ref}
+                      className="absolute z-10 top-15 left-[25%] transform translate-x-[-50%] bg-white border shadow-sm rounded-[5px] font-medium text-t3"
+                    >
+                      <li onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditNode();
+                      }} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
+                        Edit
+                      </li>
+                      <li onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenConfirm(true);
+                      }} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
+                        Delete
+                      </li>
+                    </motion.ul>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
-          </div>
-          <div className="absolute rotate-[270deg] top-[-0.4rem] right-[-3.5rem]">
-            <Android12Switch
-              onClick={(e) => {
-                e.stopPropagation();
-                handleActiveSensor();
-              }}
-              checked={sensorData.isActive}
-              defaultChecked />
-          </div>
+          )}
+          {permission === 'ACTION' && (
+            <div className="absolute rotate-[270deg] top-[-0.4rem] right-[-3.5rem]">
+              <Android12Switch
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleActiveSensor();
+                }}
+                checked={sensorData.isActive}
+              />
+            </div>
+          )}
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center justify-between py-2 max-w-[300px]">
@@ -371,9 +383,11 @@ const LoRaType: React.FC<LoRaTypeProps> = (props) => {
             />
             {errors?.max?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Max is required</p>}
           </div>
-          <button type="submit" className="w-full text-white bg-primary text-t3 font-medium py-1 mt-2 rounded-[6px]">
-            Save
-          </button>
+          {permission === 'ACTION' && (
+            <button type="submit" className="w-full text-white bg-primary text-t3 font-medium py-1 mt-2 rounded-[6px]">
+              Save
+            </button>
+          )}
         </form>
       </div>
     </>

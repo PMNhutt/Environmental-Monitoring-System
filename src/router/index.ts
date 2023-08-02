@@ -1,8 +1,8 @@
 import { lazy } from 'react';
-import { RouteProps } from 'src/utils/interface';
+import AuthLayout from 'src/share/layouts/AuthLayout';
 import EmptyLayout from 'src/share/layouts/EmptyLayout';
 import SystemLayout from 'src/share/layouts/SystemLayout';
-import AuthLayout from 'src/share/layouts/AuthLayout';
+import { RouteProps } from 'src/utils/interface';
 
 const LandingPage = lazy(() => import('src/pages/LandingPage/LandingPage'));
 const PageNotFound = lazy(() => import('src/pages/PageNotFound/PageNotFound'));
@@ -14,6 +14,7 @@ const ResetPasswordPage = lazy(() => import('src/pages/Auth/ResetPass/ResetPass'
 const UserManagementPage = lazy(() => import('src/pages/Admin/UserManagement'));
 const Nodes = lazy(() => import('src/pages/Staff/Nodes/NodeContainer'));
 const Sensors = lazy(() => import('src/pages/Staff/Sensors/SensorContainer'));
+const Location = lazy(() => import('src/pages/Staff/Location/LocationContainer'));
 const PersonalInfo = lazy(() => import('src/pages/PersonalInfo/PersonalInfo'));
 
 // ** public routes (no need authen)
@@ -30,7 +31,9 @@ const privateRoutes: RouteProps[] = [
   { path: '/admin', component: UserManagementPage, title: 'Envi - Admin', layout: SystemLayout },
   { path: '/nodes/*', component: Nodes, title: 'Envi - LoRa', layout: SystemLayout },
   { path: '/sensors/*', component: Sensors, title: 'Envi - LoRa', layout: SystemLayout },
+  { path: '/location/*', component: Location, title: 'Envi - LoRa', layout: SystemLayout },
   { path: '/personal/:id', component: PersonalInfo, title: 'Envi - Personal Information', layout: SystemLayout },
 ];
 
 export { publicRoutes, privateRoutes };
+

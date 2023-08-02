@@ -1,10 +1,10 @@
-import { Modal } from '@mui/material';
+import { Autocomplete, Modal } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { getAllLocationsVer2 } from 'src/redux/slices/loraDataSlice';
 import { createNodes, editNodes } from 'src/redux/slices/nodeSlice';
 import { useAppDispatch } from 'src/redux/store/hooks';
-import GoongAutoComplete from '../../LoRaData/components/GoongAutoComplete';
-
+import { LocationProps } from 'src/utils/interface';
 interface FormProps {
   setOpenModal: any;
   setUpdateData: any;
@@ -14,15 +14,30 @@ interface FormProps {
 const Form: React.FC<FormProps> = (props) => {
   const { setOpenModal, setUpdateData, editData } = props;
   const dispatch = useAppDispatch();
-  const [mapAddress, setMapAddress] = useState('');
-  const [location, setLocation] = useState<any>();
-  const [mapAddressError, setMapAddressError] = useState(false);
+  const [options, setOptions] = useState<LocationProps[]>([
+    {
+      id: "",
+      name: "None",
+      address: "None",
+      createdDate: "",
+      latitude: 0,
+      longitude: 0,
+      updatedDate: "",
+    }
+  ]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [locationError, setLocationError] = useState(false);
 
   useEffect(() => {
-    console.log('-- MAP ADDRESS -- ', mapAddress);
-    console.log('-- Location -- ', location);
-  }, [mapAddress]);
-  
+    const params = {
+      search: "",
+    }
+    dispatch(getAllLocationsVer2(params)).then((res: any) => {
+      const locationOptionList = res.payload.data;
+      setOptions(options.concat(locationOptionList));
+    });
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -35,24 +50,31 @@ const Form: React.FC<FormProps> = (props) => {
       const req = {
         id: editData.id,
         name: data.name,
-        location: mapAddress ? mapAddress : editData.location,
-        latitude: location ? location.lat : editData.latitude,
-        longitude: location ? location.lng : editData.longitude,
+        locationId: selectedLocation === '' ? null : selectedLocation,
       };
-      dispatch(editNodes(req)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
-      });
+      const locationObject = options.find((option) => option.id === selectedLocation);
+      if (locationObject) {
+        dispatch(editNodes(req)).then((res: any) => {
+          if (!res.error) {
+            setOpenModal(false);
+            setUpdateData((prev: boolean) => !prev);
+          }
+        });
+      }
+      else {
+        setLocationError(true);
+      }
+
     } else {
       const req = {
         ...data,
-        location: mapAddress ? mapAddress : editData.location,
-        latitude: location ? location.lat : editData.latitude,
-        longitude: location ? location.lng : editData.longitude,
+        locationId: selectedLocation === '' ? null : selectedLocation,
       };
-      dispatch(createNodes(req)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
+      dispatch(createNodes(req)).then((res: any) => {
+        if (!res.error) {
+          setOpenModal(false);
+          setUpdateData((prev: boolean) => !prev);
+        }
       });
     }
   };
@@ -88,20 +110,44 @@ const Form: React.FC<FormProps> = (props) => {
       </>
       {/* location */}
       <>
-        <label className="text-t3 font-semibold text-[#424856]">Location</label>
-        {/* <input
-          type="text"
-          className={`block w-full h-[36px] ${errors?.location ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-          {...register('location', {
-            required: true,
-          })}
-        /> */}
-        <GoongAutoComplete setMapAddress={setMapAddress} setLocation={setLocation} mapAddressError={mapAddressError} initSearchValue={editData ? editData.location : ''} />
-
-        {errors?.location?.type === 'required' && (
-          <p className="mb-[5px] text-danger text-[14px]">Location is required</p>
-        )}
+        <div className='relative'>
+          <label className="text-t3 font-semibold text-[#424856]">Location</label>
+          <Autocomplete
+            disabled={editData}
+            sx={{
+              // display: 'inline-block',
+              '& input': {
+                display: 'block',
+                width: '100%',
+                height: '36px',
+                marginBottom: errors?.location ? '5px' : '10px',
+                padding: '12px',
+                fontSize: '0.875rem',
+                lineHeight: '1.375rem',
+                fontFamily: 'Poppins',
+                bgcolor: '#F3F4F6',
+                borderRadius: '5px'
+              },
+            }}
+            id="custom-input-demo"
+            options={options}
+            defaultValue={editData && editData.locations ? editData.locations : options[0]}
+            clearOnBlur={false}
+            onChange={(_, newValue: LocationProps | null) => {
+              setSelectedLocation(newValue ? newValue.id : '');
+            }}
+            getOptionLabel={(option) => (option.name + " - " + option.address)}
+            renderInput={(params) => (
+              <div ref={params.InputProps.ref}>
+                <input type="text"
+                  {...params.inputProps} />
+              </div>
+            )}
+          />
+          {locationError && (
+            <p className="mb-[5px] text-danger text-[14px]">You should choose a valid option</p>
+          )}
+        </div>
       </>
       {/* buttons */}
       <div className="flex justify-end items-center gap-4 mt-10">
@@ -138,7 +184,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
       >
         {/* header */}
         <div className="px-[25px] pb-4 border-b border-b-[#F3F4F6] text-t7 font-medium">
-          {editData ? 'Edit nodes' : 'Create new nodes'}
+          {editData ? 'Edit nodes' : 'Create a new node'}
         </div>
         {/* body */}
         <div className="px-[25px] my-3">

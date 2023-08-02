@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import { Modal } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
 import icon from 'src/assets/images/permission.svg';
-import useDebounce from 'src/share/hooks/useDebounce';
-import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
-import { searchUsers } from 'src/redux/slices/usersSlice';
 import { assignNode, getAssignedUsers } from 'src/redux/slices/nodeSlice';
-import { UsersProps } from 'src/utils/interface';
+import { searchUsers } from 'src/redux/slices/usersSlice';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
+import useDebounce from 'src/share/hooks/useDebounce';
+import { UsersProps, UsersPropsWithPermission } from 'src/utils/interface';
 
 // ** compoennts
-import DropdownItem from './PermissonComp/DropdownItem';
 import AssignedUser from './PermissonComp/AssignedUser';
+import DropdownItem from './PermissonComp/DropdownItem';
 
 interface PermissonProps {
   openModal: boolean;
@@ -27,15 +27,20 @@ const PermissonsModal: React.FC<PermissonProps> = (props) => {
   const debounced = useDebounce(searchValue, 600);
   const dispatch = useAppDispatch();
 
-  const [assignedUsers, setAssignedUsers] = useState<any>([]);
+  const [assignedUsers, setAssignedUsers] = useState<UsersPropsWithPermission[]>([]);
 
   // handle save permisson
   const handleConfirmModal = () => {
-    const idArray = assignedUsers.map((user: UsersProps) => user.id);
+    const userMap = new Map();
+    assignedUsers.forEach((user) => {
+      userMap.set(user.id, user.permission);
+    });
+    // const idArray = assignedUsers.map((user: UsersPropsWithPermission) => [user.id, user.permission]);
     const req = {
       nodeId: nodeId,
-      users: idArray,
+      users: Object.fromEntries(userMap),
     };
+    console.log(req);
     dispatch(assignNode(req)).then(() => {
       setOpenModal(false);
     });
@@ -63,7 +68,7 @@ const PermissonsModal: React.FC<PermissonProps> = (props) => {
     <Modal open={openModal} onClose={() => setOpenModal(false)}>
       <div
         className="fixed left-[50%]
-  top-[50%] translate-y-[-50%] translate-x-[-50%] sm:w-[432px] w-full bg-white rounded-[4px] p-4 font-poppins"
+  top-[50%] translate-y-[-50%] translate-x-[-50%] sm:w-[500px] w-full bg-white rounded-[4px] p-4 font-poppins"
       >
         {/* header */}
         <div className="w-full flex flex-col justify-center items-center gap-2">
@@ -94,7 +99,7 @@ const PermissonsModal: React.FC<PermissonProps> = (props) => {
             onChange={(e) => setSearchValue(e.target.value)}
             type="text"
             className="block w-full p-[8px] pl-[40px] text-t3 rounded-[6px] bg-[#F3F4F6] focus:outline-primary "
-            placeholder={'Search for name, email...'}
+            placeholder={'Search for name, email'}
           />
           {/* dropdown list user */}
           {!loading ? (

@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DataGrid } from '@mui/x-data-grid';
-import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import defaultValue from 'src/utils/default';
-import TableLoading from 'src/share/loading/TableLoading';
+import Tooltip from '@mui/material/Tooltip';
+import { DataGrid } from '@mui/x-data-grid';
 import NoRowData from 'src/share/components/NoRowData';
+import TableLoading from 'src/share/loading/TableLoading';
+import defaultValue from 'src/utils/default';
 
+import dayjs from 'dayjs';
 import avatar from 'src/assets/images/avatar.svg';
 import disable from 'src/assets/images/disable.svg';
 import enable from 'src/assets/images/enable.svg';
@@ -27,7 +28,7 @@ const getUserRole = (role: string) => {
         <p className="min-w-[70px] text-center text-secondary px-3 py-1 rounded-full text-t3 bg-[#F3F4F6]">Staff</p>
       );
     case 'USER':
-      return <p className="min-w-[70px] text-center text-black px-3 py-1 rounded-full text-t3 bg-[#F3F4F6]">User</p>;
+      return <p className="min-w-[70px] text-center text-black px-3 py-1 rounded-full text-t3 bg-[#F3F4F6]">Customer</p>;
     default:
       break;
   }
@@ -64,6 +65,13 @@ const columns = [
     width: 150,
     flex: 1,
     renderCell: (params: any) => getUserRole(params.row.role),
+  },
+  {
+    field: 'createdDate',
+    headerName: 'CreatedDate',
+    width: 150,
+    flex: 1,
+    renderCell: (params: any) => dayjs(params.row.createdDate).format('DD/MM/YYYY') ,
   },
   {
     field: 'isDeleted',

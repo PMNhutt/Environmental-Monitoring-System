@@ -1,14 +1,13 @@
-import { useState } from 'react';
 import { Modal } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
-import { useAppSelector } from 'src/redux/store/hooks';
-import { useAppDispatch } from 'src/redux/store/hooks';
 import { createUser, editUser } from 'src/redux/slices/usersSlice';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 
 import { DetailModalProps } from 'src/utils/interface';
 import { Regex_Email, Regex_PhoneNumber } from 'src/utils/regex';
@@ -45,6 +44,7 @@ const Form: React.FC<FormProps> = (props) => {
       lastName: data.lastName,
       password: data.password,
       phone: data.phone,
+      role: data.role,
     };
     const requestEditUser = {
       id: userDetail.userDetail?.id,
@@ -54,19 +54,24 @@ const Form: React.FC<FormProps> = (props) => {
       firstName: data.firstName,
       lastName: data.lastName,
       phone: data.phone,
+      role: data.role,
     };
 
     if (isModalDetail) {
       // console.log(userDetail.userDetail.id);
-      dispatch(editUser(requestEditUser)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
+      dispatch(editUser(requestEditUser)).then((res: any) => {
+        if (!res.error) {
+          setOpenModal(false);
+          setUpdateData((prev: boolean) => !prev);
+        }
       });
     } else {
       // console.log(requestCreateUser);
-      dispatch(createUser(requestCreateUser)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
+      dispatch(createUser(requestCreateUser)).then((res: any) => {
+        if (!res.error) {
+          setOpenModal(false);
+          setUpdateData((prev: boolean) => !prev);
+        }
       });
     }
   };
@@ -79,9 +84,8 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">First name</label>
           <input
             type="text"
-            className={`block w-full h-[36px] ${
-              errors?.firstName ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.firstName ? 'mb-[5px]' : 'mb-[10px]'
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('firstName', {
               required: true,
               // pattern: {
@@ -98,9 +102,8 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">Last name</label>
           <input
             type="text"
-            className={`block w-full h-[36px] ${
-              errors?.lastName ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.lastName ? 'mb-[5px]' : 'mb-[10px]'
+              } p-[12px] text-t3 bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('lastName', {
               required: true,
             })}
@@ -115,9 +118,8 @@ const Form: React.FC<FormProps> = (props) => {
         <label className="text-t3 font-semibold text-[#424856]">Address</label>
         <input
           type="text"
-          className={`block w-full h-[36px] ${
-            errors?.address ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${errors?.address ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('address', {
             required: true,
             // pattern: {
@@ -129,29 +131,27 @@ const Form: React.FC<FormProps> = (props) => {
           <p className="mb-[5px] text-danger text-[14px]">Address is required</p>
         )}
       </>
-      {/* phone, DoB */}
-      <div className="flex sm:gap-5 sm:w-[490px] sm:flex-row flex-col w-full">
-        {/* phone */}
-        <div className="w-full">
-          <label className="text-t3 font-semibold text-[#424856]">Phone</label>
-          <input
-            type="number"
-            className={`block w-full h-[36px] ${
-              errors?.phone ? 'mb-[5px]' : 'mb-[10px]'
+      {/* phone */}
+      <div className="w-full">
+        <label className="text-t3 font-semibold text-[#424856]">Phone</label>
+        <input
+          type="number"
+          className={`block w-full h-[36px] ${errors?.phone ? 'mb-[5px]' : 'mb-[10px]'
             } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
-            {...register('phone', {
-              required: true,
-              pattern: Regex_PhoneNumber,
-            })}
-          />
-          {errors?.phone?.type === 'required' && (
-            <p className="mb-[5px] text-danger text-[14px]">Phone number is required</p>
-          )}
-          {errors?.phone?.type === 'pattern' && (
-            <p className="mb-[5px] text-danger text-[14px]">Phone number not valid</p>
-          )}
-        </div>
-
+          {...register('phone', {
+            required: true,
+            pattern: Regex_PhoneNumber,
+          })}
+        />
+        {errors?.phone?.type === 'required' && (
+          <p className="mb-[5px] text-danger text-[14px]">Phone number is required</p>
+        )}
+        {errors?.phone?.type === 'pattern' && (
+          <p className="mb-[5px] text-danger text-[14px]">Phone number not valid</p>
+        )}
+      </div>
+      {/* role, DoB */}
+      <div className="flex sm:gap-5 sm:w-[490px] sm:flex-row flex-col w-full">
         {/* date of birth */}
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Date of birth</label>
@@ -198,6 +198,21 @@ const Form: React.FC<FormProps> = (props) => {
             )}
           />
         </div>
+        <div className="w-full">
+          <label className="text-t3 font-semibold text-[#424856]">Role</label>
+          <select
+            disabled={isModalDetail}
+            className={`block w-full h-[36px] ${errors?.type ? 'mb-[5px]' : 'mb-[10px]'
+              } pl-[10px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            {...register('role', {
+              required: true,
+            })}
+          >
+            <option value="STAFF">Staff</option>
+            <option value="USER">Customer</option>
+          </select>
+          {errors?.type?.type === 'required' && <p className="mb-[5px] text-danger text-[14px]">Type is required</p>}
+        </div>
       </div>
       {/* email */}
       <>
@@ -205,9 +220,8 @@ const Form: React.FC<FormProps> = (props) => {
         <input
           disabled={isModalDetail}
           type="text"
-          className={`${isModalDetail ? 'cursor-not-allowed' : ''} block w-full h-[36px] ${
-            errors?.email ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`${isModalDetail ? 'cursor-not-allowed' : ''} block w-full h-[36px] ${errors?.email ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('email', {
             required: true,
             pattern: Regex_Email,
@@ -222,9 +236,8 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">Password</label>
           <input
             type="password"
-            className={`block w-full h-[36px] ${
-              errors?.password ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.password ? 'mb-[5px]' : 'mb-[10px]'
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('password', {
               required: true,
               // pattern: Regex_Email,

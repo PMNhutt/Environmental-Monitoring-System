@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import styles from 'src/utils/style';
 import jwt_decode from 'jwt-decode';
-import { useAppDispatch } from 'src/redux/store/hooks';
-import { getUsers, getUserDetail, activateUser } from 'src/redux/slices/usersSlice';
+import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { activateUser, getUserDetail, getUsers } from 'src/redux/slices/usersSlice';
+import { useAppDispatch } from 'src/redux/store/hooks';
 import useDebounce from 'src/share/hooks/useDebounce';
+import styles from 'src/utils/style';
 
 // ** components
-import Header from './components/Header/Header';
-import DataTable from './components/DataTable';
-import DetailModal from './components/DetailModal';
 import ConfirmModal from 'src/share/components/ConfirmModal';
 import { UsersProps } from 'src/utils/interface';
+import DataTable from './components/DataTable';
+import DetailModal from './components/DetailModal';
+import Header from './components/Header/Header';
 
 const data = [
   {
@@ -155,10 +155,10 @@ const UserManagement = () => {
           filteredUsers = res.payload;
           break;
         case 2:
-          filteredUsers = res.payload.filter((u: UsersProps) => u.isDeleted == false);
+          filteredUsers = res.payload.filter((u: UsersProps) => u.isDeleted === false);
           break;
         case 3:
-          filteredUsers = res.payload.filter((u: UsersProps) => u.isDeleted == true);
+          filteredUsers = res.payload.filter((u: UsersProps) => u.isDeleted === true);
           break;
         default:
           break;

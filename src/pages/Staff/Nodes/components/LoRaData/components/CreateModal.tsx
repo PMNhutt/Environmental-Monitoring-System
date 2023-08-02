@@ -31,15 +31,18 @@ const Form: React.FC<FormProps> = (props) => {
         productLine: data.productLine,
         interval: data.interval,
       };
-      console.log(req);
-      dispatch(editSensors(req)).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
+      dispatch(editSensors(req)).then((res: any) => {
+        if (!res.error) {
+          setOpenModal(false);
+          setUpdateData((prev: boolean) => !prev);
+        }
       });
     } else {
-      dispatch(createSensors({ req: data, nodeId: nodeId })).then(() => {
-        setOpenModal(false);
-        setUpdateData((prev: boolean) => !prev);
+      dispatch(createSensors({ req: data, nodeId: nodeId })).then((res: any) => {
+        if (!res.error) {
+          setOpenModal(false);
+          setUpdateData((prev: boolean) => !prev);
+        }
       });
     }
   };
@@ -53,9 +56,8 @@ const Form: React.FC<FormProps> = (props) => {
           <input
             disabled={editData}
             type="text"
-            className={`block w-full h-[36px] ${errors?.sensorCode ? 'mb-[5px]' : 'mb-[10px]'} ${
-              editData ? 'cursor-not-allowed' : ''
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.sensorCode ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('sensorCode', {
               required: true,
             })}
@@ -67,9 +69,8 @@ const Form: React.FC<FormProps> = (props) => {
         <div className="w-full">
           <label className="text-t3 font-semibold text-[#424856]">Sensor Type</label>
           <select
-            className={`block w-full h-[36px] ${
-              errors?.type ? 'mb-[5px]' : 'mb-[10px]'
-            } pl-[10px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.type ? 'mb-[5px]' : 'mb-[10px]'
+              } pl-[10px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('type', {
               required: true,
             })}
@@ -89,9 +90,8 @@ const Form: React.FC<FormProps> = (props) => {
           <input
             type="number"
             disabled={editData}
-            className={`block w-full h-[36px] ${errors?.minThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${
-              editData ? 'cursor-not-allowed' : ''
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.minThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('minThreshold', {
               required: true,
             })}
@@ -105,9 +105,8 @@ const Form: React.FC<FormProps> = (props) => {
           <input
             type="number"
             disabled={editData}
-            className={`block w-full h-[36px] ${errors?.maxThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${
-              editData ? 'cursor-not-allowed' : ''
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.maxThreshold ? 'mb-[5px]' : 'mb-[10px]'} ${editData ? 'cursor-not-allowed' : ''
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('maxThreshold', {
               required: true,
             })}
@@ -119,12 +118,11 @@ const Form: React.FC<FormProps> = (props) => {
       </div>
       {/* interval */}
       <>
-        <label className="text-t3 font-semibold text-[#424856]">Interval</label>
+        <label className="text-t3 font-semibold text-[#424856] hidden">Interval</label>
         <input
           type="number"
-          className={`block w-full h-[36px] ${
-            errors?.interval ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${errors?.interval ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] hidden rounded-[5px] focus:outline-primary`}
           {...register('interval', {
             required: true,
           })}
@@ -139,9 +137,8 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">Power</label>
           <input
             type="text"
-            className={`block w-full h-[36px] ${
-              errors?.power ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.power ? 'mb-[5px]' : 'mb-[10px]'
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('power', {
               required: false,
             })}
@@ -152,9 +149,8 @@ const Form: React.FC<FormProps> = (props) => {
           <label className="text-t3 font-semibold text-[#424856]">Size</label>
           <input
             type="text"
-            className={`block w-full h-[36px] ${
-              errors?.size ? 'mb-[5px]' : 'mb-[10px]'
-            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+            className={`block w-full h-[36px] ${errors?.size ? 'mb-[5px]' : 'mb-[10px]'
+              } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
             {...register('size', {
               required: false,
             })}
@@ -167,9 +163,8 @@ const Form: React.FC<FormProps> = (props) => {
         <label className="text-t3 font-semibold text-[#424856]">Product Line</label>
         <input
           type="text"
-          className={`block w-full h-[36px] ${
-            errors?.productLine ? 'mb-[5px]' : 'mb-[10px]'
-          } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
+          className={`block w-full h-[36px] ${errors?.productLine ? 'mb-[5px]' : 'mb-[10px]'
+            } p-[12px] text-t3 sm:text-t3 font-poppins bg-[#F3F4F6] rounded-[5px] focus:outline-primary`}
           {...register('productLine', {
             required: false,
           })}
@@ -214,7 +209,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
       >
         {/* header */}
         <div className="px-[25px] pb-4 border-b border-b-[#F3F4F6] text-t7 font-medium">
-          {editData ? 'Edit Sensor' : 'Create new Sensor'}
+          {editData ? 'Edit Sensor' : 'Create a new Sensor'}
         </div>
         {/* body */}
         <div className="px-[25px] my-3">

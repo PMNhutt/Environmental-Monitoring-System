@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from 'src/share/Logo/Logo';
 import MenuItem from './components/MenuItem';
 
 // ** assets
+import warehouse from 'src/assets/images/Warehouse.svg';
+import warehouseInactive from 'src/assets/images/WarehouseInactive.svg';
 import activeNode from 'src/assets/images/node_menu_active.svg';
 import inactiveNode from 'src/assets/images/node_menu_inactive.svg';
 import activeSensor from 'src/assets/images/sensor.svg';
@@ -39,9 +41,17 @@ const SideBar = () => {
           link="/sensors"
           active={active}
           id="sensors"
-          name="Sensor List"
+          name="Sensors List"
           activeIconSrc={activeSensor}
           inactiveIconSrc={inactiveSensor}
+        />
+        <MenuItem
+          link="/location"
+          active={active}
+          id="location"
+          name="Location"
+          activeIconSrc={warehouse}
+          inactiveIconSrc={warehouseInactive}
         />
       </div>
     </div>

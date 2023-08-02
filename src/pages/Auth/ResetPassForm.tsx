@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { Regex_Email, Regex_Password } from 'src/utils/regex';
 
 // ** redux
-import { resetPass, forgotPass } from 'src/redux/slices/authSlice';
+import { forgotPass, resetPass } from 'src/redux/slices/authSlice';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 
 // ** assets
-import eye_gray from 'src/assets/images/ic_eye_gray.svg';
-import eye_closed from 'src/assets/images/ic_eye_closed.svg';
 import ic_email from 'src/assets/images/email_form.svg';
+import eye_closed from 'src/assets/images/ic_eye_closed.svg';
+import eye_gray from 'src/assets/images/ic_eye_gray.svg';
 import ic_password from 'src/assets/images/password_form.svg';
 import spinner from 'src/assets/images/spinner.svg';
 
@@ -81,7 +81,7 @@ const ResetPassForm = () => {
         {/* message */}
         <p className="text-[#8792AB] text-t3 sm:w-[490px] w-full text-center mb-5">
           {isCodeSent
-            ? 'We have sent a 5-digit code to your email address. This code will expire in 1 minute. Please check your email.'
+            ? 'We have sent a 5-digit code to your email address. This code will expire in 2 minute. Please check your email.'
             : 'Please enter your email address below, we will promptly send you a passcode to reset your password'}
         </p>
       </div>
@@ -176,7 +176,7 @@ const ResetPassForm = () => {
             <>
               <input
                 type="text"
-                placeholder="5-digits code"
+                placeholder="5-digit code"
                 className={`block sm:w-[172px] w-full h-[47px] ${
                   errors?.resetPasscode ? 'mb-[5px]' : 'mb-[15px]'
                 } px-[30px] sm:text-md  border border-[#d4d4d4] rounded-[5px] focus:outline-primary`}

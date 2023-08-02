@@ -43,6 +43,8 @@ export interface DetailModalProps {
 }
 
 export interface LoRaTypeProps {
+  permission: string;
+  currentUser: UsersProps;
   setEditSensorData: any;
   setOpenEditModal: any;
   setUpdateData: any;
@@ -51,6 +53,8 @@ export interface LoRaTypeProps {
   selectedSensorId: any;
   setSensorList: any;
   sensorList: any;
+  setSelectedSensorMaxThreshold: any;
+  setSelectedSensorMinThreshold: any;
 }
 
 export interface UsersProps {
@@ -63,6 +67,11 @@ export interface UsersProps {
   role: string;
   avatar: string;
   name?: string;
+  createdDate: string;
+}
+
+export interface UsersPropsWithPermission extends UsersProps {
+  permission: string;
 }
 
 export interface UserDetailProps extends UsersProps {
@@ -91,6 +100,17 @@ export interface NodeProps {
   latitude: number;
   longitude: number;
   nodeCode: string;
+  createdDate: string;
+  updatedDate: string;
+  locations: LocationProps;
+}
+
+export interface LocationProps {
+  id: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
   createdDate: string;
   updatedDate: string;
 }

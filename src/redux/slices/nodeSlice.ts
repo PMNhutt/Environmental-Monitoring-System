@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { UsersProps } from 'src/utils/interface';
+import { UsersPropsWithPermission } from 'src/utils/interface';
 import instances from 'src/utils/plugins/axios';
 
 interface InitialStateType {
@@ -27,12 +27,22 @@ const initialState: InitialStateType = {
   lightbulb: false,
 };
 
-export const getNodes = createAsyncThunk('nodes/getNodes', async (sort: any) => {
+export const getNodes = createAsyncThunk('nodes/getNodes', async (params: any) => {
   const res = await instances.get('/nodes', {
     params: {
-      sort
+      ...params
     },
   });
+  return res.data;
+});
+
+export const getNodeLocations = createAsyncThunk('nodes/getNodeLocations', async () => {
+  const res = await instances.get('/node/locations');
+  return res.data;
+});
+
+export const getNodeLatestData = createAsyncThunk('nodes/getNodeLatestData', async (id: any) => {
+  const res = await instances.get(`/node/${id}/latestData`);
   return res.data;
 });
 
@@ -84,7 +94,7 @@ export const getAssignedUsers = createAsyncThunk(
   async (nodeId: string, { rejectWithValue }) => {
     try {
       const res = await instances.get(`/node/${nodeId}/assign-users`);
-      const list = res.data.data.map((u: UsersProps) => {
+      const list = res.data.data.map((u: UsersPropsWithPermission) => {
         return {
           name: u.firstName + ' ' + u.lastName,
           email: u.email,
@@ -93,6 +103,7 @@ export const getAssignedUsers = createAsyncThunk(
           isDeleted: u.isDeleted,
           id: u.id,
           avatar: u.avatar,
+          permission: u.permission,
         };
       });
       return list;

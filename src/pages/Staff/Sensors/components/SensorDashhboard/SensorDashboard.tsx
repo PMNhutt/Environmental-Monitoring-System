@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAllSensors } from 'src/redux/slices/loraDataSlice';
 import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
+import useDebounce from 'src/share/hooks/useDebounce';
 import Filter from './Filter';
 import LineChart from './LineChart';
 import SensorList from './SensorList';
@@ -80,6 +81,8 @@ const SensorDashboard = () => {
   });
   const [pagination, setPagination] = useState({ offset: 0, limit: 5 });
   const [totalItem, setTotalItem] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
+  const debounced = useDebounce(searchValue, 600);
 
   const handleChangePage = (_event: React.ChangeEvent<unknown>, page: number) => {
     setPagination({ ...pagination, offset: page - 1 });
@@ -90,13 +93,14 @@ const SensorDashboard = () => {
     const requestData = {
       offset: pagination.offset,
       limit: pagination.limit,
+      search: searchValue,
     };
     dispatch(getAllSensors(requestData)).then((res: any) => {
       const sensorList = res.payload.data;
       setTotalItem(Math.round((res.payload.count + pagination.limit - 1) / pagination.limit));
       setSensorList(sensorList);
     });
-  }, [pagination]);
+  }, [pagination, debounced]);
 
   return (
     <div className="my-12 mx-14">
@@ -106,16 +110,14 @@ const SensorDashboard = () => {
         <LineChart setChartOptions={setChartOptions} chartOptions={chartOptions} chartData={chartData} />
       </div>
       {/* filter */}
-      <Filter setChartData={setChartData} />
+      <Filter
+        setChartData={setChartData}
+      />
       {/* sensor list */}
       <SensorList
-        currentUser={currentUser}
+        setSearchValue={setSearchValue}
+        searchValue={searchValue}
         sensorList={sensorList}
-        setSensorList={setSensorList}
-        setUpdateData={'setUpdateData'}
-        editSensorData={'editSensorData'}
-        setEditSensorData={'setEditSensorData'}
-        nodeId={'nodeId'}
         onChange={handleChangePage}
         pageIndex={pagination.offset}
         totalPage={totalItem}

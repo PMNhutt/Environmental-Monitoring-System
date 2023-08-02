@@ -1,21 +1,21 @@
+import { useEffect, useState } from 'react';
+import { setCurrentUser } from 'src/redux/slices/authSlice';
+import { setMobileOpen, setOpenDropDown } from 'src/redux/slices/contextSlice';
+import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
 import Logo from 'src/share/Logo/Logo';
 import styles from 'src/utils/style';
-import { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/redux/store/hooks';
-import { setCurrentUser } from 'src/redux/slices/authSlice';
-import { setOpenDropDown, setMobileOpen } from 'src/redux/slices/contextSlice';
 
 // ** lib
-import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, useLocation } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
 import { IconButton } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
+import jwt_decode from 'jwt-decode';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // ** assets
-import avatar from 'src/assets/images/avatar.svg';
-import dropDown from 'src/assets/images/drop_down.svg';
 import logout from 'src/assets/images/Logout.svg';
 import manage from 'src/assets/images/Stack.svg';
+import avatar from 'src/assets/images/avatar.svg';
+import dropDown from 'src/assets/images/drop_down.svg';
 import sidebarmenu from 'src/assets/images/menu.svg';
 
 const SystemNav = () => {
@@ -29,6 +29,9 @@ const SystemNav = () => {
         setShowLogo(false);
         break;
       case 'sensors':
+        setShowLogo(false);
+        break;
+      case 'location':
         setShowLogo(false);
         break;
       default:

@@ -1,53 +1,35 @@
 import { useState } from 'react';
 import { useOutsideClick } from 'src/share/hooks/useOutSideClick';
-import { SensorProps, UsersProps } from 'src/utils/interface';
+import { SensorProps } from 'src/utils/interface';
 
 // ** assets
 import sensor from 'src/assets/images/sensor.svg';
 
 // ** redux
-import { useAppDispatch } from 'src/redux/store/hooks';
 import { Pagination } from '@mui/material';
 
 interface Props {
-  currentUser: UsersProps;
   sensorList: SensorProps[];
-  setSensorList: any;
-  setUpdateData: any;
-  editSensorData: any;
-  setEditSensorData: any;
-  nodeId: any;
   totalPage: number;
   pageIndex: number;
+  setSearchValue: any;
+  searchValue: any;
   onChange: any;
 }
 
 interface SensorItemProps {
   sensorData: any;
   setOpenEditModal: any;
-  setUpdateData: any;
-  setEditSensorData: any;
 }
 
 const SensorItem: React.FC<SensorItemProps> = (props) => {
-  const { sensorData, setOpenEditModal, setUpdateData, setEditSensorData } = props;
+  const { sensorData } = props;
   const [openOptions, setOpenOptions] = useState(false);
-  const [openConfirm, setOpenConfirm] = useState(false);
-  const dispatch = useAppDispatch();
   const ref = useOutsideClick(() => {
     if (openOptions) {
       setOpenOptions(false);
     }
   });
-
-  const handleDeleteSensor = () => {
-    console.log('do sth');
-  };
-
-  // handle edit node
-  const handleEditNode = async () => {
-    console.log('do sth');
-  };
 
   const getSensorLabel = (data: any) => {
     switch (data) {
@@ -85,61 +67,20 @@ const SensorItem: React.FC<SensorItemProps> = (props) => {
           </div>
         </div>
       </div>
-      {/* <div className="md:w-1/3 w-full flex md:flex-row flex-col">
-        actions
-        <div className="w-full flex justify-end">
-          <div className="relative">
-            <Tooltip title={'Options'} placement="top">
-              <IconButton
-                disabled={openOptions}
-                onClick={() => {
-                  if (!openOptions) setOpenOptions(true);
-                }}
-              >
-                <img src={actions} className="object-contain" />
-              </IconButton>
-            </Tooltip>
-            options menu
-            <AnimatePresence>
-              {openOptions && (
-                <motion.ul
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, type: 'spring' }}
-                  exit={{ opacity: 0 }}
-                  ref={ref}
-                  className="absolute z-10 top-15 left-[25%] transform translate-x-[-50%] bg-white border shadow-sm rounded-[5px] font-medium text-t3"
-                >
-                  <li onClick={() => handleEditNode()} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                    Edit
-                  </li>
-                  <li onClick={() => setOpenConfirm(true)} className="cursor-pointer py-2 px-3 hover:bg-gray-100">
-                    Delete
-                  </li>
-                </motion.ul>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };
 
 const SensorList: React.FC<Props> = (props) => {
   const {
+    setSearchValue,
+    searchValue,
     sensorList,
-    setUpdateData,
-    currentUser,
-    editSensorData,
-    setEditSensorData,
-    nodeId,
-    onChange,
     pageIndex,
     totalPage,
+    onChange,
   } = props;
 
-  const [searchValue, setSearchValue] = useState('');
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -147,7 +88,7 @@ const SensorList: React.FC<Props> = (props) => {
       {/* header */}
       <div className="w-full flex justify-between md:flex-row flex-col gap-5">
         <div>
-          <p className="text-t6 font-semibold">Sensor list</p>
+          <p className="text-t6 font-semibold">Sensors list</p>
           <p className="text-[#8792AB] text-t4">List of existing sensor in the application</p>
         </div>
 
@@ -196,8 +137,6 @@ const SensorList: React.FC<Props> = (props) => {
               <SensorItem
                 sensorData={sensor}
                 setOpenEditModal={setOpenModal}
-                setUpdateData={setUpdateData}
-                setEditSensorData={setEditSensorData}
               />
             </div>
           ))}

@@ -5,15 +5,23 @@ import instances from 'src/utils/plugins/axios';
 interface InitialStateType {
   listLoading: boolean;
   creating: boolean;
+  creatingLocation: boolean;
   deleteting: boolean;
+  deletetingLocation: boolean;
   editing: boolean;
+  editingLocation: boolean;
+  loading: boolean;
 }
 
 const initialState: InitialStateType = {
   listLoading: false,
   creating: false,
+  creatingLocation: false,
   deleteting: false,
+  deletetingLocation: false,
   editing: false,
+  editingLocation: false,
+  loading: false,
 };
 
 export const getSensor = createAsyncThunk('sensors/getSensor', async (sensorId: any, { rejectWithValue }) => {
@@ -25,8 +33,22 @@ export const getSensor = createAsyncThunk('sensors/getSensor', async (sensorId: 
   }
 });
 
+export const getLocation = createAsyncThunk('location/getLocation', async (locationId: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.get(`/location/${locationId}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
 export const getSensors = createAsyncThunk('/node/sensors/getSensors', async (nodeId: any) => {
   const res = await instances.get(`/node/${nodeId}/sensors`);
+  return res.data;
+});
+
+export const getNodePermission = createAsyncThunk('/node/getNodePermission', async (nodeId: any) => {
+  const res = await instances.get(`/node/${nodeId}/permissions`);
   return res.data;
 });
 
@@ -45,6 +67,28 @@ export const getAllSensors = createAsyncThunk('/sensors/getSensors', async (para
     params: {
       offset: params.offset,
       limit: params.limit,
+      search: params.search,
+    },
+  });
+  return res.data;
+});
+
+export const getAllLocations = createAsyncThunk('/sensors/getLocations', async (params: any) => {
+  const res = await instances.get(`/locations`, {
+    params: {
+      offset: params.offset,
+      limit: params.limit,
+      search: params.search,
+      sort: params.sort
+    },
+  });
+  return res.data;
+});
+
+export const getAllLocationsVer2 = createAsyncThunk('/sensors/getLocations', async (params: any) => {
+  const res = await instances.get(`/v2/locations`, {
+    params: {
+      search: params.search,
     },
   });
   return res.data;
@@ -58,8 +102,12 @@ export const getSensorIntervalLatestData = createAsyncThunk(
   },
 );
 
-export const getSensorIntervalData = createAsyncThunk('/node/sensors/getSensorIntervalData', async (sensorId: any) => {
-  const res = await instances.get(`/v2/sensor/${sensorId}/data/interval`);
+export const getSensorIntervalData = createAsyncThunk('/node/sensors/getSensorIntervalData', async ({sensorId, params} : {sensorId: any, params: any}) => {
+  const res = await instances.get(`/v2/sensor/${sensorId}/data/interval`, {
+    params: {
+      ...params
+    }
+  });
   return res.data;
 });
 
@@ -83,8 +131,12 @@ export const getSensorOfTypeIntervalData = createAsyncThunk(
 
 export const getSensorOfTypeIntervalDataVer2 = createAsyncThunk(
   '/node/sensors/getSensorOfTypeIntervalDataVer2',
-  async (type: string) => {
-    const res = await instances.get(`/v2/sensor/type/${type}/data/interval`);
+  async ({ type, params }: { type: string; params: any }) => {
+    const res = await instances.get(`/v2/sensor/type/${type}/data/interval`, {
+      params: {
+        ...params
+      }
+    });
     return res.data;
   },
 );
@@ -101,9 +153,32 @@ export const createSensors = createAsyncThunk(
   },
 );
 
+export const createLocation = createAsyncThunk(
+  'locations/createLocation',
+  async (req: any, { rejectWithValue }) => {
+    try {
+      const res = await instances.post(`/location`, req);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const editSensors = createAsyncThunk('sensors/editSensors', async (req: any, { rejectWithValue }) => {
   try {
     const res = await instances.put(`/sensor/${req.id}`, {
+      ...req,
+    });
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const editLocation = createAsyncThunk('sensors/editLocations', async (req: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.put(`/location/${req.id}`, {
       ...req,
     });
     return res.data;
@@ -144,6 +219,15 @@ export const deleteSensors = createAsyncThunk('sensors/deleteSensors', async (id
   }
 });
 
+export const deleteLocation = createAsyncThunk('location/deleteLocation', async (id: any, { rejectWithValue }) => {
+  try {
+    const res = await instances.delete(`/location/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
 export const sensorSlice = createSlice({
   name: 'sensors',
   initialState,
@@ -171,6 +255,17 @@ export const sensorSlice = createSlice({
         state.creating = false;
         toast.error(action.payload.response.data.detail);
       })
+      .addCase(createLocation.pending, (state) => {
+        state.creatingLocation = true;
+      })
+      .addCase(createLocation.fulfilled, (state) => {
+        state.creatingLocation = false;
+        toast.success('Create successfully!');
+      })
+      .addCase(createLocation.rejected, (state, action: any) => {
+        state.creatingLocation = false;
+        toast.error(action.payload.response.data.detail);
+      })
       .addCase(deleteSensors.pending, (state) => {
         state.deleteting = true;
       })
@@ -182,6 +277,17 @@ export const sensorSlice = createSlice({
         state.deleteting = false;
         toast.error(action.payload.response.data.detail);
       })
+      .addCase(deleteLocation.pending, (state) => {
+        state.deletetingLocation = true;
+      })
+      .addCase(deleteLocation.fulfilled, (state) => {
+        state.deletetingLocation = false;
+        toast.success('Delete successfully!');
+      })
+      .addCase(deleteLocation.rejected, (state, action: any) => {
+        state.deletetingLocation = false;
+        toast.error(action.payload.response.data.detail);
+      })
       .addCase(editSensors.pending, (state) => {
         state.editing = true;
       })
@@ -191,6 +297,17 @@ export const sensorSlice = createSlice({
       })
       .addCase(editSensors.rejected, (state, action: any) => {
         state.editing = false;
+        toast.error(action.payload.response.data.detail);
+      })
+      .addCase(editLocation.pending, (state) => {
+        state.editingLocation = true;
+      })
+      .addCase(editLocation.fulfilled, (state) => {
+        state.editingLocation = false;
+        toast.success('Update successfully!');
+      })
+      .addCase(editLocation.rejected, (state, action: any) => {
+        state.editingLocation = false;
         toast.error(action.payload.response.data.detail);
       })
       .addCase(editSensorThreshold.pending, (state) => {

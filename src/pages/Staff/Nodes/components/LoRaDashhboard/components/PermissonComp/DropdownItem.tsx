@@ -1,6 +1,6 @@
 import React from 'react';
 import { toast } from 'react-toastify';
-import { UsersProps } from 'src/utils/interface';
+import { UsersProps, UsersPropsWithPermission } from 'src/utils/interface';
 
 interface DropdownProps {
   data: UsersProps;
@@ -18,7 +18,11 @@ const DropdownItem: React.FC<DropdownProps> = (props) => {
     if (dupplicate) {
       toast.error('User selected!');
     } else {
-      setAssignedUsers((prev: any) => [...prev, data]);
+      const newData: UsersPropsWithPermission = {
+        ...data,
+        permission: 'VIEW',
+      }
+      setAssignedUsers((prev: any) => [...prev, newData]);
     }
   };
 
